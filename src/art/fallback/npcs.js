@@ -3,9 +3,13 @@ import { ATLAS, imgReady, drawSprite, opaqueBox, drawOpaque, codeArt } from '../
 
 // [S59] Named NPC art: a w<n>-npcs frame whose name is the NPC's id (or ends with it, e.g. elder-mossbeard ↔ mossbeard).
 const npcArtCache = new Map();
+// [W8 Phase 3] named NPCs whose world npcs sheet has no frame for them take one of that world's own townsfolk (w<n>-npcs-b)
+const NPC_ALIAS = { lumi: ['w8-npcs-b', 'a-wizard-in-a'], 'star-keeper': ['w8-npcs-b', 'a-small-prince-with'], nova: ['w8-npcs-b', 'a-sleepy-crescent-moon'], orion: ['w8-npcs-b', 'a-tiny-astronaut-child'], 'maze-w8-keeper': ['w8-villagers', 'f10'] }; // the maze keeper: a cream star-sprite (W8 has no maze-game sheet)
 function npcArt(id) {
   if (npcArtCache.has(id)) return npcArtCache.get(id);
   let hit = null, pending = false;
+  const al = NPC_ALIAS[id];
+  if (al && ATLAS[al[0]]) { if (!imgReady(al[0])) return null; const f = ATLAS[al[0]].meta.frames[al[1]]; if (f) { hit = { sheet: al[0], frame: al[1], f }; npcArtCache.set(id, hit); return hit; } }
   for (let w = 0; w <= 8 && !hit; w++) {
     const sheet = w ? 'w' + w + '-npcs' : 'ship-npcs'; // [R1-15] the Wayfarer crew first
     if (!ATLAS[sheet]) continue;

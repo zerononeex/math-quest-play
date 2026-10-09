@@ -34,6 +34,14 @@ export function questSpots(ow) {
     if (d.world !== w || !d.goal) continue;
     const order = cand.slice().sort((a, b) => hash(id, a[0], a[1]) - hash(id, b[0], b[1]));
     const list = [];
+    if (d.perRegion) { // [W8 Phase 4] one mark in each flagged region (its first spaced candidate inside the region's cells)
+      for (const r of ow.regions.filter((q) => q[d.perRegion]).slice(0, d.goal)) {
+        const inR = order.filter(([x, y]) => x >= r.x0 * 8 + 2 && x < (r.x1 + 1) * 8 - 2 && y >= r.y0 * 8 + 2 && y < (r.y1 + 1) * 8 - 2);
+        const pick = inR.find(([x, y]) => !used.some((u) => Math.abs(u[0] - x) + Math.abs(u[1] - y) < gap)) || inR[0];
+        if (pick) { used.push(pick); list.push({ tx: pick[0], ty: pick[1], key: pick[0] + ',' + pick[1], region: r.name, elite: d.elite ? r.elite : null }); }
+      }
+      out[id] = list; continue;
+    }
     for (let g = gap; g >= 0 && list.length < d.goal; g -= 2) {
       for (const [x, y] of order) {
         if (list.length >= d.goal) break;

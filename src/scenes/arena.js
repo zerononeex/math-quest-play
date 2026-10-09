@@ -197,6 +197,7 @@ export function createArena(view, data, opts = {}) {
   };
   const onKill = (e) => {
     if (e.boss && a.bossFight && a.bossFight.e === e) a.bossDefeated();
+    if (e.eliteMark) a.markFound(e.eliteMark); // [W8 Phase 4] a star elite beaten
     const xp = e.xp || 0;
     if (!xp) return;
     const ev = gainXp(data, xp, save.store ? save.store.loadSettings() : {});
@@ -291,6 +292,20 @@ export function createArena(view, data, opts = {}) {
   }
   a.questSpots = ow ? questSpots(ow) : {}; // [S55] side-quest marks
   a.activeMarks = () => Object.entries(a.questSpots).flatMap(([id, l]) => { const q = questState(data, id); return q && !q.done ? l.filter((m) => !(q.marks || []).includes(m.key)).map((m) => ({ id, ...m })) : []; });
+  a.markFound = (m) => {
+    const r = questMark(data, m.id, m.key);
+    if (r === 'done') { sfx('relic'); confetti(hero.x, hero.y - 16, 40); floatText(hero.x, hero.y - 34, 'Quest done! Star Seed!', '#80ff90'); a.msg = 'Quest complete! +1 Star Seed'; save.auto('quest'); }
+    else if (r) { sfx('coin'); const q = questState(data, m.id); floatText(hero.x, hero.y - 34, q.got + (m.elite ? ' beaten!' : ' found!'), '#80ff90'); save.auto('quest'); }
+  };
+  // [W8 Phase 4] star elites: an active elite mark is a gold-outlined ×2 foe of its region, spawned with the region; beating it counts
+  a.elites = new Map();
+  a.spawnElites = (region) => {
+    for (const m of a.activeMarks()) {
+      if (!m.elite || (region && m.region !== region) || (a.elites.get(m.key) && a.elites.get(m.key).alive)) continue;
+      const ed = ow.world.enemies.find((e) => e.id === m.elite); if (!ed) continue;
+      const e = a.spawnData(ed, m.tx * 16 + 8, m.ty * 16 + 12, true); e.eliteMark = m; a.elites.set(m.key, e);
+    }
+  };
   a.doorArrow = null;
   // [D38] one pause for every scene: extra = { limited }. Esc / the HUD pause button open it. [D42] no Return to Wayfarer: the ship is boarded only at the pad.
   a.pauseFor = (extra = {}) => createPause(view, {
@@ -356,6 +371,7 @@ export function createArena(view, data, opts = {}) {
     for (let i = 0; i < (opts.count || 1); i++) a.spawnData(ed, START.x + 90 + (i % 4) * 40, START.y - 60 + Math.floor(i / 4) * 40);
   }
   if (ow) for (const r of ow.regions) a.spawnRegion(r.name);
+  if (ow) a.spawnElites(null); // [W8 Phase 4]
   if (opts.boss) a.startBoss(TEST_BOSS, START.x + 120, START.y - 20);
   // [R2-19] everything drawn live that the map miniature should show (buildings, castle, landmarks, big trees), at world coords
   a.drawMapStatic = (g) => {
@@ -397,7 +413,9 @@ export function createArena(view, data, opts = {}) {
         // door (W2's relic cave hook post) sits inside the door's tap zone, and a tap right on it means the gate.
         a.useOnArrive = null;
         const gate = inter.list.find((o) => TOOL_GATES.includes(o.type) && !gateOpen(o) && Math.hypot(inter.center(o).x - w.x, inter.center(o).y - w.y) < 18);
-        if (gate && !(findTapTarget(inter, w.x, w.y) === gate && (chooseAmmo(data, hero.id, gate) || {}).ammo)) {
+        const ammoGate = gate && findTapTarget(inter, w.x, w.y) === gate; // [W8 gate fix] a gate opened by ammo (torch, ice, water…) stays with a.tapTarget
+        if (ammoGate && !(chooseAmmo(data, hero.id, gate) || {}).ammo) { showNeed(a.help, gate); a.tapTarget(w.x, w.y); return; } // no ammo: the bubble + 'Need FIRE!'
+        if (gate && !ammoGate) {
           if (!canOpen(data, hero.id, gate)) { showNeed(a.help, gate); return; }
           const st = gateStand(gate); hero.attackId = null;
           if (st) { setTapTarget(hero, map, st.x * 16 + 8, st.y * 16 + 12); a.useOnArrive = { o: gate, stand: st, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; }
@@ -465,6 +483,8 @@ export function createArena(view, data, opts = {}) {
         if (ev && ev.kind === 'win') { sfx('relic'); startItemGet(hero, 0, ['ui-heart-pieces', 5]); confetti(hero.x, hero.y - 16, 40); floatText(hero.x, hero.y - 34, ev.piece.whole ? 'A whole new heart!' : 'Heart piece! ' + ev.piece.count + '/4', '#ff8090'); a.msg = 'You got a Heart Piece! (' + ev.secs + 's)'; save.auto('maze'); }
         else if (ev && (ev.kind === 'best' || ev.kind === 'done')) { sfx('coin'); floatText(hero.x, hero.y - 34, ev.secs + 's' + (ev.kind === 'best' ? ' - new best!' : ''), '#fff080'); save.auto('maze'); }
         else if (ev && ev.kind === 'lose') { floatText(hero.x, hero.y - 34, "Time's up!", '#ffb0b0'); a.msg = 'So close! Talk to ' + ow.world.maze.keeper.name + ' to try again.'; }
+        else if (ev && ev.kind === 'star') { sfx('coin'); floatText(hero.x, hero.y - 34, 'Star ' + ev.n + '/' + ev.of + '!', '#ffe070'); } // [W8 Phase 4] Constellation Maze
+        else if (ev && ev.kind === 'lit') { sfx('relic'); confetti(hero.x, hero.y - 16, 24); floatText(hero.x, hero.y - 34, 'All stars! The gate is lit!', '#ffe070'); a.msg = 'The star gate is open — run for the prize!'; }
         else if (ev && ev.kind === 'idle-pen') a.msg = 'Talk to ' + ow.world.maze.keeper.name + ' to start the clock!';
       }
       markSeen(data, ow.world.id, Math.floor(tx / CELL), Math.floor(ty / CELL), ow.world.sketch[0].length);
@@ -475,11 +495,7 @@ export function createArena(view, data, opts = {}) {
         if (d) { a.enterDoor(d); return; }
         if (ti.heal && tx === ti.heal.tx && ty === ti.heal.ty && data.hearts < data.maxHearts) { data.hearts = data.maxHearts; confetti(hero.x, hero.y - 16, 20); a.msg = ti.heal.name; }
       }
-      for (const m of a.activeMarks()) if (Math.hypot(m.tx * 16 + 8 - hero.x, m.ty * 16 + 8 - hero.y) < CONFIG.QUEST.PICK_R) {
-        const r = questMark(data, m.id, m.key);
-        if (r === 'done') { sfx('relic'); confetti(hero.x, hero.y - 16, 40); floatText(hero.x, hero.y - 34, 'Quest done! Star Seed!', '#80ff90'); a.msg = 'Quest complete! +1 Star Seed'; save.auto('quest'); }
-        else if (r) { sfx('coin'); const q = questState(data, m.id); floatText(hero.x, hero.y - 34, q.got + ' found!', '#80ff90'); save.auto('quest'); }
-      }
+      for (const m of a.activeMarks()) if (!m.elite && Math.hypot(m.tx * 16 + 8 - hero.x, m.ty * 16 + 8 - hero.y) < CONFIG.QUEST.PICK_R) a.markFound(m);
       const nook = ow.feat.secrets.find((s) => s.tx === tx && s.ty === ty);
       if (nook) { const r = claimSecret(data, ow.world.id, nook); if (r) { sfx(r.kind === 'seed' ? 'relic' : 'coin'); confetti(hero.x, hero.y - 16, 30); floatText(hero.x, hero.y - 34, r.label, '#fff080'); a.msg = 'Secret found! ' + r.label; save.auto('secret'); } }
       if (ow.rocket && tx === ow.rocket.tx && ty === ow.rocket.ty && hero.facing === 'up' && hero.dirY < -0.9) { a.board(); return; } // walk straight INTO the door (passing by sideways or diagonally doesn't board)
@@ -494,7 +510,7 @@ export function createArena(view, data, opts = {}) {
       const lq = liquidAt(ow, tx, ty);
       if (lq && lq.slow) hero.slow = Math.max(hero.slow || 0, lq.slow);
       const reg = regionAt(ow, tx, ty);
-      if (reg !== a.region) { a.region = reg; a.spawnRegion(reg); }
+      if (reg !== a.region) { a.region = reg; a.spawnRegion(reg); a.spawnElites(reg); }
     }
     updateProjectiles(projs, { map, inter, ents, hero, hitEnemy: (e, p) => combat.hitProjectile(e, p), area: (x, y, r) => combat.area(x, y, r, 0, false), cutAt: (tx, ty) => bushes && cutBushAt(bushes, tx, ty, bushCx) }, dt);
     if (bushes) updateBushes(bushes, hero, dt);
@@ -556,7 +572,7 @@ export function createArena(view, data, opts = {}) {
       ctx.fillStyle = p.tags.includes('FIRE') ? '#ff7020' : p.tags.includes('ICE') ? '#a0e8ff' : '#e0e0e0'; ctx.fillRect(-4, -2, 8, 4); ctx.fillRect(3, -1, 3, 2);
       ctx.restore();
     });
-    for (const m of a.activeMarks()) { const x = m.tx * 16 + 8 - cam.x, y = m.ty * 16 + 8 - cam.y + Math.sin(performance.now() / 250 + m.tx) * 2; ctx.fillStyle = '#80ff90'; ctx.beginPath(); for (let i = 0; i < 10; i++) { const r = i % 2 ? 3 : 7, t = (i * Math.PI) / 5 - Math.PI / 2; ctx.lineTo(x + Math.cos(t) * r, y + Math.sin(t) * r); } ctx.fill(); ctx.strokeStyle = '#205020'; ctx.stroke(); } // quest mark (code-drawn star)
+    for (const m of a.activeMarks()) { if (m.elite) continue; const x = m.tx * 16 + 8 - cam.x, y = m.ty * 16 + 8 - cam.y + Math.sin(performance.now() / 250 + m.tx) * 2; ctx.fillStyle = '#80ff90'; ctx.beginPath(); for (let i = 0; i < 10; i++) { const r = i % 2 ? 3 : 7, t = (i * Math.PI) / 5 - Math.PI / 2; ctx.lineTo(x + Math.cos(t) * r, y + Math.sin(t) * r); } ctx.fill(); ctx.strokeStyle = '#205020'; ctx.stroke(); } // quest mark (code-drawn star)
     for (const n of a.nests) drawNest(ctx, Math.round(n.x - cam.x), Math.round(n.y - cam.y));
     if (a.buddies) { ctx.save(); ctx.translate(-Math.round(cam.x), -Math.round(cam.y)); drawBuddies(ctx, a.buddies); ctx.restore(); }
     drawHero(ctx, hero, cam);

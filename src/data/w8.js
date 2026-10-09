@@ -3,6 +3,7 @@
 // S52: overworld, plaza, enemies (G17), Astronova (three phases + a false fourth, D47). Rush/Survival gates arrive in S53/S54.
 export const W8 = {
   id: 8, name: 'Starhaven', band: 7,
+  lush: true, // [W8 Phase 1] the W1-standard lush pass: organic shores, paving, yards, big trees, secret scenes, Fallen Star landmark, set pieces
   sketch: [
     '####################################',
     '#..*....o.....::B::.....o.....*....#',
@@ -11,8 +12,8 @@ export const W8 = {
     '#.~o~~..:....=.......=....:..^.o^..#',
     '#.~~~~..:....=..o.o..=....:..^^H^..#',
     '#.......:....====:====....:........#',
-    '#.*.....1.......:::.......2.....*..#',
-    '#.......:.......:.:.......:........#',
+    '#.*.....1...o...:::.......2.....*..#',
+    '#.......:...o...:.:.......:........#',
     '#====...::::::::TT::::::::::...~~~~#',
     '#=**=...:.......TT:.......:....~o~~#',
     '#=..=...::::::::::::::::::::...~~~~#',
@@ -84,14 +85,14 @@ export const W8 = {
         { name: 'gravity wells', prims: [{ type: 'pull' }, { type: 'zone', r: 26 }] },
       ],
       forms: [
-        { name: 'Astronova, Constellation Armor', hpMult: 1.5, size: [36, 42], look: { body: '#b0c0ff', accent: '#ffffff', crown: true },
+        { name: 'Astronova, Constellation Armor', rise: 'The stars gather into armor…', hpMult: 1.5, size: [36, 42], look: { body: '#b0c0ff', accent: '#ffffff', crown: true },
           lines: ['Your arm is strong, little star.', 'Show me your mind.'], question: 'Show me your mind!',
           patterns: [
             { name: 'comet-tail sweep', prims: [{ type: 'sweep' }] },
             { name: 'meteor dance', prims: [{ type: 'beatWait' }, { type: 'slamRing', r: 70 }, { type: 'beatWait' }, { type: 'slamRing', r: 90 }] },
             { name: 'star clones', prims: [{ type: 'popBehind' }, { type: 'lunge' }] },
           ] },
-        { name: 'Astronova, Nova Titan', hpMult: 2.0, size: [48, 52], look: { body: '#ffd0a0', accent: '#ff6030', crown: true }, music: 'w8_boss_final',
+        { name: 'Astronova, Nova Titan', rise: 'Astronova grows into the Nova Titan…', hpMult: 2.0, size: [48, 52], look: { body: '#ffd0a0', accent: '#ff6030', crown: true }, music: 'w8_boss_final',
           lines: ['Mind and heart, both bright.', 'Now — stand against the whole sky.'],
           patterns: [
             { name: 'black-hole pull', prims: [{ type: 'pull' }, { type: 'slamRing', r: 60 }] },
@@ -110,19 +111,42 @@ export const W8 = {
   // Astronova's observatory (always open in Starhaven). Checkpoints return you to the phase you reached.
   throne: { id: 'astronova-observatory', name: 'Astronova\'s Observatory', world: 8, floors: ['1F'], start: 'throne', throne: true,
     theme: { floor: '#2a2a5a', floor2: '#262656', wall: '#0e0e2a', wallTop: '#ffe070' },
-    rooms: { throne: { floor: '1F', gx: 0, gy: 0, type: 'sub', boss: 'astronova', doors: {} } } },
+    rooms: { throne: { floor: '1F', gx: 0, gy: 0, type: 'sub', boss: 'astronova', life: 'observatory', doors: {} } } }, // [W8 Phase 5] w8-dungeon-life decor around the edges
+  // [D52][W8 Phase 4] the Constellation Maze (game/maze.js): star-platform lanes over a nebula sea in the south (sketch cells 6-13 x 21-22,
+  // all '.'; 13 rows so the bottom lane stays clear of the border trees' canopies), the biggest maze (100 s). '#' nebula (wall: 'nebula'), '.' lane (2 tiles wide), 'S' start gap, 'F' the star gate into the
+  // prize pen — it lights (opens) only once the run's 5 star pieces 's' are found; 'm' drifting star platforms over the nebula that come
+  // and go (shortcuts; never vanish under the hero). No chasing enemy (user 2026-10-05). Keeper: Vega, west of the start.
+  maze: {
+    cx: 6, cy: 21, time: 100, wall: 'nebula', pedestal: [61, 7], keeper: { name: 'Vega the Star-Keeper', x: -2, y: 3, lines: ['The stars drifted into my maze! Find all five to light the gate.', 'Then reach the prize before the clock runs out. Go!'] },
+    rows: [
+      '################################################################',
+      '#........ms.........................#s..........m..............#',
+      '#........m..........................#...........m..............#',
+      '####..#..####..###################..#..#..####..#..#######..#..#',
+      'S.....#.....#.....#........#...........#.....#..#..#s.#.....#..#',
+      'S.....#.....#.....#........#...........#.....#..#..#..#.....#..#',
+      '##########..####..#..####..#..#mm##########..#..#..#..#..#######',
+      '#.....#.....#.....#..#s.#.....#.................#........F.....#',
+      '#.....#.....#.....#..#..#.....#.................#........F.....#',
+      '#..#..#..####..####..#..#######..#######..####..#######..#######',
+      '#..#...........m.............................................s.#',
+      '#..#...........m...............................................#',
+      '################################################################',
+    ],
+  },
   music: { overworld: 'w8_overworld', town: 'w8_town', area2: 'w8_area2', dungeon: 'w8_dungeon' },
-  // Regions (cell coords, first match wins): the plaza, the observatory, and the seven echoes of worlds 1–7.
+  // Regions (cell coords, first match wins): the plaza, the observatory, and the seven echoes of worlds 1–7. [W8 Phase 4] each echo
+  // region holds one optional star elite (Captain Orion's Elite Hunt: a gold-outlined ×2 foe of its own roster) and one lost star-chart (Lumi).
   regions: [
     { name: 'Star Plaza', x0: 16, y0: 9, x1: 17, y1: 10, spawns: [], music: 'town' },
     { name: 'Observatory Rise', x0: 9, y0: 1, x1: 25, y1: 6, spawns: ['nebulisk', 'stardrop'], music: 'area2' },
-    { name: 'Starlit Meadow', x0: 1, y0: 1, x1: 8, y1: 8, spawns: ['stardrop', 'cometfish'] },
-    { name: 'Bouncing Comet Hills', x0: 26, y0: 1, x1: 34, y1: 8, spawns: ['cometfish', 'stardrop'] },
-    { name: 'Nebula Ink Reef', x0: 27, y0: 9, x1: 34, y1: 12, spawns: ['nebulisk', 'meteormite'] },
-    { name: 'Candy Moon Isles', x0: 27, y0: 13, x1: 34, y1: 22, spawns: ['stardrop', 'meteormite'], music: 'area2' },
-    { name: 'Stardrum Jungle', x0: 17, y0: 15, x1: 26, y1: 22, spawns: ['cometfish', 'meteormite'] },
-    { name: 'Giant Star Garden', x0: 8, y0: 15, x1: 16, y1: 22, spawns: ['nebulisk', 'stardrop'] },
-    { name: 'Sky Crystal Heights', x0: 1, y0: 9, x1: 7, y1: 22, spawns: ['meteormite', 'nebulisk'], music: 'area2' },
+    { name: 'Starlit Meadow', x0: 1, y0: 1, x1: 8, y1: 8, echo: true, elite: 'stardrop', spawns: ['stardrop', 'cometfish'] },
+    { name: 'Bouncing Comet Hills', x0: 26, y0: 1, x1: 34, y1: 8, echo: true, elite: 'cometfish', spawns: ['cometfish', 'stardrop'] },
+    { name: 'Nebula Ink Reef', x0: 27, y0: 9, x1: 34, y1: 12, echo: true, elite: 'nebulisk', spawns: ['nebulisk', 'meteormite'] },
+    { name: 'Candy Moon Isles', x0: 27, y0: 13, x1: 34, y1: 22, echo: true, elite: 'meteormite', spawns: ['stardrop', 'meteormite'], music: 'area2' },
+    { name: 'Stardrum Jungle', x0: 17, y0: 15, x1: 26, y1: 22, echo: true, elite: 'cometfish', spawns: ['cometfish', 'meteormite'] },
+    { name: 'Giant Star Garden', x0: 8, y0: 15, x1: 16, y1: 22, echo: true, elite: 'nebulisk', spawns: ['nebulisk', 'stardrop'] },
+    { name: 'Sky Crystal Heights', x0: 1, y0: 9, x1: 7, y1: 22, echo: true, elite: 'meteormite', spawns: ['meteormite', 'nebulisk'], music: 'area2' },
     { name: 'Star Crossing', x0: 8, y0: 7, x1: 26, y1: 14, spawns: ['stardrop', 'cometfish', 'nebulisk'] },
   ],
 };

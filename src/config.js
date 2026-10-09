@@ -82,7 +82,8 @@ export const CONFIG = deepFreeze({
   TREASURE: { GOLD_PER_WORLD: 25, SHOW_S: 1.6, ROYAL_CHEST_W: 40, ROYAL_DOOR_W: 46 }, // ROYAL_*: [R3-15] the vault's chest and doors (px)
   // [D53] treasure room: medallion + full hearts + gold; the prize shows over the hero's head
   MAZE: { PRIZE_FRAC: 0.4, // [R1-13] top share of the pedestal frame that is the heart piece
-    TIME_S: 50, LITTLE_MULT: 1.5, WARN_S: 10 }, // [D52] one timed maze mini-game per world (game/maze.js): beat the clock → a heart piece; retry forever, no cost
+    TIME_S: 50, LITTLE_MULT: 1.5, WARN_S: 10,
+    STAR_R: 14, PLATFORM_ON: 3.5, PLATFORM_OFF: 2.5 }, // [W8 Phase 4] Constellation Maze: star-piece pickup radius (px); drifting platform on/off seconds // [D52] one timed maze mini-game per world (game/maze.js): beat the clock → a heart piece; retry forever, no cost
   AMBIENT: { HENS: 6, BUTTERFLIES: 16, FROGS: 6, FISH: 6, DRAGONFLIES: 5, RABBITS: 5, SQUIRRELS: 5, BIRDS: 10, SPACING: 10, ACTIVE_R: 420, FLEE_R: 44, HOP_SPEED: 70, BIRD_AWAY_S: 3, FISH_EVERY_S: 5 }, // [A4f] cosmetic critters (game/ambient.js)
   BUDDY: { MAX: 3, SPEED: 150, GAP: 14, SEND_R: 170, NEST_R: 28, HOLD_S: 999, TAP_R: 26 }, // [W6] Sproutling buddies (G27)
   PUZZLE: { GEAR_TIME: 6, TIMING_LITTLE_MULT: 1.5 }, // [W5] gear-timing window (s); timed puzzle windows ×1.5 on Little Hero

@@ -24,12 +24,16 @@ const LAYOUTS = {
   bigchest: [['statue', 'c-4', 0], ['statue', 'c+3', 0], ['brazier', 0, 0], ['brazier', -1, 0], ['pot', 0, -1], ['pot', -1, -1], ['moss', 3, -2], ['banner', 2, 'w'], ['cobweb', -1, 'w']],
   normal: [['pot', 0, 0], ['pot', 1, 0], ['barrel', -1, -1], ['crates', -2, -1], ['roots', 3, 'w'], ['roots', -4, 'w'], ['shrooms', 0, -1], ['shrooms', -1, 0], ['moss', 6, -2], ['rubble', -6, 2], ['drip', 'c+5', 'w']],
   wave: [['pot', 0, 0], ['pot', -1, 0], ['brazier', 0, -1], ['brazier', -1, -1], ['cobweb', 0, 'w'], ['roots', -3, 'w'], ['rubble', 4, -2], ['moss', -5, 2]],
+  // [W8 Phase 5] a boss room that opts in (room.life): Astronova's observatory — corner braziers, star banners, cracked tiles; the floor stays clear
+  // (the fight camera puts the top rows under the HUD: nothing on the top wall or the first rows)
+  observatory: [['brazier', 0, 3], ['brazier', -1, 3], ['brazier', 0, -1], ['brazier', -1, -1], ['statue', 0, 9], ['statue', -1, 9], ['statue', 0, 15], ['statue', -1, 15], ['crack', 5, 6], ['crack', -6, -3], ['moss', 'c+7', -2], ['rubble', 3, -1]],
 };
-const ROOM_KINDS = new Set(Object.keys(LAYOUTS));
+const BOSS_LIFE = new Set(['observatory']);
+const ROOM_KINDS = new Set(Object.keys(LAYOUTS).filter((k) => k !== 'observatory'));
 
 // worlds whose w<n>-dungeon-life sheet is wired (24 frames, the ART order above) + that world's brazier glow
-const LIFE_WORLDS = { 1: 'rgba(150,255,140,0.30)', 2: 'rgba(255,220,120,0.32)', 3: 'rgba(90,240,255,0.30)', 4: 'rgba(150,255,210,0.30)', 5: 'rgba(120,255,140,0.30)', 6: 'rgba(170,255,110,0.30)', 7: 'rgba(120,200,255,0.32)' }; // W3: neon cyan; W4: mint sugar flame; W5: jungle-green flame; W6: lime spore flame; W7: sky-blue crystal flame
-export function lifeOn(dg, room) { return !!LIFE_WORLDS[dg.world] && ROOM_KINDS.has(room.type) && !room.boss; }
+const LIFE_WORLDS = { 1: 'rgba(150,255,140,0.30)', 2: 'rgba(255,220,120,0.32)', 3: 'rgba(90,240,255,0.30)', 4: 'rgba(150,255,210,0.30)', 5: 'rgba(120,255,140,0.30)', 6: 'rgba(170,255,110,0.30)', 7: 'rgba(120,200,255,0.32)' , 8: 'rgba(255,224,120,0.32)'}; // W3: neon cyan; W4: mint sugar flame; W5: jungle-green flame; W6: lime spore flame; W7: sky-blue crystal flame; W8: gold starlight
+export function lifeOn(dg, room) { return !!LIFE_WORLDS[dg.world] && ((ROOM_KINDS.has(room.type) && !room.boss) || BOSS_LIFE.has(room.life)); }
 
 // Build a room's life once per visit. map: the room's TileMap (solid pieces are stamped into it).
 export function createLife(dg, room, map, roomId, st, inter) {
@@ -52,7 +56,7 @@ export function createLife(dg, room, map, roomId, st, inter) {
   const free = (x, y, wall) => wall ? x >= x0 && x <= x1 && !taken.has(key(x, 'w')) : x >= x0 && x <= x1 && y >= y0 && y <= y1 && !taken.has(key(x, y)) && !map.isSolid(x, y);
   const pos = (v, lo, hi, c) => (typeof v === 'string' ? c + Number(v.slice(1)) : v >= 0 ? lo + v : hi + v + 1);
   const pieces = [];
-  for (const [k, ax, ay] of LAYOUTS[room.type]) {
+  for (const [k, ax, ay] of LAYOUTS[room.life || room.type]) {
     const wall = WALL.has(k);
     let x = pos(ax, x0, x1, cx), y = wall ? TOP - 1 : pos(ay, y0, y1, cy);
     if (!free(x, y, wall)) { // slide one or two tiles along the wall / inwards before giving up

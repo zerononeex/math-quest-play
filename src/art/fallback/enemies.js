@@ -94,7 +94,11 @@ export function drawEnemy(ctx, e, x, y) {
     if (f === 'left') ctx.fillRect(sx - 2, sy + 3, 2, 10); else if (f === 'right') ctx.fillRect(sx + 16, sy + 3, 2, 10);
     else if (f === 'up') ctx.fillRect(sx + 3, sy - 2, 10, 2); else ctx.fillRect(sx + 3, sy + 16, 10, 2);
   }
-  if (e.elite) { ctx.strokeStyle = '#ffd040'; ctx.lineWidth = 1; ctx.strokeRect(sx - 1.5, sy - 1.5, 19, 19); }
+  if (e.elite && art) { // [W8 Phase 4] an art foe's elite mark: a pulsing gold ring at its feet and a gold star over its head
+    const p = 0.55 + 0.35 * Math.sin(performance.now() / 160);
+    ctx.strokeStyle = 'rgba(255,208,64,' + p + ')'; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(x, y - 1, 10, 4, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = '#ffd040'; ctx.beginPath(); for (let i = 0; i < 10; i++) { const r = i % 2 ? 2 : 5, t = (i * Math.PI) / 5 - Math.PI / 2; ctx.lineTo(x + Math.cos(t) * r, sy - 6 + Math.sin(t) * r); } ctx.fill();
+  } else if (e.elite) { ctx.strokeStyle = '#ffd040'; ctx.lineWidth = 1; ctx.strokeRect(sx - 1.5, sy - 1.5, 19, 19); }
 }
 
 // [R2-19] World attack art (w<n>-fx by frame index; W1: 0-1 thorn, 2-3 leaf swoosh, 5-6 dew splash, 8-9 dust burst,
@@ -116,7 +120,10 @@ const FX = { 1: { thorn: [0, 1], swoosh: [2, 3], dew: [5, 6], dust: [8, 9], vine
   6: { thorn: [0], swoosh: [8, 9], dew: [4, 5], dust: [10, 11], vine: [8, 9], snare: [6, 7] },
   // W7 (13 blobs): 0 / 2 crystal shard bursts, 1 flying crystal shard, 3-4 laser beam segment, 5-6 delayed meteor mark,
   // 7-8 burning flame trail, 9-10 whirlpool, 11-12 homing eclipse orb
-  7: { thorn: [1], swoosh: [3, 4], dew: [9, 10], dust: [0, 2], vine: [7, 8], snare: [5, 6] } };
+  7: { thorn: [1], swoosh: [3, 4], dew: [9, 10], dust: [0, 2], vine: [7, 8], snare: [5, 6] },
+  // W8 (12 blobs): 0-1 falling star + its burst, 2-3 comet dash trail, 4-5 nebula cloud, 6-7 lobbed meteor rock + impact,
+  // 8-9 gravity well, 10-11 star-shower target mark
+  8: { thorn: [0], swoosh: [2, 3], dew: [6, 7], dust: [4, 5], vine: [2, 3], snare: [8, 9] } };
 function fx(ctx, world, kind, t, x, y, size, rot = 0) {
   const map = FX[world] && FX[world][kind], sheet = 'w' + world + '-fx';
   if (!map || !imgReady(sheet)) return false;

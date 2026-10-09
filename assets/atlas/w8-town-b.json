@@ -1,1 +1,1 @@
-{"fw":80,"fh":80,"frames":{"a-small-house":{"x":0,"y":0,"w":80,"h":80},"a-larger-family-house":{"x":80,"y":0,"w":80,"h":80},"an-inn-with-a":{"x":160,"y":0,"w":80,"h":80},"a-two-level-house":{"x":240,"y":0,"w":80,"h":80}}}
+{"fw":159,"fh":184,"frames":{"a-small-house":{"x":0,"y":0,"w":159,"h":184,"bb":[26,62,133,184]},"a-larger-family-house":{"x":159,"y":0,"w":159,"h":184,"bb":[0,14,158,184]},"an-inn-with-a":{"x":318,"y":0,"w":159,"h":184,"bb":[2,18,156,184]},"a-two-level-house":{"x":477,"y":0,"w":159,"h":184}},"ds":0.5}

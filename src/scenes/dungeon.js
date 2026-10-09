@@ -1,7 +1,7 @@
 // Dungeon scene: one 40×30-tile room at a time; doors change rooms both ways; locked doors block + nudge;
 // wave rooms seal until clear; math doors; stairs/pits between floors; treasure room; per-floor mini-map; autosave.
 import { CONFIG } from '../config.js';
-import { ATLAS, imgReady, codeArt, drawFoot, drawRect } from '../engine/atlas.js';
+import { ATLAS, imgReady, codeArt, drawFoot, drawRect, opaqueBox, drawOpaque } from '../engine/atlas.js';
 import { drawPickup } from '../game/drops.js';
 import { bossHits } from '../game/stats.js';
 import { Camera } from '../engine/camera.js';
@@ -80,7 +80,7 @@ function drawPortal(ctx, [tx, ty], lit, cam, t) {
 }
 
 // [R2-19] w<n>-puzzle-b frames [switch lit, switch dark, clue tablet]: W1 #328 frames 2-4 (after the dummy), W2+ frames 0-2
-const PUZZLE_B = { 1: [2, 3, 4], 2: [0, 1, 2], 3: [0, 1, 2], 4: [0, 1, 2], 5: [0, 1, 2], 6: [0, 1, 2], 7: [0, 1, 2] };
+const PUZZLE_B = { 1: [2, 3, 4], 2: [0, 1, 2], 3: [0, 1, 2], 4: [0, 1, 2], 5: [0, 1, 2], 6: [0, 1, 2], 7: [0, 1, 2], 8: [0, 1, 2] };
 // [TOUCH PAINT] walkable objects a tap walks up to and hits (the rest of the floor stays a plain walk-to)
 const TAP_HIT_FLOOR = new Set(['paintTile']);
 export function createDungeon(view, data, dg, opts = {}) {
@@ -101,17 +101,19 @@ export function createDungeon(view, data, dg, opts = {}) {
   const openQuestion = () => { if (scenes.top() === d) scenes.push(createMathPopup(view, { onClose: () => scenes.pop() })); };
   const W = WORLDS[dg.world] || {};
   d.help = createHelp(); // [DUNGEON-LIFE C]
+  // [W8 Phase 5] the speaking boss's dialogue portrait (w<n>-boss-finale 'portrait'), when the world has one
+  const bossPortrait = () => { const sh = 'w' + dg.world + '-boss-finale'; return ATLAS[sh] && ATLAS[sh].meta.frames.portrait ? sh : null; };
   const combat = createCombat({
     get map() { return d.map; }, get inter() { return d.inter; }, ents, hero, data, world: dg.world, openQuestion,
     // [D46] Seraphel: the transformation plays in full once, then skips; reaching form 2 sets a checkpoint
     skipTransform: () => !!st.seenTransform, onTransform: (e, f) => {
       st.seenTransform = true; st.formCheckpoint = e.form; save.auto('boss');
-      if (f && f.lines) { d.bossLine = { name: (e.baseDef || e.bossDef).name.split(',')[0], lines: f.lines, t: 4 }; } // [D47] wise words between phases
+      if (f && f.lines) { d.bossLine = { name: (e.baseDef || e.bossDef).name.split(',')[0], lines: f.lines, t: 4, portrait: bossPortrait() }; } // [D47] wise words between phases
       if (f && f.question) scenes.push(createMathPopup(view, { title: f.question, once: true, // [D47] one bonus question: right = +AP and a star shield
         onCorrect: () => { scenes.pop(); data.ap = Math.min(apCapOf(), data.ap + CONFIG.BOSS.BONUS_AP); hero.starShield = CONFIG.BOSS.STAR_SHIELD; say('A star shield!'); },
         onWrong: () => { scenes.pop(); say('Well tried. Onward!'); } }));
     },
-    onFarewell: (e) => { const fw = (e.baseDef || e.bossDef).farewell; d.bossLine = { name: (e.baseDef || e.bossDef).name.split(',')[0], lines: fw.lines, t: fw.s || 8 }; },
+    onFarewell: (e) => { const fw = (e.baseDef || e.bossDef).farewell; d.bossLine = { name: (e.baseDef || e.bossDef).name.split(',')[0], lines: fw.lines, t: fw.s || 8, portrait: bossPortrait() }; },
     specials: { ...MILO_SPECIALS, inkGatling: () => inkGatling(d.fire, hero.facing, d.aimAngle()) }, // same specials as outdoors
     summon: (boss) => {
       const ed = (W.enemies || []).find((e) => e.id === boss.bossDef.summons) || TEST_ENEMIES[0];
@@ -643,10 +645,12 @@ export function createDungeon(view, data, dg, opts = {}) {
     if (d.bossLine && d.bossLine.t > 0) { // [D47] a boss speaks between phases (1–2 short boxes)
       d.bossLine.t -= 1 / 60; const bx = 40, by = view.h - 110, bw = view.w - 80;
       ctx.fillStyle = 'rgba(10,10,30,0.88)'; ctx.fillRect(bx, by, bw, 70); ctx.strokeStyle = '#e0d0ff'; ctx.strokeRect(bx + 0.5, by + 0.5, bw - 1, 69);
-      ctx.font = font(14); ctx.textAlign = 'left'; drawOutlined(ctx, d.bossLine.name + ':', bx + 12, by + 20, '#ffe070');
-      d.bossLine.lines.slice(0, 2).forEach((l, i) => drawOutlined(ctx, l, bx + 12, by + 42 + i * 18, '#ffffff'));
+      const P = d.bossLine.portrait && imgReady(d.bossLine.portrait) ? d.bossLine.portrait : null, tx = bx + (P ? 76 : 12);
+      if (P) { const n = Object.keys(ATLAS[P].meta.frames).indexOf('portrait'), b = opaqueBox(P, 'portrait'), s = 62 / Math.max(b.w, b.h); drawOpaque(ctx, P, n, bx + 6 + (62 - b.w * s) / 2, by + 4 + (62 - b.h * s) / 2, b.w * s, b.h * s); } // [W8 Phase 5] the speaker's face
+      ctx.font = font(14); ctx.textAlign = 'left'; drawOutlined(ctx, d.bossLine.name + ':', tx, by + 20, '#ffe070');
+      d.bossLine.lines.slice(0, 2).forEach((l, i) => drawOutlined(ctx, l, tx, by + 42 + i * 18, '#ffffff'));
     }
-    if (d.boss && d.boss.alive && d.boss.ai.state === 'transform') { ctx.font = font(14); ctx.textAlign = 'center'; drawOutlined(ctx, 'The Fallen Star rises…', view.w / 2, 150, '#e0e8ff'); }
+    if (d.boss && d.boss.alive && d.boss.ai.state === 'transform') { ctx.font = font(14); ctx.textAlign = 'center'; drawOutlined(ctx, (d.boss.nextForm && d.boss.nextForm.rise) || d.boss.name.split(',')[0] + ' transforms…', view.w / 2, 150, '#e0e8ff'); } // [W8 Phase 5] each form's own caption
     if (d.msgT > 0) { ctx.font = font(16); ctx.textAlign = 'center'; drawOutlined(ctx, d.msg, view.w / 2, 90, '#ffe070'); }
   };
   if (st.lastRoom && dg.rooms[st.lastRoom] && opts.resume) d.enterRoom(st.lastRoom, 'start'); else d.enterRoom(dg.start, 'start');

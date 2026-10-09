@@ -21,7 +21,7 @@ const lum = (c) => c[0] * 0.3 + c[1] * 0.59 + c[2] * 0.11;
 // Inner-crop pixels of one frame → { base, dark, light, cols (sorted by luminance), patch canvas }. filter(c) keeps some pixels.
 const palCache = new Map();
 // [W7 Phase 1] W7's frame 3 is the 'deeper' tile (dark red lava, sky-blue cloud gap): its lava and cloud sea read right from the open frames
-const LIQ_FRAME = { 7: [0, 0] };
+const LIQ_FRAME = { 7: [0, 0], 8: [0, 0] }; // [W8 Phase 1] W8's frame 3 is a dark navy 'deeper' pool: starlight + nebula read right from the open frames
 export function framePal(sheet, idx, filter = null, key = '') {
   const k = sheet + '|' + idx + '|' + key;
   if (palCache.has(k)) return palCache.get(k);

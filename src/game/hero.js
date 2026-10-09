@@ -42,7 +42,7 @@ function drawArc(ctx, h, x, y) {
 
 // [P-C] v2 pilot art for Rowan (cut at 2x: 32x48 walk, 64x64 sword with its own arc), drawn at 0.5 inside the 2x
 // world = one screen pixel per art pixel. Scenes switch it on for World 1 only (heroArt.v2).
-export const heroArt = { v2: false, worlds: [1, 2, 3, 4, 5, 6, 7] }; // worlds cut true-pixel (build_all V2_FOLDERS) get the v2 hero art
+export const heroArt = { v2: false, worlds: [1, 2, 3, 4, 5, 6, 7, 8] }; // worlds cut true-pixel (build_all V2_FOLDERS) get the v2 hero art
 const V2_WALK = { down: ['c0r1', 'c1r1', 'c1r3'], up: ['c2r1', 'c2r3', 'c2r1'], left: ['c0r2', 'c0r3', 'c0r0'], right: ['c2r2', 'c2r0', 'c2r2'] };
 const V2_SWORD = { down: ['c0r0', 'c1r0', 'c2r0', 'c1r0'], up: ['c2r1', 'c1r1', 'c2r1', 'c1r1'], left: ['c0r2', 'c1r2', 'c0r2', 'c1r2'], right: ['c0r3', 'c1r3', 'c2r3', 'c1r3'] };
 function drawV2(ctx, h, x, y, flash) {

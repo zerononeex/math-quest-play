@@ -6,6 +6,7 @@ import { layoutBegin, record } from '../engine/ui.js';
 import { font, drawOutlined } from '../engine/text.js';
 import { save } from '../engine/save.js';
 import { grantGear } from '../game/gear.js';
+import { ATLAS, imgReady, opaqueBox, drawOpaque } from '../engine/atlas.js';
 
 const CREDITS = ['MATH QUEST: 8 WORLDS', '', 'Heroes: Rowan · Milo · Wren', 'Starring every kid who kept counting', '', 'Worlds', 'Verdania · Tumbletop · Chroma Bay · Pufftop', 'Wildvine · Sproutlands · Aetheria · Starhaven', '', 'Thank you for playing!', 'The light is yours.'];
 
@@ -34,6 +35,8 @@ export function createVictory(view, data, { onDone } = {}) {
     const st = v.stats, rows = [['Time', st.time], ['Gold', String(st.gold)], ['Questions answered', String(st.questions)], ['Revives', String(st.revives)], ['Level', String(st.level)]];
     ctx.font = font(16);
     rows.forEach(([k, val], i) => { drawOutlined(ctx, k + ':  ' + val, W / 2, 120 + i * 26, '#ffffff'); record('text', 'victory-' + k.toLowerCase().split(' ')[0], W / 2 - 120, 106 + i * 26, 240, 20); });
+    const G = 'w8-boss-finale'; // [W8 Phase 5] Astronova holds out his star beside the card (the finale sheet's 'gift' pose)
+    if (imgReady(G) && ATLAS[G].meta.frames.gift) { const b = opaqueBox(G, 'gift'), s = 150 / b.h; drawOpaque(ctx, G, Object.keys(ATLAS[G].meta.frames).indexOf('gift'), W / 2 - 190 - (b.w * s) / 2, 105, b.w * s, 150); }
     ctx.font = font(14); drawOutlined(ctx, v.tunic ? 'You got the Golden Star Tunic!' : 'The Golden Star Tunic shines on you.', W / 2, 262, '#ffd040');
     const y0 = H + 20 - (v.t * 30) % (CREDITS.length * 24 + H);
     ctx.font = font(12); CREDITS.forEach((l, i) => { const y = y0 + i * 24; if (y > 280 && y < H - 10) drawOutlined(ctx, l, W / 2, y, '#c0c0ff'); });

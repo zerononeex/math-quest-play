@@ -1,1 +1,1 @@
-{"fw":80,"fh":80,"frames":{"the-most-iconic-building":{"x":0,"y":0,"w":80,"h":80},"a-shop-in-this":{"x":80,"y":0,"w":80,"h":80},"a-house-in-this":{"x":160,"y":0,"w":80,"h":80},"a-tall-landmark-building":{"x":240,"y":0,"w":80,"h":80}}}
+{"fw":185,"fh":201,"frames":{"the-most-iconic-building":{"x":0,"y":0,"w":185,"h":201,"bb":[0,12,185,201]},"a-shop-in-this":{"x":185,"y":0,"w":185,"h":201,"bb":[17,51,167,201]},"a-house-in-this":{"x":370,"y":0,"w":185,"h":201,"bb":[29,71,156,201]},"a-tall-landmark-building":{"x":555,"y":0,"w":185,"h":201,"bb":[30,0,154,201]}},"ds":0.5}

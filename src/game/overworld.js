@@ -185,11 +185,13 @@ export function buildOverworld(world) {
     }
   }
   if (world.maze) { // [D52] the world's maze mini-game: fences + lanes stamped over plain ground (game/maze.js runs it)
-    const Z = world.maze, x0 = Z.cx * CELL, y0 = Z.cy * CELL, at = { start: [], finish: [], hay: [] };
+    const Z = world.maze, x0 = Z.cx * CELL, y0 = Z.cy * CELL, at = { start: [], finish: [], hay: [], stars: [], platforms: [] };
     Z.rows.forEach((row, y) => [...row].forEach((c, x) => {
       if (c === ' ') return;
-      put(x0 + x, y0 + y, c === '#' ? TILE.FENCE : TILE.GROUND);
+      const wall = c === '#' || c === 'm'; // [W8 Phase 4] wall: 'nebula' = the walls (and drifting platforms 'm') are blocking nebula, not fences
+      if (wall && Z.wall === 'nebula') { put(x0 + x, y0 + y, TILE.LIQ_B); map.solid[map.idx(x0 + x, y0 + y)] = 1; } else put(x0 + x, y0 + y, wall ? TILE.FENCE : TILE.GROUND);
       if (c === 'S') at.start.push([x0 + x, y0 + y]); else if (c === 'F') at.finish.push([x0 + x, y0 + y]); else if (c === 'h') at.hay.push([x0 + x, y0 + y]);
+      else if (c === 's') at.stars.push([x0 + x, y0 + y]); else if (c === 'm') at.platforms.push([x0 + x, y0 + y]);
     }));
     feat.maze = { x0, y0, w: Z.rows[0].length, h: Z.rows.length, ...at, pedestal: [x0 + Z.pedestal[0], y0 + Z.pedestal[1]], keeper: { tx: x0 + Z.keeper.x, ty: y0 + Z.keeper.y } };
   }
@@ -394,7 +396,7 @@ function pathEdges(ow, tx, ty) {
 // [R2-19] Secondary set pieces from the user's w<n>-setpieces sheet (frame, where): W1's windmill in the meadow nearest the
 // town. Each needs a 6×8-tile patch of open grass with no path, town, door, rock, bush, tree or secret within 3 tiles, and no
 // woods in the 7 rows below it (big canopies grow 5 tiles up); its hill (4×3 tiles at the foot) is solid. Drawn with the big trees (y-sorted).
-const SETPIECES = { 1: [[0, 'town']], 2: [[0, 'town'], [2, 'far']], 3: [[2, 'town'], [1, 'far']], 4: [[2, 'town'], [1, 'far']], 5: [[0, 'town'], [2, 'far']], 6: [[0, 'town'], [1, 'far']], 7: [[1, 'town'], [0, 'far']] }; // W2: bouncy mushroom by the village, hot-air balloon far out (frame 1, a pillar hill, would repeat the signature landmark); W3: ferris wheel by Neon Pier, sunken ship far out (frame 0, a lighthouse, is already a w3-landmarks piece); W4: gumdrop lift by Pudding Port, chocolate waterfall far out (frame 0, a lollipop grove, would repeat the lollipop trees); W5: stone ape head by Drumroot Village, jungle waterfall far out (frame 1, a stepped temple, would repeat the signature temple); W6: giant mushroom ring by Dewdrop Hollow, dandelion clock far out (frame 2, a dewdrop pond, would repeat the giant-flower landmark's pond); W7: ancient airship dock by Skydock Aeris, floating crystal shards far out (frame 2, a crystal arch, would repeat the broken sky-temple arch of w7-landmarks)
+const SETPIECES = { 1: [[0, 'town']], 2: [[0, 'town'], [2, 'far']], 3: [[2, 'town'], [1, 'far']], 4: [[2, 'town'], [1, 'far']], 5: [[0, 'town'], [2, 'far']], 6: [[0, 'town'], [1, 'far']], 7: [[1, 'town'], [0, 'far']], 8: [[1, 'town'], [2, 'far']] }; // W2: bouncy mushroom by the village, hot-air balloon far out (frame 1, a pillar hill, would repeat the signature landmark); W3: ferris wheel by Neon Pier, sunken ship far out (frame 0, a lighthouse, is already a w3-landmarks piece); W4: gumdrop lift by Pudding Port, chocolate waterfall far out (frame 0, a lollipop grove, would repeat the lollipop trees); W5: stone ape head by Drumroot Village, jungle waterfall far out (frame 1, a stepped temple, would repeat the signature temple); W6: giant mushroom ring by Dewdrop Hollow, dandelion clock far out (frame 2, a dewdrop pond, would repeat the giant-flower landmark's pond); W7: ancient airship dock by Skydock Aeris, floating crystal shards far out (frame 2, a crystal arch, would repeat the broken sky-temple arch of w7-landmarks) W8: giant telescope observatory by the Star Plaza, comet crater far out (frame 0, a star-path bridge, would repeat the comet-tail bridge landmark).
 // [WORLD_LANDMARKS] signature landmark sheet per world (w<n>-landmark-<slug>) on the world's biggest 'o' block
 const SIGNATURE = { 1: 'castle', 2: 'pillars', 3: 'shell', 4: 'cake', 5: 'temple', 6: 'flowers', 7: 'spire', 8: 'star' };
 // W1: frame 1 (giant oak) has a door in its trunk: [HOLLOW TREES] keeps doors to real secrets; frame 2 (stone bridge): W1 bridges are built from the ground art

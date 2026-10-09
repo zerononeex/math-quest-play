@@ -1,5 +1,7 @@
 // Side-quest log (D29): per-world quests with step text; finishing one gives a Star Seed (+1 stat point, D28).
 // [S55] `goal` = quest marks to find on that world's overworld (src/game/questgoals.js places them); the last one completes the quest.
+// [W8 Phase 4] perRegion: 'echo' = one mark inside each region flagged `echo` (in region order); elite: true = each mark is a star
+// elite (the region's `elite` id, ×2 HP, gold outline) to beat instead of a spot to walk onto.
 import { addStarSeed } from './progression.js';
 
 export const QUEST_DEFS = {
@@ -16,9 +18,9 @@ export const QUEST_DEFS = {
   'w6-console-riddle': { world: 6, goal: 3, name: 'The Console Riddle', giver: 'Dewey', steps: ['Talk to Dewey', 'Press the lost console\'s giant buttons in the order of 3 fraction riddles'] },
   'w7-four-beacons': { world: 7, goal: 4, name: 'Four Beacons', giver: 'Dockmaster Gale', steps: ['Talk to Dockmaster Gale', 'Light the four beacon braziers on the four isles'] },
   'w7-stowaway-map': { world: 7, goal: 3, name: 'Stowaway\'s Map', giver: 'Pip', steps: ['Talk to Pip', 'Follow the torn map across the isles to Pip\'s hidden kite'] },
-  'w8-constellation-cartographer': { world: 8, goal: 7, name: 'Constellation Cartographer', giver: 'Stargazer Lumi', steps: ['Talk to Lumi', 'Find the 7 lost star-charts, one in each echo region'] },
+  'w8-constellation-cartographer': { world: 8, goal: 7, perRegion: 'echo', name: 'Constellation Cartographer', giver: 'Stargazer Lumi', steps: ['Talk to Lumi', 'Find the 7 lost star-charts, one in each echo region'] },
   'w8-comet-courier': { world: 8, goal: 3, name: 'Comet Courier', giver: 'Postmaster Nova', steps: ['Talk to Nova', 'Deliver 3 comet letters across the plaza before they fade'] },
-  'w8-elite-hunt': { world: 8, goal: 7, name: 'Elite Hunt', giver: 'Captain Orion', steps: ['Talk to Orion', 'Beat the 7 optional star elites, one per echo region'] },
+  'w8-elite-hunt': { world: 8, goal: 7, perRegion: 'echo', elite: true, name: 'Elite Hunt', giver: 'Captain Orion', steps: ['Talk to Orion', 'Beat the 7 optional star elites, one per echo region'] },
   'w1-stone-circle': { world: 1, goal: 3, name: 'Light the Stone Circle', giver: 'Elder Mossbeard', steps: ['Talk to Elder Mossbeard', 'Answer the 3 riddle stones', 'Stand in the circle at dusk'] },
 };
 

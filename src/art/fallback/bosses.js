@@ -4,6 +4,7 @@ import { ATLAS, imgReady, drawSprite } from '../../engine/atlas.js';
 import { WORLDS } from '../../data/worlds.js';
 
 let roster = null;
+const FAREWELL = [[0.12, 'rise'], [0.28, 'blaze'], [0.48, 'laugh'], [0.62, 'lower'], [0.8, 'bow'], [1.01, 'gift']]; // farewell progress → w<n>-boss-finale frame
 function bossArt(e) {
   if (!roster) { roster = new Map(); for (const W of Object.values(WORLDS)) for (const [id, d] of Object.entries(W.bosses || {})) roster.set(id, { w: W.id, kind: d.kind }); }
   const id = (e.baseDef || e.bossDef || {}).id, r = id && roster.get(id);
@@ -14,8 +15,14 @@ function bossArt(e) {
     const fr = ATLAS[sheet].meta.frames, n = (st === 'tell' || st === 'act') && fr[id + '-b'] ? id + '-b' : id;
     return fr[n] ? { sheet, frame: n, f: fr[n] } : null;
   }
-  const winged = 'w' + r.w + '-boss-winged'; // [W7 Phase 0] Seraphel's second form (and its kneel/transformation) from its own sheet
-  const sheet = (e.form || 1) >= 2 && imgReady(winged) ? winged : 'w' + r.w + '-boss'; if (!imgReady(sheet)) return null;
+  const fin = 'w' + r.w + '-boss-finale', fw = (e.baseDef || e.bossDef).farewell; // [W8 Phase 0] Astronova's false fourth form: rise → blaze → laugh → lower → bow → gift
+  if (e.pose === 'farewell' && fw && imgReady(fin)) {
+    const p = 1 - Math.max(0, e.farewellT || 0) / (fw.s || 8), fr = ATLAS[fin].meta.frames;
+    const n = FAREWELL.find(([at]) => p < at)?.[1] || 'gift';
+    return fr[n] ? { sheet: fin, frame: n, f: fr[n] } : null;
+  }
+  const form = e.form || 1, phaseSheet = 'w' + r.w + '-boss-phase' + form, winged = 'w' + r.w + '-boss-winged'; // [W7 Phase 0] Seraphel's second form (and its kneel/transformation) from its own sheet
+  const sheet = form >= 2 && imgReady(phaseSheet) ? phaseSheet : form >= 2 && imgReady(winged) ? winged : 'w' + r.w + '-boss'; if (!imgReady(sheet)) return null; // [W8 Phase 0] w8-boss-phase2/-phase3 per form
   const fr = ATLAS[sheet].meta.frames;
   const pose = e.pose === 'kneel' && fr.kneel ? 'kneel' : e.flash > 0 ? 'hurt' : st === 'tell' ? 'windup' : st === 'act' ? 'attack' : e.phase === 2 ? 'phase2' : 'idle';
   const n = fr[pose] ? pose : fr.idle ? 'idle' : null;

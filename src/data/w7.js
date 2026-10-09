@@ -79,7 +79,7 @@ export const W7 = {
         { name: 'moonlight slash', prims: [{ type: 'beam' }] },
         { name: 'lamentation echoes', prims: [{ type: 'summon', n: 1 }, { type: 'slamRing', r: 60 }] },
       ],
-      form2: { name: 'Seraphel, Wings of the Fallen Star', size: [36, 40], look: { body: '#d8d8f0', accent: '#10101a', wing: true },
+      form2: { name: 'Seraphel, Wings of the Fallen Star', rise: 'The Fallen Star rises…', size: [36, 40], look: { body: '#d8d8f0', accent: '#10101a', wing: true },
         patterns: [
           { name: 'aerial dive slash', prims: [{ type: 'dive' }, { type: 'charge', speed: 220 }] },
           { name: 'black-feather storm', prims: [{ type: 'inkRain', n: 8 }] },
