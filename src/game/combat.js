@@ -66,7 +66,7 @@ export function createCombat(cx) {
     sfx('hit');
     if (e.boss && e.nova) novaHit(e);
     if (e.hp <= 0 && e.boss && tryNextForm(e, { ents, time: pcx.time, skipTransform: cx.skipTransform && cx.skipTransform(), onTransform: cx.onTransform, onFarewell: cx.onFarewell })) return true; // [D46] kneel → second form
-    if (e.hp <= 0) { remove(ents, e); rollDrops(ents, e, cx.world, totalLuck(data)); if (cx.onKill) cx.onKill(e); }
+    if (e.hp <= 0) { if (!e.boss) sfx('splat'); remove(ents, e); rollDrops(ents, e, cx.world, totalLuck(data)); if (cx.onKill) cx.onKill(e); }
     return true;
   };
   const pcx = { hero, map: cx.map, ents: cx.ents, tier: cx.data.tier, time: 0, hurt: (raw, x, y) => api.hurt(raw, x, y), summon: cx.summon };
@@ -181,6 +181,7 @@ export function createCombat(cx) {
       data.hearts = Math.max(0, data.hearts - taken);
       hero.iframes = C.HERO_IFRAMES;
       knock(hero, fx, fy);
+      sfx('hurt'); // [AUDIO MIX] the hero being hit was silent
       floatText(hero.x, hero.y - 28, '-' + taken, '#ff6060');
       if (data.hearts <= 0 && cx.onDeath) cx.onDeath();
       return taken;

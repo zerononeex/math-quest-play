@@ -76,9 +76,11 @@ export function startSynthMusic(ac, dest, key) {
 
 // SFX recipes: [wave, f0, f1, dur, vol] or a list of notes for jingles.
 export const SFX = {
-  swing: ['triangle', 900, 300, 0.1, 0.12], spin: ['sawtooth', 300, 1200, 0.3, 0.1], fists: ['square', 220, 110, 0.06, 0.12],
-  roller: ['triangle', 180, 90, 0.15, 0.12], blaster: ['square', 1200, 400, 0.08, 0.08], splat: ['sawtooth', 200, 60, 0.25, 0.12],
-  gatling: ['square', 1400, 900, 0.04, 0.06], shell: ['triangle', 500, 700, 0.12, 0.1], hit: ['square', 160, 60, 0.1, 0.14],
+  // [AUDIO MIX] combat effects peak 0.2–0.3 so they read over the music bus (audio.js MUSIC_BUS 0.4)
+  swing: ['triangle', 900, 300, 0.1, 0.25], spin: ['sawtooth', 300, 1200, 0.3, 0.22], fists: ['square', 220, 110, 0.06, 0.25],
+  roller: ['triangle', 180, 90, 0.15, 0.25], blaster: ['square', 1200, 400, 0.08, 0.08], splat: ['sawtooth', 200, 60, 0.25, 0.28],
+  gatling: ['square', 1400, 900, 0.04, 0.2], shell: ['triangle', 500, 700, 0.12, 0.1], hit: ['square', 160, 60, 0.1, 0.28],
+  hurt: ['square', 80, 30, 0.12, 0.26], // the hero is hit: the hit recipe an octave lower, a short low thud
   coin: [[88, 0.06], [93, 0.12]], door: ['sawtooth', 120, 80, 0.3, 0.1], chest: [[72, 0.12], [76, 0.12], [79, 0.12], [84, 0.35]],
   portal: ['sine', 200, 1600, 0.6, 0.1], launch: ['sawtooth', 80, 600, 1.0, 0.1], correct: [[76, 0.08], [83, 0.16]],
   wrong: [[64, 0.12], [62, 0.18]], levelup: [[72, 0.08], [76, 0.08], [79, 0.08], [84, 0.08], [88, 0.25]],

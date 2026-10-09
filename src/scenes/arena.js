@@ -49,7 +49,7 @@ import { createPadKit, drawPadKitFloor, drawPadKit } from '../game/padkit.js';
 import { createBushes, cutBushesIn, cutBushAt, updateBushes, bushAt } from '../game/bushes.js';
 import { drawShot, drawSpecialFx } from '../game/shotfx.js';
 import { treeAnchors, drawTrees2x } from '../game/trees2x.js';
-import { createHelp, updateHelp, drawHelpScreen } from '../game/puzzlehelp.js';
+import { createHelp, updateHelp, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES } from '../game/puzzlehelp.js';
 import { drawPickup } from '../game/drops.js';
 import { drawCastleFloor, drawCastle } from '../game/castle.js';
 import { createTutorial, updateTutorial, tutEvent, drawDummy, drawTutorial, skipRect, finish as finishTutorial } from '../game/tutorial.js';
@@ -170,6 +170,13 @@ export function createArena(view, data, opts = {}) {
     if (!free && !spendAp(AMMO[ammo].ap)) { say('Need AP!'); return false; }
     if (Math.abs(dx) > Math.abs(dy)) hero.facing = dx > 0 ? 'right' : 'left'; else hero.facing = dy > 0 ? 'down' : 'up'; hero.faceHold = CONFIG.COMBAT.FACE_HOLD;
     return !!fire(projs, hero, ammo, dx, dy);
+  };
+  // [TOUCH GATES] the tile to stand on to use a gate: the nearest free side (a hook post: a free tile 2…range tiles in line)
+  const gateStand = (o) => {
+    const ks = o.type === 'hookPoint' ? Array.from({ length: Math.max(0, CONFIG.ITEMS.HOOK.range - 1) }, (_, i) => i + 2) : [1];
+    const c = [];
+    for (const [dx, dy] of [[0, 1], [0, -1], [-1, 0], [1, 0]]) for (const k of ks) { const x = o.tx + dx * k, y = o.ty + dy * k; if (map.inside(x, y) && !map.isSolid(x, y)) c.push({ x, y }); }
+    return c.sort((p, q) => Math.hypot(p.x * 16 + 8 - hero.x, p.y * 16 + 12 - hero.y) - Math.hypot(q.x * 16 + 8 - hero.x, q.y * 16 + 12 - hero.y))[0] || null;
   };
   a.tapTarget = (wx, wy) => {
     const o = findTapTarget(inter, wx, wy);
@@ -385,6 +392,17 @@ export function createArena(view, data, opts = {}) {
           setTapTarget(hero, map, ow.rocket.tx * 16 + 8, ow.rocket.ty * 16 + 8); return;
         }
         if (a.tut && !a.tut.done && Math.hypot(w.x - a.tut.dummy.x, w.y + 12 - a.tut.dummy.y) < 22) a.tut.tapDummy = true; // [A8e] walks over and swings
+        // [TOUCH GATES] a tap on a tool gate (boulder, hook post, pin hole, bramble, cracked rock…): walk up and use the tool on
+        // arrival, or the missing-item bubble at once — as in dungeons. Gates opened by ammo stay with a.tapTarget (fire it). Checked before doors: a gate guarding a
+        // door (W2's relic cave hook post) sits inside the door's tap zone, and a tap right on it means the gate.
+        a.useOnArrive = null;
+        const gate = inter.list.find((o) => TOOL_GATES.includes(o.type) && !gateOpen(o) && Math.hypot(inter.center(o).x - w.x, inter.center(o).y - w.y) < 18);
+        if (gate && !(findTapTarget(inter, w.x, w.y) === gate && (chooseAmmo(data, hero.id, gate) || {}).ammo)) {
+          if (!canOpen(data, hero.id, gate)) { showNeed(a.help, gate); return; }
+          const st = gateStand(gate); hero.attackId = null;
+          if (st) { setTapTarget(hero, map, st.x * 16 + 8, st.y * 16 + 12); a.useOnArrive = { o: gate, stand: st, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; }
+          return;
+        }
         const door = doorAt(a.doors, w.x, w.y); // [A7] a tap in a door's zone always means the door (a villager loitering by it must not steal the tap)
         const n = !door && npcs.find((e) => Math.hypot(e.x - w.x, e.y - 12 - w.y) < 20 && Math.hypot(e.x - hero.x, e.y - hero.y) < 64);
         if (n) { a.talkTo(n); return; }
@@ -405,6 +423,16 @@ export function createArena(view, data, opts = {}) {
           return;
         }
         if (!a.tapTarget(w.x, w.y) && !combat.tapAt(w.x, w.y)) { hero.attackId = null; setTapTarget(hero, map, w.x, w.y); }
+      }
+    }
+    if (a.useOnArrive) { // [TOUCH GATES] arrived at the gate's stand tile → face it and use the tool
+      const U = a.useOnArrive, o = U.o;
+      if ((U.t -= dt) <= 0 || gateOpen(o)) a.useOnArrive = null;
+      else if (Math.hypot(hero.x - (U.stand.x * 16 + 8), hero.y - (U.stand.y * 16 + 12)) < 10 && !(hero.path && hero.path.length)) {
+        const dx = o.tx - U.stand.x, dy = o.ty - U.stand.y;
+        hero.facing = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
+        if (o.type === 'hookPoint') { if (!startHook(data, hero, inter, map)) say('No hook post ahead!'); } else if (useToolsAhead(data, inter)) sfx('door');
+        a.useOnArrive = null;
       }
     }
     if (keyPressed('debugHero') && /[?&]test=1/.test(location.search)) { const H = ['rowan', 'milo', 'wren']; a.switchHero(H[(H.indexOf(hero.id) + 1) % 3]); }

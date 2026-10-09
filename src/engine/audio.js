@@ -3,11 +3,12 @@ import { MUSIC_KEYS, ONESHOT, startSynthMusic, playSfx, moodOf } from './synth.j
 import { embeddedAssets } from './assets.js';
 
 export const MUSIC_FADE = 0.8;
+export const MUSIC_BUS = 0.4; // [AUDIO MIX] music sits under the effects: every track plays through this bus (SFX peak 0.2–0.3 straight into master)
 export const MUSIC_LAZY = ['w1_boss', 'w2_boss', 'w3_boss', 'w4_boss', 'w5_boss', 'w6_boss', 'w7_boss', 'w8_boss', 'miniboss', 'survival', ...[1, 2, 3, 4, 5, 6, 7, 8].map((i) => 'w' + i + '_dungeon')];
 export const MUSIC_ONESHOT = ONESHOT;
 export const MUSIC_SRC = {};
 
-export const audio = { ac: null, master: null, muted: false, unlocked: false, current: null, track: null, ramps: [], buffers: {}, onMuteChange: null };
+export const audio = { ac: null, master: null, musicBus: null, muted: false, unlocked: false, current: null, track: null, ramps: [], buffers: {}, onMuteChange: null };
 
 export function resolveMusic(key) { return MUSIC_KEYS.includes(key) ? (MUSIC_SRC[key] ? 'mp3' : 'fallback') : null; }
 
@@ -28,6 +29,9 @@ export function initAudio(assets = window.ASSETS || {}, muted = false) {
       audio.master = audio.ac.createGain();
       audio.master.gain.value = audio.muted ? 0 : 1;
       audio.master.connect(audio.ac.destination);
+      audio.musicBus = audio.ac.createGain(); // [AUDIO MIX] master (mute) ← music bus (MUSIC_BUS) ← tracks; SFX go straight to master
+      audio.musicBus.gain.value = MUSIC_BUS;
+      audio.musicBus.connect(audio.master);
       const b = audio.ac.createBuffer(1, 1, 22050), s = audio.ac.createBufferSource();
       s.buffer = b; s.connect(audio.master); s.start(0);
       if (audio.current) { const k = audio.current; audio.current = null; playMusic(k); }
@@ -65,7 +69,7 @@ export function playMusic(key) {
   if (!audio.ac) { ramp(null, key, 1); return; } // before unlock: logged, starts on unlock
   const gain = audio.ac.createGain();
   gain.gain.value = 0;
-  gain.connect(audio.master);
+  gain.connect(audio.musicBus);
   const tr = { key, gain, stopFn: null, stop() { if (this.stopFn) this.stopFn(); gain.disconnect(); } };
   audio.track = tr;
   ramp(gain, key, 1);

@@ -3433,9 +3433,11 @@ function startSynthMusic(ac, dest, key) {
 
 // SFX recipes: [wave, f0, f1, dur, vol] or a list of notes for jingles.
 const SFX = {
-  swing: ['triangle', 900, 300, 0.1, 0.12], spin: ['sawtooth', 300, 1200, 0.3, 0.1], fists: ['square', 220, 110, 0.06, 0.12],
-  roller: ['triangle', 180, 90, 0.15, 0.12], blaster: ['square', 1200, 400, 0.08, 0.08], splat: ['sawtooth', 200, 60, 0.25, 0.12],
-  gatling: ['square', 1400, 900, 0.04, 0.06], shell: ['triangle', 500, 700, 0.12, 0.1], hit: ['square', 160, 60, 0.1, 0.14],
+  // [AUDIO MIX] combat effects peak 0.2–0.3 so they read over the music bus (audio.js MUSIC_BUS 0.4)
+  swing: ['triangle', 900, 300, 0.1, 0.25], spin: ['sawtooth', 300, 1200, 0.3, 0.22], fists: ['square', 220, 110, 0.06, 0.25],
+  roller: ['triangle', 180, 90, 0.15, 0.25], blaster: ['square', 1200, 400, 0.08, 0.08], splat: ['sawtooth', 200, 60, 0.25, 0.28],
+  gatling: ['square', 1400, 900, 0.04, 0.2], shell: ['triangle', 500, 700, 0.12, 0.1], hit: ['square', 160, 60, 0.1, 0.28],
+  hurt: ['square', 80, 30, 0.12, 0.26], // the hero is hit: the hit recipe an octave lower, a short low thud
   coin: [[88, 0.06], [93, 0.12]], door: ['sawtooth', 120, 80, 0.3, 0.1], chest: [[72, 0.12], [76, 0.12], [79, 0.12], [84, 0.35]],
   portal: ['sine', 200, 1600, 0.6, 0.1], launch: ['sawtooth', 80, 600, 1.0, 0.1], correct: [[76, 0.08], [83, 0.16]],
   wrong: [[64, 0.12], [62, 0.18]], levelup: [[72, 0.08], [76, 0.08], [79, 0.08], [84, 0.08], [88, 0.25]],
@@ -3467,11 +3469,12 @@ __def("engine/audio.js", function () {
 const { MUSIC_KEYS, ONESHOT, startSynthMusic, playSfx, moodOf } = __req("engine/synth.js");
 const { embeddedAssets } = __req("engine/assets.js");
 const MUSIC_FADE = 0.8;
+const MUSIC_BUS = 0.4; // [AUDIO MIX] music sits under the effects: every track plays through this bus (SFX peak 0.2–0.3 straight into master)
 const MUSIC_LAZY = ['w1_boss', 'w2_boss', 'w3_boss', 'w4_boss', 'w5_boss', 'w6_boss', 'w7_boss', 'w8_boss', 'miniboss', 'survival', ...[1, 2, 3, 4, 5, 6, 7, 8].map((i) => 'w' + i + '_dungeon')];
 const MUSIC_ONESHOT = ONESHOT;
 const MUSIC_SRC = {};
 
-const audio = { ac: null, master: null, muted: false, unlocked: false, current: null, track: null, ramps: [], buffers: {}, onMuteChange: null };
+const audio = { ac: null, master: null, musicBus: null, muted: false, unlocked: false, current: null, track: null, ramps: [], buffers: {}, onMuteChange: null };
 
 function resolveMusic(key) { return MUSIC_KEYS.includes(key) ? (MUSIC_SRC[key] ? 'mp3' : 'fallback') : null; }
 
@@ -3492,6 +3495,9 @@ function initAudio(assets = window.ASSETS || {}, muted = false) {
       audio.master = audio.ac.createGain();
       audio.master.gain.value = audio.muted ? 0 : 1;
       audio.master.connect(audio.ac.destination);
+      audio.musicBus = audio.ac.createGain(); // [AUDIO MIX] master (mute) ← music bus (MUSIC_BUS) ← tracks; SFX go straight to master
+      audio.musicBus.gain.value = MUSIC_BUS;
+      audio.musicBus.connect(audio.master);
       const b = audio.ac.createBuffer(1, 1, 22050), s = audio.ac.createBufferSource();
       s.buffer = b; s.connect(audio.master); s.start(0);
       if (audio.current) { const k = audio.current; audio.current = null; playMusic(k); }
@@ -3529,7 +3535,7 @@ function playMusic(key) {
   if (!audio.ac) { ramp(null, key, 1); return; } // before unlock: logged, starts on unlock
   const gain = audio.ac.createGain();
   gain.gain.value = 0;
-  gain.connect(audio.master);
+  gain.connect(audio.musicBus);
   const tr = { key, gain, stopFn: null, stop() { if (this.stopFn) this.stopFn(); gain.disconnect(); } };
   audio.track = tr;
   ramp(gain, key, 1);
@@ -3561,7 +3567,7 @@ function setMute(m) {
   return audio.muted;
 }
 
-return { MUSIC_FADE, MUSIC_LAZY, MUSIC_ONESHOT, MUSIC_SRC, audio, resolveMusic, registerMusic, initAudio, playMusic, beatIn, sfx, setMute };
+return { MUSIC_FADE, MUSIC_BUS, MUSIC_LAZY, MUSIC_ONESHOT, MUSIC_SRC, audio, resolveMusic, registerMusic, initAudio, playMusic, beatIn, sfx, setMute };
 });
 __def("game/entities.js", function () {
 // Entity registry, rebuilt per room (NO STALE INDEXES: always look up by id). Spawn applies AI defaults every time.
@@ -4149,7 +4155,7 @@ function createCombat(cx) {
     sfx('hit');
     if (e.boss && e.nova) novaHit(e);
     if (e.hp <= 0 && e.boss && tryNextForm(e, { ents, time: pcx.time, skipTransform: cx.skipTransform && cx.skipTransform(), onTransform: cx.onTransform, onFarewell: cx.onFarewell })) return true; // [D46] kneel → second form
-    if (e.hp <= 0) { remove(ents, e); rollDrops(ents, e, cx.world, totalLuck(data)); if (cx.onKill) cx.onKill(e); }
+    if (e.hp <= 0) { if (!e.boss) sfx('splat'); remove(ents, e); rollDrops(ents, e, cx.world, totalLuck(data)); if (cx.onKill) cx.onKill(e); }
     return true;
   };
   const pcx = { hero, map: cx.map, ents: cx.ents, tier: cx.data.tier, time: 0, hurt: (raw, x, y) => api.hurt(raw, x, y), summon: cx.summon };
@@ -4264,6 +4270,7 @@ function createCombat(cx) {
       data.hearts = Math.max(0, data.hearts - taken);
       hero.iframes = C.HERO_IFRAMES;
       knock(hero, fx, fy);
+      sfx('hurt'); // [AUDIO MIX] the hero being hit was silent
       floatText(hero.x, hero.y - 28, '-' + taken, '#ff6060');
       if (data.hearts <= 0 && cx.onDeath) cx.onDeath();
       return taken;
@@ -10365,6 +10372,8 @@ function drawPortal(ctx, [tx, ty], lit, cam, t) {
 
 // [R2-19] w<n>-puzzle-b frames [switch lit, switch dark, clue tablet]: W1 #328 frames 2-4 (after the dummy), W2+ frames 0-2
 const PUZZLE_B = { 1: [2, 3, 4], 2: [0, 1, 2], 3: [0, 1, 2], 4: [0, 1, 2], 5: [0, 1, 2], 6: [0, 1, 2], 7: [0, 1, 2] };
+// [TOUCH PAINT] walkable objects a tap walks up to and hits (the rest of the floor stays a plain walk-to)
+const TAP_HIT_FLOOR = new Set(['paintTile']);
 function createDungeon(view, data, dg, opts = {}) {
   bindSession(data);
   refreshHearts(data);
@@ -10633,7 +10642,9 @@ function createDungeon(view, data, dg, opts = {}) {
         { const [ccx, ccy] = roomSpots(d.room).chest, tile = d.map.inside(ccx, ccy) ? d.map.ground[d.map.idx(ccx, ccy)] : -1; // [DUNGEON-LIFE D] tap a chest / pedestal = walk up and open it
           if ((tile === DT.CHEST || tile === DT.MEDAL) && Math.hypot(ccx * 16 + 8 - w.x, ccy * 16 + 8 - w.y) < 16) { const stand = { x: ccx * 16 + 8, y: (ccy + 1) * 16 + 12 }; d.useOnArrive = { chest: true, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand }; setTapTarget(hero, d.map, stand.x, stand.y); return; } }
         if (blk) { tapPush(blk, w.x, w.y); return; } // [PUSH-BLOCKS] tap a block = walk to its side and push it one tile
-        const hitObj = d.inter && d.inter.list.find((o) => o.type !== 'block' && TYPES[o.type] && TYPES[o.type].react && TYPES[o.type].react.hit && TYPES[o.type].solid(o) && Math.hypot(o.tx * 16 + 8 - w.x, o.ty * 16 + 8 - w.y) < 14);
+        // [TOUCH PAINT] walkable objects you hit (paint tiles: TAP_HIT_FLOOR) count too; the nearest one wins (paint tiles touch)
+        const hitObj = d.inter && d.inter.list.filter((o) => o.type !== 'block' && TYPES[o.type] && TYPES[o.type].react && TYPES[o.type].react.hit && (TYPES[o.type].solid(o) || TAP_HIT_FLOOR.has(o.type)) && Math.hypot(o.tx * 16 + 8 - w.x, o.ty * 16 + 8 - w.y) < 14)
+          .sort((p, q) => Math.hypot(p.tx * 16 + 8 - w.x, p.ty * 16 + 8 - w.y) - Math.hypot(q.tx * 16 + 8 - w.x, q.ty * 16 + 8 - w.y))[0];
         if (hitObj) { tapHit(hitObj); return; } // [DUNGEON-LIFE D] tap a switch / lever / valve = walk up and hit it
         const gate = d.inter && d.inter.list.find((o) => TOOL_GATES.includes(o.type) && !gateOpen(o) && Math.hypot(d.inter.center(o).x - w.x, d.inter.center(o).y - w.y) < 18);
         const tgt = d.inter && findTapTarget(d.inter, w.x, w.y); // tap a torch / switch: fire the ammo that works on it
@@ -11859,7 +11870,7 @@ const { createPadKit, drawPadKitFloor, drawPadKit } = __req("game/padkit.js");
 const { createBushes, cutBushesIn, cutBushAt, updateBushes, bushAt } = __req("game/bushes.js");
 const { drawShot, drawSpecialFx } = __req("game/shotfx.js");
 const { treeAnchors, drawTrees2x } = __req("game/trees2x.js");
-const { createHelp, updateHelp, drawHelpScreen } = __req("game/puzzlehelp.js");
+const { createHelp, updateHelp, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES } = __req("game/puzzlehelp.js");
 const { drawPickup } = __req("game/drops.js");
 const { drawCastleFloor, drawCastle } = __req("game/castle.js");
 const { createTutorial, updateTutorial, tutEvent, drawDummy, drawTutorial, skipRect, finish: finishTutorial } = __req("game/tutorial.js");
@@ -11979,6 +11990,13 @@ function createArena(view, data, opts = {}) {
     if (!free && !spendAp(AMMO[ammo].ap)) { say('Need AP!'); return false; }
     if (Math.abs(dx) > Math.abs(dy)) hero.facing = dx > 0 ? 'right' : 'left'; else hero.facing = dy > 0 ? 'down' : 'up'; hero.faceHold = CONFIG.COMBAT.FACE_HOLD;
     return !!fire(projs, hero, ammo, dx, dy);
+  };
+  // [TOUCH GATES] the tile to stand on to use a gate: the nearest free side (a hook post: a free tile 2…range tiles in line)
+  const gateStand = (o) => {
+    const ks = o.type === 'hookPoint' ? Array.from({ length: Math.max(0, CONFIG.ITEMS.HOOK.range - 1) }, (_, i) => i + 2) : [1];
+    const c = [];
+    for (const [dx, dy] of [[0, 1], [0, -1], [-1, 0], [1, 0]]) for (const k of ks) { const x = o.tx + dx * k, y = o.ty + dy * k; if (map.inside(x, y) && !map.isSolid(x, y)) c.push({ x, y }); }
+    return c.sort((p, q) => Math.hypot(p.x * 16 + 8 - hero.x, p.y * 16 + 12 - hero.y) - Math.hypot(q.x * 16 + 8 - hero.x, q.y * 16 + 12 - hero.y))[0] || null;
   };
   a.tapTarget = (wx, wy) => {
     const o = findTapTarget(inter, wx, wy);
@@ -12194,6 +12212,17 @@ function createArena(view, data, opts = {}) {
           setTapTarget(hero, map, ow.rocket.tx * 16 + 8, ow.rocket.ty * 16 + 8); return;
         }
         if (a.tut && !a.tut.done && Math.hypot(w.x - a.tut.dummy.x, w.y + 12 - a.tut.dummy.y) < 22) a.tut.tapDummy = true; // [A8e] walks over and swings
+        // [TOUCH GATES] a tap on a tool gate (boulder, hook post, pin hole, bramble, cracked rock…): walk up and use the tool on
+        // arrival, or the missing-item bubble at once — as in dungeons. Gates opened by ammo stay with a.tapTarget (fire it). Checked before doors: a gate guarding a
+        // door (W2's relic cave hook post) sits inside the door's tap zone, and a tap right on it means the gate.
+        a.useOnArrive = null;
+        const gate = inter.list.find((o) => TOOL_GATES.includes(o.type) && !gateOpen(o) && Math.hypot(inter.center(o).x - w.x, inter.center(o).y - w.y) < 18);
+        if (gate && !(findTapTarget(inter, w.x, w.y) === gate && (chooseAmmo(data, hero.id, gate) || {}).ammo)) {
+          if (!canOpen(data, hero.id, gate)) { showNeed(a.help, gate); return; }
+          const st = gateStand(gate); hero.attackId = null;
+          if (st) { setTapTarget(hero, map, st.x * 16 + 8, st.y * 16 + 12); a.useOnArrive = { o: gate, stand: st, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; }
+          return;
+        }
         const door = doorAt(a.doors, w.x, w.y); // [A7] a tap in a door's zone always means the door (a villager loitering by it must not steal the tap)
         const n = !door && npcs.find((e) => Math.hypot(e.x - w.x, e.y - 12 - w.y) < 20 && Math.hypot(e.x - hero.x, e.y - hero.y) < 64);
         if (n) { a.talkTo(n); return; }
@@ -12214,6 +12243,16 @@ function createArena(view, data, opts = {}) {
           return;
         }
         if (!a.tapTarget(w.x, w.y) && !combat.tapAt(w.x, w.y)) { hero.attackId = null; setTapTarget(hero, map, w.x, w.y); }
+      }
+    }
+    if (a.useOnArrive) { // [TOUCH GATES] arrived at the gate's stand tile → face it and use the tool
+      const U = a.useOnArrive, o = U.o;
+      if ((U.t -= dt) <= 0 || gateOpen(o)) a.useOnArrive = null;
+      else if (Math.hypot(hero.x - (U.stand.x * 16 + 8), hero.y - (U.stand.y * 16 + 12)) < 10 && !(hero.path && hero.path.length)) {
+        const dx = o.tx - U.stand.x, dy = o.ty - U.stand.y;
+        hero.facing = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
+        if (o.type === 'hookPoint') { if (!startHook(data, hero, inter, map)) say('No hook post ahead!'); } else if (useToolsAhead(data, inter)) sfx('door');
+        a.useOnArrive = null;
       }
     }
     if (keyPressed('debugHero') && /[?&]test=1/.test(location.search)) { const H = ['rowan', 'milo', 'wren']; a.switchHero(H[(H.indexOf(hero.id) + 1) % 3]); }

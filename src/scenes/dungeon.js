@@ -81,6 +81,8 @@ function drawPortal(ctx, [tx, ty], lit, cam, t) {
 
 // [R2-19] w<n>-puzzle-b frames [switch lit, switch dark, clue tablet]: W1 #328 frames 2-4 (after the dummy), W2+ frames 0-2
 const PUZZLE_B = { 1: [2, 3, 4], 2: [0, 1, 2], 3: [0, 1, 2], 4: [0, 1, 2], 5: [0, 1, 2], 6: [0, 1, 2], 7: [0, 1, 2] };
+// [TOUCH PAINT] walkable objects a tap walks up to and hits (the rest of the floor stays a plain walk-to)
+const TAP_HIT_FLOOR = new Set(['paintTile']);
 export function createDungeon(view, data, dg, opts = {}) {
   bindSession(data);
   refreshHearts(data);
@@ -349,7 +351,9 @@ export function createDungeon(view, data, dg, opts = {}) {
         { const [ccx, ccy] = roomSpots(d.room).chest, tile = d.map.inside(ccx, ccy) ? d.map.ground[d.map.idx(ccx, ccy)] : -1; // [DUNGEON-LIFE D] tap a chest / pedestal = walk up and open it
           if ((tile === DT.CHEST || tile === DT.MEDAL) && Math.hypot(ccx * 16 + 8 - w.x, ccy * 16 + 8 - w.y) < 16) { const stand = { x: ccx * 16 + 8, y: (ccy + 1) * 16 + 12 }; d.useOnArrive = { chest: true, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand }; setTapTarget(hero, d.map, stand.x, stand.y); return; } }
         if (blk) { tapPush(blk, w.x, w.y); return; } // [PUSH-BLOCKS] tap a block = walk to its side and push it one tile
-        const hitObj = d.inter && d.inter.list.find((o) => o.type !== 'block' && TYPES[o.type] && TYPES[o.type].react && TYPES[o.type].react.hit && TYPES[o.type].solid(o) && Math.hypot(o.tx * 16 + 8 - w.x, o.ty * 16 + 8 - w.y) < 14);
+        // [TOUCH PAINT] walkable objects you hit (paint tiles: TAP_HIT_FLOOR) count too; the nearest one wins (paint tiles touch)
+        const hitObj = d.inter && d.inter.list.filter((o) => o.type !== 'block' && TYPES[o.type] && TYPES[o.type].react && TYPES[o.type].react.hit && (TYPES[o.type].solid(o) || TAP_HIT_FLOOR.has(o.type)) && Math.hypot(o.tx * 16 + 8 - w.x, o.ty * 16 + 8 - w.y) < 14)
+          .sort((p, q) => Math.hypot(p.tx * 16 + 8 - w.x, p.ty * 16 + 8 - w.y) - Math.hypot(q.tx * 16 + 8 - w.x, q.ty * 16 + 8 - w.y))[0];
         if (hitObj) { tapHit(hitObj); return; } // [DUNGEON-LIFE D] tap a switch / lever / valve = walk up and hit it
         const gate = d.inter && d.inter.list.find((o) => TOOL_GATES.includes(o.type) && !gateOpen(o) && Math.hypot(d.inter.center(o).x - w.x, d.inter.center(o).y - w.y) < 18);
         const tgt = d.inter && findTapTarget(d.inter, w.x, w.y); // tap a torch / switch: fire the ammo that works on it
