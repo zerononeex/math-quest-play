@@ -3042,6 +3042,8 @@ function tapGate(o) { return TOOL_GATES.includes(o.type) && (!gateOpen(o) || o.t
 
 // [TAP FIX 3] a tap on something across a gap (no walk route) in a bounce-pad room: the pad bubble at once
 function showCrossing(h) { h.bubble = { icon: 'bouncePad', prop: true, missing: false, text: 'Hop across first!', t: P.BUBBLE_S }; }
+// [SEED CARRY] the first seed picked up in a room: what it is for, as a thought bubble (the soil + the room's hint line)
+function showSeedHint(h) { h.bubble = { icon: 'soil', prop: true, missing: false, text: HINT.seedPlant, t: P.BUBBLE_S + 1 }; }
 // A tap on a gate you cannot open yet: the missing-item bubble at once.
 function showNeed(h, o) { const g = GATE[o.type]; if (g) h.bubble = { icon: g.icon, missing: true, text: g.need, t: P.BUBBLE_S }; }
 
@@ -3226,7 +3228,7 @@ function drawHelpScreen(ctx, h, view, heroScreen, world = 1) {
   }
 }
 
-return { TOOL_GATES, puzzleHint, TOOL_CARDS, TOOL_ICONS, canOpen, gateOpen, tapGate, showCrossing, showNeed, showHint, placeClueTablet, createHelp, helpEnterRoom, updateHelp, drawHelpWorld, itemIcon, drawHelpScreen };
+return { TOOL_GATES, puzzleHint, TOOL_CARDS, TOOL_ICONS, canOpen, gateOpen, tapGate, showCrossing, showSeedHint, showNeed, showHint, placeClueTablet, createHelp, helpEnterRoom, updateHelp, drawHelpWorld, itemIcon, drawHelpScreen };
 });
 __def("scenes/pause.js", function () {
 // Pause menu (modal): Resume, Equipment, Map, Quests, Save, Mute, Quit to Title. [D42] no Return to Wayfarer — the ship is
@@ -4082,6 +4084,11 @@ function drawV2(ctx, h, x, y, flash) {
 }
 
 const CHEST_FRAME = { rowan: 4, milo: 5, wren: 4 }; // the *-extra frame holding a treasure chest overhead (2x6 sheet, cut as blobs)
+// [SEED CARRY] the standing figure's height in world px (the walk height every pose is sized from)
+function heroHeight(h) {
+  const w0 = 'hero-' + h.id, wf = imgReady(w0) && ATLAS[w0].meta.frames[walkFrame(h.id, 'down', 1)];
+  return wf ? (opaqueBox(w0, walkFrame(h.id, 'down', 1)).h * wf.w) / wf.src.w : 25;
+}
 // a pose frame scaled so its figure is `tall` × the standing walk height, feet on (x, y)
 function drawPose(ctx, h, x, y, sh, i, tall) {
   const w0 = 'hero-' + h.id, wf = imgReady(w0) && ATLAS[w0].meta.frames[walkFrame(h.id, 'down', 1)];
@@ -4321,7 +4328,7 @@ function drawHeroAt(ctx, h, cam) {
   ctx.drawImage(set[h.facing][h.frame], Math.round(h.x - 8 - cam.x), Math.round(h.y - 24 - cam.y));
 }
 
-return { heroArt, walkFrame, createHero, setTapTarget, chaseTarget, updateHero, drawHero };
+return { heroArt, heroHeight, walkFrame, createHero, setTapTarget, chaseTarget, updateHero, drawHero };
 });
 __def("scenes/testmap.js", function () {
 // Movement test map (?test=1&scene=testmap): 60×40 tiles, a wall with a 1-tile gap, blocks, hero + camera.
@@ -8751,6 +8758,7 @@ __def("game/buddies.js", function () {
 // Spent buddies regrow at Sproutling nests. One button, never a penalty.
 const { CONFIG } = __req("config.js");
 const { drawFoot, codeArt } = __req("engine/atlas.js");
+const { heroHeight } = __req("game/hero.js");
 const B = CONFIG.BUDDY, T = CONFIG.VIEW.TILE;
 
 function createBuddies(n = B.MAX) {
@@ -8846,6 +8854,15 @@ function drawBuddies(ctx, bs) {
     if (b.carry) f('#f0d060', -2, -16, 4, 4);
   }
 }
+// [SEED CARRY] A seed the hero carries (hero.carry === 'seed', walked over or handed over by a buddy) rides over his head:
+// the same w6-nature giant seed (frame 14) at the buddy's size, bobbing with his steps; pop (0..1) swells it as he gets
+// it. Drawn after the hero (and any swing) so it never vanishes mid-action; shrinks / lifts with him (scale, z).
+function drawCarry(ctx, hero, cam, pop = 0) {
+  if (hero.carry !== 'seed') return;
+  const s = (hero.scale || 1) * (1 + 0.5 * pop), bob = hero.moving ? Math.abs(Math.sin(((hero.animT || 0) * Math.PI) / 0.3)) * 1.5 : 0;
+  const x = Math.round(hero.x - cam.x), y = Math.round(hero.y - cam.y - (hero.z || 0) - (heroHeight(hero) + 1) * (hero.scale || 1) - bob); // resting on his head
+  if (!drawFoot(ctx, 'w6-nature', 14, x, y, 8 * s, 7 * s)) { codeArt('hero-seed'); ctx.fillStyle = '#10101a'; ctx.fillRect(x - 3, y - 6, 6, 6); ctx.fillStyle = '#f0d060'; ctx.fillRect(x - 2, y - 5, 4, 4); }
+}
 // Nest: w6-puzzle frame 22 (the twig nest with a sproutling peeking out; the -puzzle sheet's "sproutling nest" row);
 // code fallback: a twig ring with a sprout.
 function drawNest(ctx, x, y) {
@@ -8855,7 +8872,7 @@ function drawNest(ctx, x, y) {
   f('#10101a', -10, -4, 20, 8); f('#8a5a2a', -9, -3, 18, 6); f('#c08a4a', -6, -2, 12, 3); f('#80c050', -1, -10, 2, 7); f('#80c050', 1, -9, 3, 2);
 }
 
-return { createBuddies, freeBuddies, sendBuddy, buddyTargetAt, updateBuddies, buddyWeights, recallBuddies, drawBuddies, drawNest };
+return { createBuddies, freeBuddies, sendBuddy, buddyTargetAt, updateBuddies, buddyWeights, recallBuddies, drawBuddies, drawCarry, drawNest };
 });
 __def("game/doortap.js", function () {
 // [D35] Kid-friendly doors: a generous tap zone (door tile + DOOR_TAP_MARGIN tiles each side), a bouncing arrow marker,
@@ -11784,7 +11801,7 @@ const { takeRelic } = __req("game/relics.js");
 const { buildRushDungeon, createRun, rushKill, rushDeath, finishRun, fmtTime } = __req("game/rush.js");
 const { createRushResults, createSurvivalResults } = __req("scenes/trophies.js");
 const { buildSurvivalDungeon, createSurvival, survivalRoster, waveDefs, survivalDeath, recordWaves } = __req("game/survival.js");
-const { createBuddies, sendBuddy, buddyTargetAt, updateBuddies, buddyWeights, drawBuddies, freeBuddies, recallBuddies } = __req("game/buddies.js");
+const { createBuddies, sendBuddy, buddyTargetAt, updateBuddies, buddyWeights, drawBuddies, freeBuddies, recallBuddies, drawCarry } = __req("game/buddies.js");
 const { enemyDef, TEST_ENEMIES } = __req("game/enemies.js");
 const { drawEnemy, drawHazard } = __req("art/fallback/enemies.js");
 const { createKit } = __req("game/kits/common.js");
@@ -11796,7 +11813,7 @@ const { spawnBoss } = __req("game/bosses.js");
 const { drawBoss, drawBossBar } = __req("art/fallback/bosses.js");
 const { TYPES } = __req("game/interactables.js");
 const { createLife, stampLife, updateLife, drawLife } = __req("game/dungeonlife.js");
-const { createHelp, helpEnterRoom, updateHelp, drawHelpWorld, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES, tapGate, showHint, placeClueTablet, puzzleHint, showCrossing } = __req("game/puzzlehelp.js");
+const { createHelp, helpEnterRoom, updateHelp, drawHelpWorld, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES, tapGate, showHint, placeClueTablet, puzzleHint, showCrossing, showSeedHint } = __req("game/puzzlehelp.js");
 const { drawProp, drawDungeonPropArt } = __req("art/fallback/props.js");
 const { grantGear } = __req("game/gear.js");
 const { gainXp, refreshHearts } = __req("game/progression.js");
@@ -12014,6 +12031,7 @@ function createDungeon(view, data, dg, opts = {}) {
   d.enterRoom = (id, via = 'start') => {
     if (d.buddies) { recallBuddies(d.buddies); for (const b of d.buddies.list) if (b.state === 'spent') b.state = 'follow'; } // [W6] a new room: the team regrows and regroups
     if (typeof projs !== 'undefined') projs.forEach((p) => projs.kill(p));
+    d.seedHinted = false; d.seedHintT = 0; // [SEED CARRY] the seed hint bubble once per room entry
     d.roomId = id; d.room = dg.rooms[id]; d.solvedNow = !!st.puzzles[id]; st.lastRoom = id; d.life = null; d.foesUp = false;
     resetRoom(ents); // NO STALE INDEXES: entity registry is rebuilt per room
     if (!st.visited.includes(id)) st.visited.push(id);
@@ -12235,6 +12253,12 @@ function createDungeon(view, data, dg, opts = {}) {
     const tx = Math.floor(hero.x / 16), ty = Math.floor((hero.y - 2) / 16);
     if (d.inter) {
       d.inter.update(dt);
+      if (hero.carry === 'seed' && d.lastCarry !== 'seed') { // [SEED CARRY] just got one (walked over it / a buddy handed it over)
+        d.seedPop = 0.3; sfx('coin'); floatText(hero.x, hero.y - 40, 'Got the seed!', '#ffe070'); confetti(hero.x, hero.y - 30, 8, ['#f0d060', '#80c050', '#ffffff']);
+        if (!d.seedHinted) { d.seedHinted = true; d.seedHintT = 0.9; } // the hint follows once 'Got the seed!' has been read
+      }
+      d.lastCarry = hero.carry;
+      if (d.seedHintT > 0 && (d.seedHintT -= dt) <= 0 && hero.carry === 'seed') showSeedHint(d.help); // [SEED CARRY] what the seed is for
       if (d.room.puzzle && !d.solvedNow && d.puzzle.solved()) { d.solvedNow = true; rebuild(); confetti(hero.x, hero.y - 20, 30); say('Solved!'); save.auto('puzzle'); }
     }
     // [MONSTERS FIRST] a room with roaming foes is beaten once they are all down: its chest appears (first time only)
@@ -12421,6 +12445,7 @@ function createDungeon(view, data, dg, opts = {}) {
     });
     if (d.buddies) { ctx.save(); ctx.translate(-Math.round(cam.x), -Math.round(cam.y)); drawBuddies(ctx, d.buddies); ctx.restore(); }
     drawHero(ctx, hero, cam);
+    drawCarry(ctx, hero, cam, Math.max(0, (d.seedPop = Math.max(0, (d.seedPop || 0) - 1 / 60)) / 0.3)); // [SEED CARRY] the carried seed over his head
     if (d.inter) { drawToolInHand(ctx, hero, cam); drawToolAnim(ctx, d.inter, hero, cam, drawObj, 'front'); } // [TOOL ANIMS]
     drawItemGet(ctx, hero, cam, 1 / 60);
     drawSpecialFx(ctx, hero, cam); // [HERO-SHOTS]
@@ -12435,7 +12460,7 @@ function createDungeon(view, data, dg, opts = {}) {
     cam.end(ctx);
     if (d.boss && d.boss.grayT > 0) desaturate(ctx, view.w, view.h, Math.min(1, d.boss.grayT * 2)); // [S39] Vex's grayscale wave
     drawHud(ctx, hud, data, view, { ap: data.ap, apCap: apCapOf(), band: currentBand(), map: true, attack: scenes.top() === d && !(d.bossLine && d.bossLine.t > 0), equip: !(d.sealed && d.boss) /* [POST-W8 K] */ }); // [HUD-ATTACK] hidden under dialogs, math and menus
-    { const hs = cam.toScreen(hero.x, hero.y - 26); drawHelpScreen(ctx, d.help, view, hs, dg.world); } // [DUNGEON-LIFE C] banner, bubbles, item card
+    { const hs = cam.toScreen(hero.x, hero.y - 26 - (hero.carry === 'seed' ? 10 : 0)); drawHelpScreen(ctx, d.help, view, hs, dg.world); } // [DUNGEON-LIFE C] banner, bubbles, item card
     // per-floor mini-map (under the HUD, right side)
     const fl = d.room.floor, mx = view.w - 70; let my = CONFIG.UI.HUD_RESERVED_H + 6; // [R3-5] under the (taller) HUD
     // [TAP FIX 6] a door's art under the box (e.g. kl-sub's east door once the camera scrolls down): the box steps down
