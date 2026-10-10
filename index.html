@@ -87,7 +87,7 @@ const CONFIG = deepFreeze({
     TAP_ATTACK_RADIUS: 64, AUTOWALK_MAX: 200, TAP_TARGET_RADIUS: 24, TELEGRAPH_MIN: 0.5, TELEGRAPH_LITTLE_MULT: 1.5,
     // [D35] touch assist: melee facing snap radius, keyboard ranged auto-aim cone (full angle) + range, door tap margin (tiles), magnet px.
     MELEE_ASSIST_R: 40, FACE_HOLD: 0.4, AIM_CONE_DEG: 45, AIM_RANGE: 220, ARC_RANGE: 160, // [D37] arcing shots land on the aimed point, clamped to ARC_RANGE px
-    DOOR_TAP_MARGIN: 1.5, DOOR_MAGNET_PX: 10,
+    DOOR_TAP_MARGIN: 1.5, DOOR_TAP_BELOW_OW: 1, /* [TAP AUDIT] overworld doors reach only their front step below */ DOOR_MAGNET_PX: 10,
     MELEE_REACH: 26, MELEE_RANGE: 18, KB_TIME: 0.12, COMBAT_RADIUS: 220, ENEMY_BOX: 14,
     // [D34] every AP cost halved; AP moves in 0.5 steps (halves are exact binary fractions — stored rounded to 0.5, no drift).
     MELEE_AP: 0.5, RANGED_AP: 0.5,
@@ -856,7 +856,7 @@ function defaults() {
 }
 
 function defaultRecords() {
-  return { bestRushTime: null, bestWaves: 0, trophies: [], bestStreak: 0, totalQuestions: 0 };
+  return { bestRushTime: null, bestRushRevives: null, bestWaves: 0, trophies: [], bestStreak: 0, totalQuestions: 0 };
 }
 
 function defaultSettings() { return { mute: false, lastSlot: 1, autoStats: true }; } // [R3-4] stat points spend themselves unless the player picks
@@ -926,6 +926,7 @@ function clampRecords(raw) {
   return {
     ...r,
     bestRushTime: typeof r.bestRushTime === 'number' && Number.isFinite(r.bestRushTime) && r.bestRushTime > 0 ? Math.min(r.bestRushTime, 1e7) : null,
+    bestRushRevives: Number.isInteger(r.bestRushRevives) && r.bestRushRevives >= 0 ? Math.min(r.bestRushRevives, 1e6) : null, // [TAP AUDIT] revives used on the best-time run
     bestWaves: intc(r.bestWaves, 0, 99999, 0), trophies: strArr(r.trophies), bestStreak: intc(r.bestStreak, 0, 1e7, 0), totalQuestions: intc(r.totalQuestions, 0, 1e9, 0),
   };
 }
@@ -1116,6 +1117,70 @@ function drawIntroPanel(ctx, w, h, i, t) {
 
 return { drawPainting, drawTitleVista, drawIntroPanel };
 });
+__def("game/rush.js", function () {
+// Boss Rush + Sub-boss Rush (SPEC 2.9, S53): generated "dungeons" of back-to-back boss rooms in world order. Between bosses:
+// +RUSH.HEAL_HEARTS hearts, AP refilled, RUSH.BREATHER s breather. Exactly RUSH.REVIVES revive for the whole run and NO
+// math-revive. Boss Rush is timed from the first spawn to Astronova's defeat (best time → records, Star Chalice);
+// the Sub-boss Rush is untimed (Silver Comet). Records survive New Game [D12].
+const { CONFIG } = __req("config.js");
+const R = CONFIG.RUSH;
+const RUSH_KINDS = {
+  boss: { id: 'boss-rush', name: 'Boss Rush', timed: true, trophy: 'star-chalice', trophyName: 'Star Chalice' },
+  sub: { id: 'subboss-rush', name: 'Sub-boss Rush', timed: false, trophy: 'silver-comet', trophyName: 'Silver Comet' },
+};
+
+// [{ world, id }] in world order: the main boss of each world (boss rush) or every sub-boss (sub-boss rush).
+function rushList(worlds, kind) {
+  const out = [];
+  for (let w = 1; w <= 8; w++) {
+    const W = worlds[w]; if (!W) continue;
+    const bosses = Object.values(W.bosses || {});
+    if (kind === 'boss') { const main = W.throne && W.throne.rooms.throne && W.bosses[W.throne.rooms.throne.boss]; if (main) out.push({ world: w, id: main.id }); }
+    else for (const b of bosses) if (b.kind === 'sub') out.push({ world: w, id: b.id });
+  }
+  return out;
+}
+
+function buildRushDungeon(worlds, kind) {
+  const K = RUSH_KINDS[kind], list = rushList(worlds, kind), rooms = {};
+  list.forEach((b, i) => { rooms['r' + (i + 1)] = { floor: '1F', gx: i % 10, gy: Math.floor(i / 10), type: 'sub', boss: b.id, bossWorld: b.world, doors: {} }; });
+  return { id: K.id, name: K.name, world: 8, rush: kind, floors: ['1F'], start: 'r1', theme: { floor: '#2a2a5a', floor2: '#262656', wall: '#0e0e2a', wallTop: kind === 'boss' ? '#ffe070' : '#c0c0e0' }, rooms, count: list.length };
+}
+
+function createRun(kind, count) { return { kind, count, i: 0, revives: R.REVIVES, time: 0, started: false, breather: 0, over: false, won: false, deaths: 0, revivesUsed: 0 }; }
+
+// A boss fell: heal, refill AP, breather. Returns true when that was the last one.
+function rushKill(run, data, apCap) {
+  data.hearts = Math.min(data.maxHearts, data.hearts + R.HEAL_HEARTS);
+  data.ap = apCap;
+  run.i++;
+  if (run.i >= run.count) { run.won = true; run.over = true; return true; }
+  run.breather = R.BREATHER;
+  return false;
+}
+// The hero fell: 'revive' while the run's single revive lasts, else 'over' (no math-revive in a rush).
+function rushDeath(run) {
+  run.deaths++;
+  if (run.revives > 0) { run.revives--; run.revivesUsed++; return 'revive'; }
+  run.over = true; return 'over';
+}
+// Write the result into the slot's records (best time + trophy on a win). Returns { best, newBest, trophy }.
+function finishRun(run, records) {
+  const K = RUSH_KINDS[run.kind], out = { best: records.bestRushTime, bestRevives: records.bestRushRevives ?? null, newBest: false, trophy: null };
+  if (!run.won) return out;
+  if (!records.trophies.includes(K.trophy)) { records.trophies.push(K.trophy); out.trophy = K.trophyName; }
+  // [TAP AUDIT] the record is honest: the best time keeps the revives used on that run beside it (a faster time with more
+  // revives is still recorded as-is)
+  if (K.timed && (records.bestRushTime == null || run.time < records.bestRushTime)) { records.bestRushTime = Math.round(run.time * 10) / 10; records.bestRushRevives = run.revivesUsed || 0; out.newBest = true; }
+  out.best = records.bestRushTime; out.bestRevives = records.bestRushRevives ?? null;
+  return out;
+}
+// 'Time 3:42 · Revives used 1' (revives unknown on an old record: the time alone)
+function fmtRecord(time, revives) { return 'Time ' + fmtTime(time) + (time != null && revives != null ? ' · Revives used ' + revives : ''); }
+function fmtTime(s) { if (s == null) return '—'; const m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ':' + String(r).padStart(2, '0'); }
+
+return { RUSH_KINDS, rushList, buildRushDungeon, createRun, rushKill, rushDeath, finishRun, fmtRecord, fmtTime };
+});
 __def("scenes/title.js", function () {
 // Title (SPEC 2.11, S57 living vista; [A8c] v2 front end): a step-by-step front end on the title painting, every button and
 // panel from the user's UI sheets (code boxes only while a sheet is missing):
@@ -1131,6 +1196,7 @@ const { pressed, input } = __req("engine/input.js");
 const { save } = __req("engine/save.js");
 const { drawTitleVista, drawPainting } = __req("art/fallback/title.js");
 const { drawSprite, imgReady, frameSize, ATLAS } = __req("engine/atlas.js");
+const { fmtRecord } = __req("game/rush.js");
 const HEROES = [
   { id: 'rowan', name: 'Rowan', role: 'the Bladebound', body: '#2aa8a0', hair: '#a0522d', acc: '#c0c0c8' },
   { id: 'milo', name: 'Milo', role: 'the Brawler', body: '#d83a3a', hair: '#4a3020', acc: '#f0f0f0' },
@@ -1296,9 +1362,10 @@ function createTitle(view, { onStart }) {
     // Records plaque + trophy shelf for the highlighted slot.
     const r = store.loadRecords(t.slot);
     drawCell(ctx, ox + 30, 316, 380, 120, { fill: CONFIG.CELL.DARK });
-    const rt = r.bestRushTime == null ? '--:--' : Math.floor(r.bestRushTime / 60) + ':' + String(Math.floor(r.bestRushTime % 60)).padStart(2, '0');
-    cellText(ctx, 'Slot ' + t.slot + '  Best rush ' + rt, ox + 56, 360, 16, '#ffffff', 'left');
-    cellText(ctx, 'Best waves ' + r.bestWaves + '   Best streak ' + r.bestStreak, ox + 56, 392, 16, '#ffffff', 'left');
+    const rt = r.bestRushTime == null ? '--:--' : fmtRecord(r.bestRushTime, r.bestRushRevives); // [TAP AUDIT] time + revives used
+    cellText(ctx, 'Slot ' + t.slot + '  Best rush', ox + 56, 346, 16, '#ffffff', 'left');
+    cellText(ctx, rt, ox + 56, 376, 15, '#ffe070', 'left');
+    cellText(ctx, 'Best waves ' + r.bestWaves + '   Best streak ' + r.bestStreak, ox + 56, 408, 16, '#ffffff', 'left');
     record('plaque', 'plaque', ox + 30, 316, 380, 120);
     drawCell(ctx, ox + 430, 316, 180, 120, { fill: CONFIG.CELL.DARK });
     for (let i = 0; i < 6; i++) {
@@ -2346,12 +2413,13 @@ function hudButtons(viewW) {
 function attackButtons(viewW) {
   const A = CONFIG.UI.ATTACK, H = CONFIG.VIEW.H, b = A.BIG, m = A.SMALL;
   const s1 = { x: viewW - A.PAD - b, y: H - A.PAD - b, w: b, h: b };
-  return { slot1: s1, slot2: { x: s1.x - A.GAP - m, y: s1.y + b - m, w: m, h: m }, slot3: { x: s1.x + b - m, y: s1.y - A.GAP - m, w: m, h: m } };
+  return { slot1: s1, slot2: { x: s1.x - A.GAP - m, y: s1.y + b - m, w: m, h: m }, slot3: { x: s1.x + b - m, y: s1.y - A.GAP - m, w: m, h: m },
+    potion: { x: s1.x - 2 * (A.GAP + m), y: s1.y + b - m, w: m, h: m } }; // [TAP AUDIT] potion button left of slot 2 (shown while potions > 0)
 }
 
 function hudHit(viewW, px, py) {
   const b = hudButtons(viewW);
-  for (const k of Object.keys(b)) { const r = b[k]; if (k === 'pill' && !hudHit.pillOn) continue; if (k === 'map' && !hudHit.mapOn) continue; if (k === 'equip' && !hudHit.equipOn) continue; if (k.startsWith('slot') && !hudHit.attackOn) continue; if (px >= r.x && px < r.x + r.w && py >= r.y && py < r.y + r.h) return k; }
+  for (const k of Object.keys(b)) { const r = b[k]; if (k === 'pill' && !hudHit.pillOn) continue; if (k === 'map' && !hudHit.mapOn) continue; if (k === 'equip' && !hudHit.equipOn) continue; if (k.startsWith('slot') && !hudHit.attackOn) continue; if (k === 'potion' && !hudHit.potionOn) continue; if (px >= r.x && px < r.x + r.w && py >= r.y && py < r.y + r.h) return k; }
   return null;
 }
 
@@ -2384,7 +2452,7 @@ function updateHud(hud, data, dt) {
 }
 
 function drawHud(ctx, hud, data, view, { ap, apCap, band, map = false, attack = false, equip = false }) {
-  hudHit.mapOn = map; hudHit.attackOn = attack; hudHit.equipOn = equip;
+  hudHit.mapOn = map; hudHit.attackOn = attack; hudHit.equipOn = equip; hudHit.potionOn = attack && data.items.potions > 0;
   ctx.fillStyle = 'rgba(8,8,24,0.72)';
   ctx.fillRect(0, 0, view.w, HUD_H - 4);
   const K = CONFIG.UI.HUD_SCALE; ctx.save(); ctx.scale(K, K); layout.k = K; // [POST-W8 I] LEFT zone at 2x: hearts (2 rows of 10), AP gems under them, level + XP + element badges to their right
@@ -2520,6 +2588,20 @@ function drawAttackButtons(ctx, hud, data, view, ap) {
     ctx.font = 'bold 11px ' + CONFIG.FONTS.UI; ctx.textAlign = 'left'; ctx.textBaseline = 'top'; ctx.fillStyle = '#ffffff'; ctx.fillText(String(s), r.x + 6, r.y + 4);
     record('button', 'slot' + s, r.x, r.y, r.w, r.h);
   }
+  if (data.items.potions > 0) drawPotionButton(ctx, B.potion, data);
+}
+// [TAP AUDIT] the potion button: tap = drink one (+hearts) when hurt; the count sits in the corner. Before this, a potion
+// could only be drunk with the keys V then B — a kid on an iPad had no way to use the potions they bought.
+function drawPotionButton(ctx, r, data) {
+  const cx = r.x + r.w / 2, cy = r.y + r.h / 2, full = data.hearts >= data.maxHearts;
+  drawCell(ctx, r.x, r.y, r.w, r.h, { sel: false, fill: CONFIG.CELL.FILL });
+  if (!fitSprite(ctx, 'icons-items', 'potion', cx, cy, Math.round(r.w * CONFIG.UI.ATTACK.ICON))) { // code flask
+    ctx.fillStyle = '#e04060'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy + 4, 11, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#c0d0e0'; ctx.fillRect(cx - 4, cy - 14, 8, 9); ctx.strokeRect(cx - 4, cy - 14, 8, 9);
+  }
+  if (full) { ctx.fillStyle = 'rgba(10,16,40,0.45)'; ctx.fillRect(r.x, r.y, r.w, r.h); } // dim while hearts are full
+  ctx.font = 'bold 12px ' + CONFIG.FONTS.UI; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; drawOutlined(ctx, '×' + data.items.potions, r.x + r.w - 4, r.y + r.h - 2);
+  record('button', 'potion', r.x, r.y, r.w, r.h);
 }
 // one ammo / special icon filling its box r: the user's art (the better #327 boomerang first), else the code glyph; disc = light backing
 function attackIcon(ctx, r, id, disc) {
@@ -2891,6 +2973,10 @@ const GATE = {
   boulder: { tool: 'powerGlove', icon: 'power-glove', need: 'Need the Power Glove!', open: (o) => o.lifted },
   hookPoint: { tool: 'vineHook', icon: 'vine-hook', need: 'Need the Vine Hook!', open: (o) => o.hooked },
   pinHole: { tool: 'shrinkCap', icon: 'shrink-cap', need: 'Need the Shrink Cap!', open: (o) => o.open },
+  // [TAP AUDIT] Gust Jar things: a tap walks up and puffs the jar (before, only keys V then B could use it — fans had no tap path)
+  fan: { tool: 'gustJar', icon: 'gust-jar', need: 'Need the Gust Jar!', open: (o) => o.t > 0 },
+  pinwheel: { tool: 'gustJar', icon: 'gust-jar', need: 'Need the Gust Jar!', open: (o) => o.t > 0 },
+  windmill: { tool: 'gustJar', icon: 'gust-jar', need: 'Need the Gust Jar!', open: (o) => !!o.spinning },
 };
 const TOOL_GATES = Object.keys(GATE);
 const HINT = {
@@ -2919,6 +3005,9 @@ function canOpen(data, heroId, o) {
   return data.tools.includes(g.tool) || (!!data.dawnbreaker && (g.tool === 'fireBloom' || g.tool === 'iceBloom'));
 }
 function gateOpen(o) { const g = GATE[o.type]; return !g || !!g.open(o); }
+// [TAP AUDIT] a gate a tap can use now: unopened — or a hook post, which works again and again (W2's relic ledge is left by
+// the post you zipped up with; once 'hooked' it ignored taps, stranding a tap-only kid)
+function tapGate(o) { return TOOL_GATES.includes(o.type) && (!gateOpen(o) || o.type === 'hookPoint'); }
 
 // A tap on a gate you cannot open yet: the missing-item bubble at once.
 function showNeed(h, o) { const g = GATE[o.type]; if (g) h.bubble = { icon: g.icon, missing: true, text: g.need, t: P.BUBBLE_S }; }
@@ -3102,7 +3191,7 @@ function drawHelpScreen(ctx, h, view, heroScreen, world = 1) {
   }
 }
 
-return { TOOL_GATES, puzzleHint, TOOL_CARDS, TOOL_ICONS, canOpen, gateOpen, showNeed, showHint, placeClueTablet, createHelp, helpEnterRoom, updateHelp, drawHelpWorld, itemIcon, drawHelpScreen };
+return { TOOL_GATES, puzzleHint, TOOL_CARDS, TOOL_ICONS, canOpen, gateOpen, tapGate, showNeed, showHint, placeClueTablet, createHelp, helpEnterRoom, updateHelp, drawHelpWorld, itemIcon, drawHelpScreen };
 });
 __def("scenes/pause.js", function () {
 // Pause menu (modal): Resume, Equipment, Map, Quests, Save, Mute, Quit to Title. [D42] no Return to Wayfarer — the ship is
@@ -3799,7 +3888,8 @@ return { Camera };
 });
 __def("engine/path.js", function () {
 // A* on the tile grid, 8-way without corner cutting. Returns [{tx,ty}...] excluding the start, or null.
-function findPath(map, sx, sy, gx, gy, maxNodes = 6000) {
+// avoid(x, y): extra tiles to route round (never the goal), e.g. a bounce pad a tap-walk must not step on by the way.
+function findPath(map, sx, sy, gx, gy, maxNodes = 6000, avoid = null) {
   if (map.isSolid(gx, gy)) return null;
   const W = map.w;
   const key = (x, y) => y * W + x;
@@ -3821,8 +3911,8 @@ function findPath(map, sx, sy, gx, gy, maxNodes = 6000) {
     for (let dy = -1; dy <= 1; dy++) for (let dx = -1; dx <= 1; dx++) {
       if (!dx && !dy) continue;
       const nx = c.x + dx, ny = c.y + dy;
-      if (map.isSolid(nx, ny)) continue;
-      if (dx && dy && (map.isSolid(c.x + dx, c.y) || map.isSolid(c.x, c.y + dy))) continue;
+      if (map.isSolid(nx, ny) || (avoid && !(nx === gx && ny === gy) && avoid(nx, ny))) continue;
+      if (dx && dy && (map.isSolid(c.x + dx, c.y) || map.isSolid(c.x, c.y + dy) || (avoid && (avoid(c.x + dx, c.y) || avoid(c.x, c.y + dy))))) continue; // no corner cutting past an avoided tile either
       const g = c.g + (dx && dy ? 1.414 : 1);
       const k = key(nx, ny);
       if (g < (gScore.has(k) ? gScore.get(k) : Infinity)) {
@@ -4025,9 +4115,10 @@ function moveAxis(h, map, dx, dy, other = 0) {
   return false;
 }
 
-function setTapTarget(h, map, wx, wy) {
-  const t = map.tile;
-  const p = findPath(map, Math.floor(h.x / t), Math.floor((h.y - 1) / t), Math.floor(wx / t), Math.floor(wy / t));
+function setTapTarget(h, map, wx, wy, avoid = null) {
+  const t = map.tile, sx = Math.floor(h.x / t), sy = Math.floor((h.y - 1) / t), gx = Math.floor(wx / t), gy = Math.floor(wy / t);
+  // [TAP AUDIT] route round avoid() tiles (bounce pads, pits, stairs) when there is a way round; else the plain path
+  const p = (avoid && findPath(map, sx, sy, gx, gy, 6000, avoid)) || findPath(map, sx, sy, gx, gy);
   h.path = p ? p.map((n) => ({ x: n.tx * t + t / 2, y: n.ty * t + t / 2 + BOX_H / 2 })) : null;
   if (h.path && h.path.length) { h.path[h.path.length - 1] = { x: wx, y: wy + BOX_H / 2 }; }
   return !!h.path;
@@ -8660,11 +8751,13 @@ __def("game/doortap.js", function () {
 const { CONFIG } = __req("config.js");
 const T = 16;
 
-function doorAt(doors, wx, wy) {
-  const m = CONFIG.COMBAT.DOOR_TAP_MARGIN * T;
+// below: optional reach below the door in tiles (overworld: the front step only, so a tap to walk away from a door you just came
+// out of does not take you back in — tap audit)
+function doorAt(doors, wx, wy, below = null) {
+  const m = CONFIG.COMBAT.DOOR_TAP_MARGIN * T, mb = below == null ? m : Math.min(m, below * T);
   for (const d of doors) {
     const hw = (d.w || 1) * T / 2;
-    if (wx >= d.x - hw - m && wx <= d.x + hw + m && wy >= d.y - T / 2 - m && wy <= d.y + T / 2 + m) return d;
+    if (wx >= d.x - hw - m && wx <= d.x + hw + m && wy >= d.y - T / 2 - m && wy <= d.y + T / 2 + mb) return d;
   }
   return null;
 }
@@ -10208,79 +10301,19 @@ function createVictory(view, data, { onDone } = {}) {
 
 return { victoryStats, createVictory };
 });
-__def("game/rush.js", function () {
-// Boss Rush + Sub-boss Rush (SPEC 2.9, S53): generated "dungeons" of back-to-back boss rooms in world order. Between bosses:
-// +RUSH.HEAL_HEARTS hearts, AP refilled, RUSH.BREATHER s breather. Exactly RUSH.REVIVES revive for the whole run and NO
-// math-revive. Boss Rush is timed from the first spawn to Astronova's defeat (best time → records, Star Chalice);
-// the Sub-boss Rush is untimed (Silver Comet). Records survive New Game [D12].
-const { CONFIG } = __req("config.js");
-const R = CONFIG.RUSH;
-const RUSH_KINDS = {
-  boss: { id: 'boss-rush', name: 'Boss Rush', timed: true, trophy: 'star-chalice', trophyName: 'Star Chalice' },
-  sub: { id: 'subboss-rush', name: 'Sub-boss Rush', timed: false, trophy: 'silver-comet', trophyName: 'Silver Comet' },
-};
-
-// [{ world, id }] in world order: the main boss of each world (boss rush) or every sub-boss (sub-boss rush).
-function rushList(worlds, kind) {
-  const out = [];
-  for (let w = 1; w <= 8; w++) {
-    const W = worlds[w]; if (!W) continue;
-    const bosses = Object.values(W.bosses || {});
-    if (kind === 'boss') { const main = W.throne && W.throne.rooms.throne && W.bosses[W.throne.rooms.throne.boss]; if (main) out.push({ world: w, id: main.id }); }
-    else for (const b of bosses) if (b.kind === 'sub') out.push({ world: w, id: b.id });
-  }
-  return out;
-}
-
-function buildRushDungeon(worlds, kind) {
-  const K = RUSH_KINDS[kind], list = rushList(worlds, kind), rooms = {};
-  list.forEach((b, i) => { rooms['r' + (i + 1)] = { floor: '1F', gx: i % 10, gy: Math.floor(i / 10), type: 'sub', boss: b.id, bossWorld: b.world, doors: {} }; });
-  return { id: K.id, name: K.name, world: 8, rush: kind, floors: ['1F'], start: 'r1', theme: { floor: '#2a2a5a', floor2: '#262656', wall: '#0e0e2a', wallTop: kind === 'boss' ? '#ffe070' : '#c0c0e0' }, rooms, count: list.length };
-}
-
-function createRun(kind, count) { return { kind, count, i: 0, revives: R.REVIVES, time: 0, started: false, breather: 0, over: false, won: false, deaths: 0 }; }
-
-// A boss fell: heal, refill AP, breather. Returns true when that was the last one.
-function rushKill(run, data, apCap) {
-  data.hearts = Math.min(data.maxHearts, data.hearts + R.HEAL_HEARTS);
-  data.ap = apCap;
-  run.i++;
-  if (run.i >= run.count) { run.won = true; run.over = true; return true; }
-  run.breather = R.BREATHER;
-  return false;
-}
-// The hero fell: 'revive' while the run's single revive lasts, else 'over' (no math-revive in a rush).
-function rushDeath(run) {
-  run.deaths++;
-  if (run.revives > 0) { run.revives--; return 'revive'; }
-  run.over = true; return 'over';
-}
-// Write the result into the slot's records (best time + trophy on a win). Returns { best, newBest, trophy }.
-function finishRun(run, records) {
-  const K = RUSH_KINDS[run.kind], out = { best: records.bestRushTime, newBest: false, trophy: null };
-  if (!run.won) return out;
-  if (!records.trophies.includes(K.trophy)) { records.trophies.push(K.trophy); out.trophy = K.trophyName; }
-  if (K.timed && (records.bestRushTime == null || run.time < records.bestRushTime)) { records.bestRushTime = Math.round(run.time * 10) / 10; out.newBest = true; }
-  out.best = records.bestRushTime;
-  return out;
-}
-function fmtTime(s) { if (s == null) return '—'; const m = Math.floor(s / 60), r = Math.floor(s % 60); return m + ':' + String(r).padStart(2, '0'); }
-
-return { RUSH_KINDS, rushList, buildRushDungeon, createRun, rushKill, rushDeath, finishRun, fmtTime };
-});
 __def("scenes/trophies.js", function () {
 // Rush results card + the trophy wall (Starhaven trophy hall, the Wayfarer's Trophy Wall, the title plaque). S53.
 const { input, pressed } = __req("engine/input.js");
 const { layoutBegin, record } = __req("engine/ui.js");
 const { font, drawOutlined } = __req("engine/text.js");
-const { RUSH_KINDS, fmtTime } = __req("game/rush.js");
+const { RUSH_KINDS, fmtTime, fmtRecord } = __req("game/rush.js");
 const NAMES = { 'star-chalice': 'Star Chalice — Boss Rush clear', 'silver-comet': 'Silver Comet — Sub-boss Rush clear' };
 
 // Lines the trophy wall shows (also the title plaque's data).
 function trophyLines(records) {
   const r = records || {};
   const out = (r.trophies || []).map((t) => NAMES[t] || t);
-  out.push('Best Boss Rush time: ' + fmtTime(r.bestRushTime));
+  out.push('Best Boss Rush: ' + (r.bestRushTime == null ? '—' : fmtRecord(r.bestRushTime, r.bestRushRevives)));
   out.push('Best Survival waves: ' + (r.bestWaves || 0));
   return out;
 }
@@ -10311,7 +10344,7 @@ function createRushResults(view, kind, result, onDone) {
     ctx.font = font(26); drawOutlined(ctx, result.won ? K.name + ' cleared!' : 'Run over', view.w / 2, 90, result.won ? '#ffe070' : '#ffb0b0');
     ctx.font = font(16);
     const rows = ['Bosses beaten: ' + result.bosses + ' / ' + result.count];
-    if (K.timed) rows.push('Time: ' + fmtTime(result.time) + (result.newBest ? '  — NEW BEST!' : ''), 'Best: ' + fmtTime(result.best));
+    if (K.timed) rows.push(fmtRecord(result.time, result.revivesUsed || 0) + (result.newBest ? '  — NEW BEST!' : ''), 'Best: ' + (result.best == null ? '—' : fmtRecord(result.best, result.bestRevives))); // [TAP AUDIT] time + revives used
     if (result.trophy) rows.push('Trophy: ' + result.trophy);
     rows.forEach((l, i) => { drawOutlined(ctx, l, view.w / 2, 150 + i * 30, '#ffffff'); record('text', 'rush-row-' + i, view.w / 2 - 150, 136 + i * 30, 300, 20); });
     if (s.t > 1) { ctx.font = font(11); drawOutlined(ctx, 'Tap to continue', view.w / 2, view.h - 20, '#8080c0'); }
@@ -11230,7 +11263,7 @@ const { spawnBoss } = __req("game/bosses.js");
 const { drawBoss, drawBossBar } = __req("art/fallback/bosses.js");
 const { TYPES } = __req("game/interactables.js");
 const { createLife, stampLife, updateLife, drawLife } = __req("game/dungeonlife.js");
-const { createHelp, helpEnterRoom, updateHelp, drawHelpWorld, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES, showHint, placeClueTablet, puzzleHint } = __req("game/puzzlehelp.js");
+const { createHelp, helpEnterRoom, updateHelp, drawHelpWorld, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES, tapGate, showHint, placeClueTablet, puzzleHint } = __req("game/puzzlehelp.js");
 const { drawProp, drawDungeonPropArt } = __req("art/fallback/props.js");
 const { grantGear } = __req("game/gear.js");
 const { gainXp, refreshHearts } = __req("game/progression.js");
@@ -11281,6 +11314,10 @@ function createDungeon(view, data, dg, opts = {}) {
   const d = { name: 'dungeon', dg, st, hero, ents, cam, data, room: null, roomId: null, map: null, msg: null, msgT: 0, sealed: false, wave: 0, bumpT: 0, buddies: dg.world === 6 ? createBuddies() : null }; // [W6] Sproutlings follow into the Sproutlands' dungeons
   const painter = dungeonPainter(dg.theme);
   const say = (t) => { d.msg = t; d.msgT = 2; };
+  // [TAP AUDIT] tap-walks route round tiles that carry the hero off (bounce pads, pit holes, stairs) unless one is the goal:
+  // before, a walk across Giggle Caverns' south bank stepped on the pad and flung the hero back over the lava
+  const moverAt = (x, y) => { const g = d.map.inside(x, y) ? d.map.ground[d.map.idx(x, y)] : -1; return g === DT.PIT || g === DT.STAIRS || !!(d.inter && d.inter.allAt(x, y).some((o) => o.type === 'bouncePad')); };
+  const walkTo = (wx, wy) => setTapTarget(hero, d.map, wx, wy, moverAt);
   const openQuestion = () => { if (scenes.top() === d) scenes.push(createMathPopup(view, { onClose: () => scenes.pop() })); };
   const W = WORLDS[dg.world] || {};
   d.help = createHelp(); // [DUNGEON-LIFE C]
@@ -11382,7 +11419,7 @@ function createDungeon(view, data, dg, opts = {}) {
     if (!plan) { say('This block is stuck — use the reset switch!'); return; }
     d.useOnArrive = { o, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, push: plan.push, stand: plan.stand };
     d.pushPlan = { ...plan, t: 0.8 };
-    if (Math.hypot(hero.x - plan.stand.x, hero.y - plan.stand.y) > 6) setTapTarget(hero, d.map, plan.stand.x, plan.stand.y);
+    if (Math.hypot(hero.x - plan.stand.x, hero.y - plan.stand.y) > 6) walkTo(plan.stand.x, plan.stand.y);
   }
   // walking (or a door tap) into a closed door: unlock, ask, or block with a message + nudge back (never freeze)
   function bumpDoor(ahead) {
@@ -11400,13 +11437,16 @@ function createDungeon(view, data, dg, opts = {}) {
     return r;
   }
   // [DUNGEON-LIFE D] tap-to-hit: stand on the free side nearest the hero, face the object and swing.
-  function tapHit(o) {
+  function tapHit(o, wx, wy) {
+    // [TAP AUDIT] an ice slider slides away from the hitter: an off-centre tap picks the side you hit it from (the push-block
+    // rule), so a kid can choose the direction; a centre tap (or any other object) keeps the nearest side
+    const ox = wx - (o.tx * 16 + 8), oy = wy - (o.ty * 16 + 8), pick = o.type === 'slider' && wx != null && Math.hypot(ox, oy) > 3 ? (Math.abs(ox) > Math.abs(oy) ? [Math.sign(ox), 0] : [0, Math.sign(oy)]) : null;
     const sides = [[0, 1], [0, -1], [-1, 0], [1, 0]].filter(([sx, sy]) => !d.map.isSolid(o.tx + sx, o.ty + sy))
-      .sort((a, b) => Math.hypot((o.tx + a[0]) * 16 + 8 - hero.x, (o.ty + a[1]) * 16 + 12 - hero.y) - Math.hypot((o.tx + b[0]) * 16 + 8 - hero.x, (o.ty + b[1]) * 16 + 12 - hero.y));
+      .sort((a, b) => (pick && a[0] === pick[0] && a[1] === pick[1] ? -1e6 : 0) - (pick && b[0] === pick[0] && b[1] === pick[1] ? -1e6 : 0) || Math.hypot((o.tx + a[0]) * 16 + 8 - hero.x, (o.ty + a[1]) * 16 + 12 - hero.y) - Math.hypot((o.tx + b[0]) * 16 + 8 - hero.x, (o.ty + b[1]) * 16 + 12 - hero.y));
     if (!sides.length) return;
     const [sx, sy] = sides[0], stand = { x: (o.tx + sx) * 16 + 8, y: (o.ty + sy) * 16 + 12 };
     d.useOnArrive = { o, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, hit: [-sx, -sy], stand };
-    if (Math.hypot(hero.x - stand.x, hero.y - stand.y) > 6) setTapTarget(hero, d.map, stand.x, stand.y);
+    if (Math.hypot(hero.x - stand.x, hero.y - stand.y) > 6) walkTo(stand.x, stand.y);
   }
   // [DUNGEON-LIFE] roaming foes placed by hand (room.foes: [id, x, y], already in this room's tiles); they come back on
   // every visit. A spot inside a wall/solid moves to the nearest free tile.
@@ -11495,7 +11535,7 @@ function createDungeon(view, data, dg, opts = {}) {
     const res = finishRun(d.run, rec);
     if (save.store && save.slot) save.store.writeRecords(save.slot, rec);
     save.auto('rush');
-    scenes.push(createRushResults(view, d.run.kind, { won: d.run.won, time: d.run.time, bosses: d.run.i, count: d.run.count, ...res }, () => { scenes.pop(); if (opts.onExit) opts.onExit(); }));
+    scenes.push(createRushResults(view, d.run.kind, { won: d.run.won, time: d.run.time, revivesUsed: d.run.revivesUsed, bosses: d.run.i, count: d.run.count, ...res }, () => { scenes.pop(); if (opts.onExit) opts.onExit(); }));
   };
   const rushFell = () => {
     if (rushDeath(d.run) === 'revive') { data.hearts = CONFIG.LIVES.REVIVE_HEARTS; hero.iframes = CONFIG.LIVES.REVIVE_IFRAMES; say('Your one revive! Careful now.'); return; }
@@ -11537,6 +11577,7 @@ function createDungeon(view, data, dg, opts = {}) {
       if (b === 'pause' && opts.pause) { opts.pause(!!(d.sealed && d.boss), d.leaveRun); return; }
       if (b === 'pill') { if (data.statPoints > 0) scenes.push(createStatPicker(view, data, () => scenes.pop())); return; }
       if (b === 'save') { floatText(hero.x, hero.y - 34, save.auto('manual') ? 'Saved!' : 'Could not save', '#80ff90'); return; } // [R3-8] confirm over the hero's head
+      if (b === 'potion') { if (usePotion(data)) { sfx('heal'); floatText(hero.x, hero.y - 34, '+' + CONFIG.ITEMS.POTION.hearts + ' hearts!', '#ff8090'); } else say('Hearts are full!'); return; } // [TAP AUDIT] potion by tap
       if (b && b.startsWith('slot')) kit.select(Number(b[4]));
       else if (!b) {
         const w = cam.toWorld(input.pointer.x, input.pointer.y);
@@ -11547,13 +11588,13 @@ function createDungeon(view, data, dg, opts = {}) {
         if (tb && !st.puzzles[d.roomId] && w.x >= tb.tx * 16 - 6 && w.x < tb.tx * 16 + 38 && w.y >= tb.ty * 16 - 14 && w.y < tb.ty * 16 + 20) { showHint(d.help, d.room); return; }
         const blk = findTapBlock(d.inter, w.x, w.y); // [POST-W8 F] nearest block within 22 px
         { const [ccx, ccy] = roomSpots(d.room).chest, tile = d.map.inside(ccx, ccy) ? d.map.ground[d.map.idx(ccx, ccy)] : -1; // [DUNGEON-LIFE D] tap a chest / pedestal = walk up and open it
-          if ((tile === DT.CHEST || tile === DT.MEDAL) && Math.hypot(ccx * 16 + 8 - w.x, ccy * 16 + 8 - w.y) < 16) { const stand = { x: ccx * 16 + 8, y: (ccy + 1) * 16 + 12 }; d.useOnArrive = { chest: true, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand }; setTapTarget(hero, d.map, stand.x, stand.y); return; } }
+          if ((tile === DT.CHEST || tile === DT.MEDAL) && Math.hypot(ccx * 16 + 8 - w.x, ccy * 16 + 8 - w.y) < 16) { const stand = { x: ccx * 16 + 8, y: (ccy + 1) * 16 + 12 }; d.useOnArrive = { chest: true, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand }; walkTo(stand.x, stand.y); return; } }
         if (blk) { tapPush(blk, w.x, w.y); return; } // [PUSH-BLOCKS] tap a block = walk to its side and push it one tile
         // [TOUCH PAINT] walkable objects you hit (paint tiles: TAP_HIT_FLOOR) count too; the nearest one wins (paint tiles touch)
         const hitObj = d.inter && d.inter.list.filter((o) => o.type !== 'block' && TYPES[o.type] && TYPES[o.type].react && TYPES[o.type].react.hit && (TYPES[o.type].solid(o) || TAP_HIT_FLOOR.has(o.type)) && Math.hypot(o.tx * 16 + 8 - w.x, o.ty * 16 + 8 - w.y) < 14)
           .sort((p, q) => Math.hypot(p.tx * 16 + 8 - w.x, p.ty * 16 + 8 - w.y) - Math.hypot(q.tx * 16 + 8 - w.x, q.ty * 16 + 8 - w.y))[0];
-        if (hitObj) { tapHit(hitObj); return; } // [DUNGEON-LIFE D] tap a switch / lever / valve = walk up and hit it
-        const gate = d.inter && d.inter.list.find((o) => TOOL_GATES.includes(o.type) && !gateOpen(o) && Math.hypot(d.inter.center(o).x - w.x, d.inter.center(o).y - w.y) < 18);
+        if (hitObj) { tapHit(hitObj, w.x, w.y); return; } // [DUNGEON-LIFE D] tap a switch / lever / valve = walk up and hit it
+        const gate = d.inter && d.inter.list.find((o) => tapGate(o) && Math.hypot(d.inter.center(o).x - w.x, d.inter.center(o).y - w.y) < 18);
         const tgt = d.inter && findTapTarget(d.inter, w.x, w.y); // tap a torch / switch: fire the ammo that works on it
         const c = tgt ? chooseAmmo(data, hero.id, tgt) : null;
         if (tgt && c && c.ammo) { // [DUNGEON-LIFE C] fire it, and show that ammo on the slot-2 button
@@ -11562,7 +11603,7 @@ function createDungeon(view, data, dg, opts = {}) {
         }
         if (gate || (tgt && c && c.need)) { // a gate you open with a tool (or still can't): walk up and use it, or say what's missing
           const o = gate || tgt;
-          if (canOpen(data, hero.id, o)) { d.useOnArrive = { o, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; setTapTarget(hero, d.map, o.tx * 16 + 8, (o.ty + 1) * 16 + 12); }
+          if (canOpen(data, hero.id, o)) { d.useOnArrive = { o, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; walkTo(o.tx * 16 + 8, (o.ty + 1) * 16 + 12); }
           else showNeed(d.help, o); // the thought bubble right away: which item is missing
           return;
         }
@@ -11571,14 +11612,14 @@ function createDungeon(view, data, dg, opts = {}) {
         if (door && door.side !== 'exit' && (d.room.doors[door.side] || {}).lock === 'puzzle' && !st.puzzles[d.roomId]) showHint(d.help, d.room, 'Solve the puzzle to open it!'); // [POST-W8 H]
         if (door) { // [D35] generous door tap: arrow + walk straight through (closed doors: walk up to them and say why)
           d.doorArrow = { x: door.x, y: door.y - 8, t: 2 }; hero.attackId = null;
-          if (door.side === 'exit' || doorOpen(dg, st, d.roomId, door.side)) setTapTarget(hero, d.map, door.x, door.y + 4);
-          else { setTapTarget(hero, d.map, door.fx, door.fy); d.useOnArrive = { door, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand: { x: door.fx, y: door.fy + 8 } }; } // [DUNGEON-LIFE D] arrive → try the door (key, math, message)
+          if (door.side === 'exit' || doorOpen(dg, st, d.roomId, door.side)) walkTo(door.x, door.y + 4);
+          else { walkTo(door.fx, door.fy); d.useOnArrive = { door, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand: { x: door.fx, y: door.fy + 8 } }; } // [DUNGEON-LIFE D] arrive → try the door (key, math, message)
         } else if (kit.slot === 3 && walkInSpecial(w)) { // [POST-W8 J] tap a foe with Spin / Cape Swipe: walk in, fire in reach
         } else if (kit.slot === 3) { d.aim = Math.atan2(w.y - (hero.y - 10), w.x - hero.x); kit.use(); d.aim = null;
         } else if (kit.slot === 2 && AMMO[kit.ammo()] && AMMO[kit.ammo()].kind === 'arc') { kit.fireAt(w.x - hero.x, w.y - (hero.y - 10));
         } else if (kit.slot === 2 && ents.list.some((q) => q.alive && q.kind === 'enemy' && Math.hypot(q.x - w.x, q.y - q.h / 2 - w.y) < CONFIG.COMBAT.TAP_ATTACK_RADIUS)) {
           const e = ents.list.find((q) => q.alive && q.kind === 'enemy' && Math.hypot(q.x - w.x, q.y - q.h / 2 - w.y) < CONFIG.COMBAT.TAP_ATTACK_RADIUS); kit.fireAt(e.x - hero.x, e.y - e.h / 2 - (hero.y - 10));
-        } else if (!combat.tapAt(w.x, w.y)) setTapTarget(hero, d.map, w.x, w.y);
+        } else if (!combat.tapAt(w.x, w.y)) walkTo(w.x, w.y);
       }
     }
     // items in dungeons too: V cycles, B uses (potion heals, bomb is thrown)
@@ -11610,7 +11651,7 @@ function createDungeon(view, data, dg, opts = {}) {
         else if (Math.hypot(hero.x - U.stand.x, hero.y - U.stand.y) < 14 && !(hero.path && hero.path.length)) {
           hero.facing = U.door.dir; d.useOnArrive = null;
           const shut = d.map.isSolid(...doorTile(U.door.side)), r = shut ? bumpDoor(U.door.side) : 'open'; // (walking up may already have unlocked it)
-          if (r === 'opened' || r === 'open') setTapTarget(hero, d.map, U.door.x, U.door.y + 4); // open → walk on through
+          if (r === 'opened' || r === 'open') walkTo(U.door.x, U.door.y + 4); // open → walk on through
         }
       } else if (U.hit) { // a switch / lever: swing once we stand next to it
         if ((U.t -= dt) <= 0) d.useOnArrive = null;
@@ -11626,7 +11667,7 @@ function createDungeon(view, data, dg, opts = {}) {
           if (!d.inter.push(o, U.push[0], U.push[1])) say('It won\'t budge that way!');
           d.useOnArrive = null;
         }
-      } else if ((d.useOnArrive.t -= dt) <= 0 || gateOpen(o)) d.useOnArrive = null;
+      } else if ((d.useOnArrive.t -= dt) <= 0 || !tapGate(o)) d.useOnArrive = null;
       else if (Math.hypot(dx, dy) < CONFIG.PUZZLE_HELP.USE_REACH && !(hero.path && hero.path.length)) {
         hero.facing = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
         if (o.type === 'hookPoint') startHook(data, hero, d.inter, d.map); else useToolsAhead(data, d.inter);
@@ -11744,8 +11785,11 @@ function createDungeon(view, data, dg, opts = {}) {
     if (d.roomId === dg.start && !d.room.doors.s) drawDoor(ctx, 's', d.sealed ? 'sealed' : 'exit', cam, dg.world, d.room); // [R1-20] the clear way out
     if (d.portalRoom !== d.roomId) { d.portalRoom = d.roomId; d.portalSpot = null; for (let ty = 0; ty < d.map.h; ty++) for (let tx = 0; tx < d.map.w; tx++) { const g = d.map.ground[d.map.idx(tx, ty)]; if (g === DT.PORTAL || g === DT.PORTAL_OFF) d.portalSpot = [tx, ty]; } }
     if (d.portalSpot) drawPortal(ctx, d.portalSpot, d.map.ground[d.map.idx(d.portalSpot[0], d.portalSpot[1])] === DT.PORTAL, cam, performance.now() / 1000);
-    const tnow = performance.now() / 1000, blocks = d.inter ? d.inter.byType('block') : [];
-    if (d.inter) for (const o of d.inter.list) {
+    // [TAP AUDIT] ice sliders count like push blocks for the plate glow, and both are drawn after everything else: a slider
+    // that reached its button was painted under the (taller) button art, so a kid could not see it had landed
+    const tnow = performance.now() / 1000, blocks = d.inter ? [...d.inter.byType('block'), ...d.inter.byType('slider')] : [];
+    const movers = (o) => (o.type === 'block' || o.type === 'slider' ? 1 : 0);
+    if (d.inter) for (const o of d.inter.list.slice().sort((p, q) => movers(p) - movers(q))) {
       if (o.type === 'plate' && blocks.length) { // [PUSH-BLOCKS] plates glow; a free one pulses so you see where a block should go
         const busy = blocks.some((b) => b.tx === o.tx && b.ty === o.ty), a = busy ? 0.35 : 0.25 + 0.2 * Math.sin(tnow * 4);
         ctx.fillStyle = busy ? 'rgba(255,230,120,' + a + ')' : 'rgba(120,220,255,' + a.toFixed(2) + ')'; ctx.fillRect(o.tx * 16 - cam.x - 2, o.ty * 16 - cam.y - 2, 20, 20);
@@ -12800,7 +12844,7 @@ const { createPadKit, drawPadKitFloor, drawPadKit } = __req("game/padkit.js");
 const { createBushes, cutBushesIn, cutBushAt, updateBushes, bushAt } = __req("game/bushes.js");
 const { drawShot, drawSpecialFx } = __req("game/shotfx.js");
 const { treeAnchors, drawTrees2x } = __req("game/trees2x.js");
-const { createHelp, updateHelp, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES } = __req("game/puzzlehelp.js");
+const { createHelp, updateHelp, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES, tapGate } = __req("game/puzzlehelp.js");
 const { drawPickup } = __req("game/drops.js");
 const { drawCastleFloor, drawCastle } = __req("game/castle.js");
 const { createTutorial, updateTutorial, tutEvent, drawDummy, drawTutorial, skipRect, finish: finishTutorial } = __req("game/tutorial.js");
@@ -13056,6 +13100,7 @@ function createArena(view, data, opts = {}) {
   const lookoutHit = (wx, wy) => {
     const R = ow && ow.world.landmark && landmarkRect(ow), f = ow && ow.feat, tx = Math.floor(wx / 16), ty = Math.floor(wy / 16);
     if (!R || wx < R.x || wx > R.x + R.w || wy < R.y || wy > R.y + R.h || !map.isSolid(tx, ty)) return false;
+    if (inter.allAt(tx, ty).some((o) => TOOL_GATES.includes(o.type) && !gateOpen(o))) return false; // [TAP AUDIT] a gate in the landmark (Fizz Lake's crossing tiles) stays a gate
     if (f.boss && Math.abs(tx - f.boss.tx - 0.5) <= 2.5 && Math.abs(ty - f.boss.ty) <= 2) return false; // the keep door stays a door
     let sy = ty; while (sy < map.h - 1 && map.isSolid(tx, sy)) sy++; // the structure's foot below the tap
     const stand = { x: tx * 16 + 8, y: sy * 16 + 12 };
@@ -13127,7 +13172,10 @@ function createArena(view, data, opts = {}) {
     }));
   };
   a.enterEntrance = (dg, e, fromStart = false) => {
-    const ox = e.tx * 16 + 16, oy = (e.ty + 2) * 16 + 12;
+    // [TAP AUDIT] where you come out: two rows below a 2-wide mouth as before — unless that spot is not free (W2's hook relic
+    // stands on a one-row ledge over the soda: the hero came out inside the gap and taps could not move them); then the step
+    const free = ([x, y]) => map.boxFree(x - 5, y - 7, x + 5, y - 1);
+    const [ox, oy] = [[e.tx * 16 + 16, (e.ty + 2) * 16 + 12], [e.tx * 16 + 8, (e.ty + 1) * 16 + 12], [e.tx * 16 + 24, (e.ty + 1) * 16 + 12]].find(free) || [e.tx * 16 + 16, (e.ty + 2) * 16 + 12];
     data.location = { ...data.location, area: 'dungeon', dungeon: dg.id, x: ox, y: oy };
     const out = () => { scenes.pop(); data.location = { ...data.location, area: 'overworld', dungeon: '' }; Object.assign(hero, { x: ox, y: oy, facing: 'down', path: null }); save.auto('area'); };
     scenes.push(createDungeon(view, data, dg, { resume: !fromStart, onExit: out,
@@ -13206,6 +13254,7 @@ function createArena(view, data, opts = {}) {
       if (b === 'q') { openQuestion(); return; }
       if (b === 'equip') { scenes.push(createEquipment(view, data, () => scenes.pop())); return; } // [POST-W8 K] the HUD helmet button
       if (b && b.startsWith('slot')) kit.select(Number(b[4]));
+      if (b === 'potion') { if (usePotion(data)) { sfx('heal'); floatText(hero.x, hero.y - 34, '+' + CONFIG.ITEMS.POTION.hearts + ' hearts!', '#ff8090'); } else say('Hearts are full!'); return; } // [TAP AUDIT] potion by tap
       if (b === 'pause') { a.openPause(); return; }
       if (b === 'map' && ow) { a.openMap(); return; }
       if (b === 'pill') { if (data.statPoints > 0) scenes.push(createStatPicker(view, data, () => scenes.pop())); return; }
@@ -13230,16 +13279,19 @@ function createArena(view, data, opts = {}) {
           if (blk) { const plan = planPush(inter, map, hero, blk, w.x, w.y); if (!plan) { say('This block is stuck!'); return; }
             a.pushOnArrive = { ...plan, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; a.pushPlan = { ...plan, t: 0.8 }; hero.attackId = null;
             if (Math.hypot(hero.x - plan.stand.x, hero.y - plan.stand.y) > 6) setTapTarget(hero, map, plan.stand.x, plan.stand.y); return; } }
-        const gate = inter.list.find((o) => TOOL_GATES.includes(o.type) && !gateOpen(o) && Math.hypot(inter.center(o).x - w.x, inter.center(o).y - w.y) < 18);
+        const gd = (o) => Math.hypot(inter.center(o).x - w.x, inter.center(o).y - w.y); // [TAP AUDIT] the NEAREST gate (Fizz Lake's crossing tiles touch: the first in the list was not the one shot at)
+        const gate = inter.list.filter((o) => tapGate(o) && gd(o) < 18).sort((p, q) => gd(p) - gd(q))[0];
         const ammoGate = gate && findTapTarget(inter, w.x, w.y) === gate; // [W8 gate fix] a gate opened by ammo (torch, ice, water…) stays with a.tapTarget
-        if (ammoGate && !(chooseAmmo(data, hero.id, gate) || {}).ammo) { showNeed(a.help, gate); a.tapTarget(w.x, w.y); return; } // no ammo: the bubble + 'Need FIRE!'
-        if (gate && !ammoGate) {
+        const gateAmmo = ammoGate && (chooseAmmo(data, hero.id, gate) || {}).ammo;
+        if (gateAmmo) { a.tapTarget(w.x, w.y); return; } // [TAP AUDIT] shoot it now: a gate guarding a door (W5 relic water) must not fall through to the door's tap zone
+        if (ammoGate && !canOpen(data, hero.id, gate)) { showNeed(a.help, gate); a.tapTarget(w.x, w.y); return; } // no ammo and no tool: the bubble + 'Need FIRE!'
+        if (gate) { // a tool gate — or an ammo gate opened with an owned tool instead (cracked walls + the Bomb Bag: no hero has BOMB ammo) [TAP AUDIT]
           if (!canOpen(data, hero.id, gate)) { showNeed(a.help, gate); return; }
           const st = gateStand(gate); hero.attackId = null;
           if (st) { setTapTarget(hero, map, st.x * 16 + 8, st.y * 16 + 12); a.useOnArrive = { o: gate, stand: st, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; }
           return;
         }
-        const door = doorAt(a.doors, w.x, w.y); // [A7] a tap in a door's zone always means the door (a villager loitering by it must not steal the tap)
+        const door = doorAt(a.doors, w.x, w.y, CONFIG.COMBAT.DOOR_TAP_BELOW_OW); // [A7] a tap in a door's zone always means the door (a villager loitering by it must not steal the tap)
         const n = !door && npcs.find((e) => Math.hypot(e.x - w.x, e.y - 12 - w.y) < 20);
         if (n && Math.hypot(n.x - hero.x, n.y - hero.y) < 64) { a.talkTo(n); return; }
         if (n) { hero.attackId = null; setTapTarget(hero, map, n.x, n.y + 14); a.talkWalk = { n, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, re: 0.5 }; return; } // [POST-W8 L] walk up to anyone, talk on arrival
@@ -13283,7 +13335,7 @@ function createArena(view, data, opts = {}) {
     }
     if (a.useOnArrive) { // [TOUCH GATES] arrived at the gate's stand tile → face it and use the tool
       const U = a.useOnArrive, o = U.o;
-      if ((U.t -= dt) <= 0 || gateOpen(o)) a.useOnArrive = null;
+      if ((U.t -= dt) <= 0 || !tapGate(o)) a.useOnArrive = null;
       else if (Math.hypot(hero.x - (U.stand.x * 16 + 8), hero.y - (U.stand.y * 16 + 12)) < 10 && !(hero.path && hero.path.length)) {
         const dx = o.tx - U.stand.x, dy = o.ty - U.stand.y;
         hero.facing = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
