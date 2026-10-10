@@ -84,7 +84,7 @@ const CONFIG = deepFreeze({
     SPECIAL_WALK_S: 6, SPECIAL_WALK_MARGIN: 6, // [POST-W8 J] tap-an-enemy walk-in for Spin Attack / Cape Swipe: give up after this long; fire this far inside the zone
     MELEE_CD: 0.30, CHARGE_BONK_S: 0.7, HERO_IFRAMES: 1.0, // [R3-fix] a charge that hits a wall leaves the foe dazed (hittable) this long
      ENEMY_IFRAMES: 0.2, KNOCKBACK: 24, PROJ_SPEED: 220,
-    TAP_ATTACK_RADIUS: 64, AUTOWALK_MAX: 200, TAP_TARGET_RADIUS: 24, TELEGRAPH_MIN: 0.5, TELEGRAPH_LITTLE_MULT: 1.5,
+    TAP_ATTACK_RADIUS: 64, AUTOWALK_MAX: 200, CHASE_REPATH_S: 0.4, TAP_TARGET_RADIUS: 24, TELEGRAPH_MIN: 0.5, TELEGRAPH_LITTLE_MULT: 1.5,
     // [D35] touch assist: melee facing snap radius, keyboard ranged auto-aim cone (full angle) + range, door tap margin (tiles), magnet px.
     MELEE_ASSIST_R: 40, FACE_HOLD: 0.4, AIM_CONE_DEG: 45, AIM_RANGE: 220, ARC_RANGE: 160, // [D37] arcing shots land on the aimed point, clamped to ARC_RANGE px
     DOOR_TAP_MARGIN: 1.5, DOOR_TAP_BELOW_OW: 1, /* [TAP AUDIT] overworld doors reach only their front step below */ DOOR_MAGNET_PX: 10,
@@ -149,7 +149,7 @@ const CONFIG = deepFreeze({
     HOOK: { range: 7, zip: 0.35 }, // Vine Hook: grabs a hook post up to `range` tiles ahead, zips the hero across in `zip` s
   },
   LIVES: { REVIVES_PER_VISIT: 5, REVIVE_HEARTS: 3, REVIVE_IFRAMES: 3 },
-  RUSH: { HEAL_HEARTS: 5, BREATHER: 5, REVIVES: 1, HITS_CAP: 1.5 }, // [S62] in a rush a boss needs at most HITS_CAP × its Adventurer hits (8 chained fights, one revive)
+  RUSH: { HEAL_HEARTS: 5, BREATHER: 5, REVIVES: Infinity, HITS_CAP: 1.5 }, // [S62] in a rush a boss needs at most HITS_CAP × its Adventurer hits; [TAP AUDIT 2026-10-10] revives are unlimited (one revive: no tap run of 4 beat all 8 bosses) — the record keeps time + revives used
   SURVIVAL: { BASE: 3, MAX_ALIVE: 16, HP_PER_WAVE: 0.25, SPEED_PER_WAVE: 0.03, SPEED_CAP: 0.60, DMG_EVERY: 3, ELITE_FROM: 10, ELITE_CHANCE: 0.2, GAP: 3, DMG_WORLD_CAP: 3 }, // [S61] base hit = min(home world, W3) strength; waves add the rest
   BUSH: { COIN: 0.30, HEART: 0.15, HURT_HEART_MULT: 1.6, REGROW_TILES: 24, REGROW_MIN_S: 4, TAP_REACH: 30 }, // [BUSHES] cut drops (rest = nothing), grow back off-screen
   PUZZLE_HELP: { BANNER_S: 3, BUBBLE_S: 2.6, CARD_S: 4, IDLE_S: 25, NEAR_PX: 40, REARM_PX: 80, TAP_HINTS: 3, USE_REACH: 28, USE_TIMEOUT_S: 6, SLIDE_S: 0.2, BLOCK_NEAR_PX: 30 }, // [DUNGEON-LIFE C] hints, bubbles, item cards
@@ -1119,7 +1119,8 @@ return { drawPainting, drawTitleVista, drawIntroPanel };
 });
 __def("game/rush.js", function () {
 // Boss Rush + Sub-boss Rush (SPEC 2.9, S53): generated "dungeons" of back-to-back boss rooms in world order. Between bosses:
-// +RUSH.HEAL_HEARTS hearts, AP refilled, RUSH.BREATHER s breather. Exactly RUSH.REVIVES revive for the whole run and NO
+// +RUSH.HEAL_HEARTS hearts, AP refilled, RUSH.BREATHER s breather. RUSH.REVIVES revives for the whole run (Infinity since the
+// 2026-10-10 tap audit: every fall gets you back up, and the record shows how many revives the run used) and NO
 // math-revive. Boss Rush is timed from the first spawn to Astronova's defeat (best time → records, Star Chalice);
 // the Sub-boss Rush is untimed (Silver Comet). Records survive New Game [D12].
 const { CONFIG } = __req("config.js");
@@ -1158,7 +1159,7 @@ function rushKill(run, data, apCap) {
   run.breather = R.BREATHER;
   return false;
 }
-// The hero fell: 'revive' while the run's single revive lasts, else 'over' (no math-revive in a rush).
+// The hero fell: 'revive' while the run's revives last (unlimited by default), else 'over' (no math-revive in a rush).
 function rushDeath(run) {
   run.deaths++;
   if (run.revives > 0) { run.revives--; run.revivesUsed++; return 'revive'; }
@@ -4124,6 +4125,21 @@ function setTapTarget(h, map, wx, wy, avoid = null) {
   return !!h.path;
 }
 
+// [TAP AUDIT] tap-to-attack walk: straight at the foe while the way is clear, else an A* route round the wall
+// (re-planned every CHASE_REPATH_S); no route (foe over water, in a wall…) keeps the straight walk as before
+function chaseTarget(h, map, x, y, dt, id) {
+  const dx = x - h.x, dy = y - h.y, n = Math.ceil(Math.hypot(dx, dy) / 4);
+  let clear = true;
+  for (let i = 1; i <= n && clear; i++) clear = free(map, h.x + dx * i / n, h.y + dy * i / n);
+  if (clear) { h.chase = null; h.path = [{ x, y }]; return; }
+  const c = h.chase;
+  if (!c || c.id !== id || (c.t -= dt) <= 0 || !c.path.length) {
+    const t = map.tile, p = findPath(map, Math.floor(h.x / t), Math.floor((h.y - 1) / t), Math.floor(x / t), Math.floor((y - 1) / t), 2000);
+    h.chase = { id, t: CONFIG.COMBAT.CHASE_REPATH_S, path: p && p.length ? p.map((q) => ({ x: q.tx * t + t / 2, y: q.ty * t + t / 2 + BOX_H / 2 })) : [{ x, y }] };
+  }
+  h.path = h.chase.path;
+}
+
 function updateHero(h, map, dt) {
   // [POST-W8 D] the item-get pose (hands up, prize overhead) holds the hero still: no walking, no tap paths or tap-attack walks
   if (h.itemGet) { h.path = null; h.attackId = null; h.moving = false; h.dirY = 0; h.animT = 0; h.frame = 1; if (h.flash > 0) h.flash -= dt; if (h.faceHold > 0) h.faceHold -= dt; return; }
@@ -4214,7 +4230,7 @@ function drawHero(ctx, h, cam) {
   ctx.drawImage(set[h.facing][h.frame], Math.round(h.x - 8 - cam.x), Math.round(h.y - 24 - cam.y));
 }
 
-return { heroArt, walkFrame, createHero, setTapTarget, updateHero, drawHero };
+return { heroArt, walkFrame, createHero, setTapTarget, chaseTarget, updateHero, drawHero };
 });
 __def("scenes/testmap.js", function () {
 // Movement test map (?test=1&scene=testmap): 60×40 tiles, a wall with a 1-tile gap, blocks, hero + camera.
@@ -4795,6 +4811,7 @@ const { updateHazards } = __req("game/patterns.js");
 const { HEROES } = __req("data/heroes.js");
 const { updateBoss, tryNextForm, novaHit } = __req("game/bosses.js");
 const { bossHitDamage } = __req("game/stats.js");
+const { chaseTarget } = __req("game/hero.js");
 const C = CONFIG.COMBAT;
 const SWING_T = 0.15;
 
@@ -4931,14 +4948,14 @@ function createCombat(cx) {
         if ((sw.t -= dt) <= 0 || hero.kbt > 0 || hero.itemGet) { hero.specialWalk = null; hero.path = null; }
         else if (near) { hero.specialWalk = null; hero.path = null; sw.fire(Math.atan2(near.y - near.h / 2 - hy, near.x - hero.x)); }
         else if (!tgt || !tgt.alive) { hero.specialWalk = null; hero.path = null; }
-        else hero.path = [{ x: tgt.x, y: tgt.y }];
+        else chaseTarget(hero, map, tgt.x, tgt.y, dt, 'sw' + tgt.id);
       }
       // Tap-to-attack: walk toward the target, then swing when in range.
       const tgt = hero.attackId != null ? get(ents, hero.attackId) : null;
       if (hero.attackId != null && !tgt) hero.attackId = null;
       if (tgt) {
         const d = Math.hypot(tgt.x - hero.x, tgt.y - hero.y);
-        if (d <= C.MELEE_RANGE + tgt.w / 2) { hero.path = null; faceTo(tgt.x, tgt.y); if (startSwing()) hero.attackId = null; } else hero.path = [{ x: tgt.x, y: tgt.y }];
+        if (d <= C.MELEE_RANGE + tgt.w / 2) { hero.path = null; faceTo(tgt.x, tgt.y); if (startSwing()) hero.attackId = null; } else chaseTarget(hero, map, tgt.x, tgt.y, dt, tgt.id);
       }
       if (hero.swing) {
         const sb = swingBox(hero);
@@ -11538,7 +11555,7 @@ function createDungeon(view, data, dg, opts = {}) {
     scenes.push(createRushResults(view, d.run.kind, { won: d.run.won, time: d.run.time, revivesUsed: d.run.revivesUsed, bosses: d.run.i, count: d.run.count, ...res }, () => { scenes.pop(); if (opts.onExit) opts.onExit(); }));
   };
   const rushFell = () => {
-    if (rushDeath(d.run) === 'revive') { data.hearts = CONFIG.LIVES.REVIVE_HEARTS; hero.iframes = CONFIG.LIVES.REVIVE_IFRAMES; say('Your one revive! Careful now.'); return; }
+    if (rushDeath(d.run) === 'revive') { data.hearts = CONFIG.LIVES.REVIVE_HEARTS; hero.iframes = CONFIG.LIVES.REVIVE_IFRAMES; say(Number.isFinite(CONFIG.RUSH.REVIVES) ? (d.run.revives ? 'Revived! ' + d.run.revives + ' left' : 'Your last revive! Careful now.') : 'Back on your feet! (revive ' + d.run.revivesUsed + ')'); return; }
     d.boss = null; rushEnd();
   };
   // [S61] Pause → Leave Run: a Rush ends as lost (results, no trophy), Survival ends with the waves beaten so far
@@ -11892,7 +11909,7 @@ function createDungeon(view, data, dg, opts = {}) {
     ctx.font = font(10); ctx.textAlign = 'left'; drawOutlined(ctx, fl + '  🔑' + st.keys + (st.bigKey ? ' ★' : ''), mx - 2, my + 34, '#ffffff', '#10101a', 1);
     if (d.boss && d.boss.alive) drawBossBar(ctx, d.boss, view.w, font, drawOutlined);
     if (d.sv) { ctx.font = font(12); ctx.textAlign = 'left'; drawOutlined(ctx, 'SURVIVAL  wave ' + d.sv.wave + (d.sv.revives ? '  ♥ revive left' : ''), 12, view.h - CONFIG.UI.BOTTOM_LINE, '#a0e0ff'); }
-    if (d.run) { ctx.font = font(12); ctx.textAlign = 'left'; drawOutlined(ctx, (d.run.kind === 'boss' ? 'BOSS RUSH ' + fmtTime(d.run.time) + '  ' : 'SUB-BOSS RUSH  ') + (d.run.i + (d.run.over ? 0 : 1)) + '/' + d.run.count + (d.run.revives ? '  ♥ revive left' : ''), 12, view.h - CONFIG.UI.BOTTOM_LINE, '#ffe070');
+    if (d.run) { ctx.font = font(12); ctx.textAlign = 'left'; drawOutlined(ctx, (d.run.kind === 'boss' ? 'BOSS RUSH ' + fmtTime(d.run.time) + '  ' : 'SUB-BOSS RUSH  ') + (d.run.i + (d.run.over ? 0 : 1)) + '/' + d.run.count + (Number.isFinite(d.run.revives) ? (d.run.revives ? '  ♥ ' + d.run.revives + ' revive' + (d.run.revives > 1 ? 's' : '') + ' left' : '') : (d.run.revivesUsed ? '  revives used ' + d.run.revivesUsed : '')), 12, view.h - CONFIG.UI.BOTTOM_LINE, '#ffe070');
       if (d.run.breather > 0) { ctx.font = font(22); ctx.textAlign = 'center'; drawOutlined(ctx, 'Next boss in ' + Math.ceil(d.run.breather), view.w / 2, 150, '#ffffff'); } }
     if (d.boss && d.boss.alive && d.boss.nova) { // [D46] Supernova Countdown: the clock + stagger stars
       const n = d.boss.nova; ctx.font = font(20); ctx.textAlign = 'center';
