@@ -18,7 +18,7 @@ html, body { margin: 0; height: 100%; background: #000; overflow: hidden; oversc
 <body>
 <canvas id="game" width="640" height="480"></canvas>
 <script>
-window.ASSETS = {"atlas/_test.png":"assets/atlas/_test.png","atlas/dawnbreaker-weapons.png":"assets/atlas/dawnbreaker-weapons.png","atlas/fx-hero-a.png":"assets/atlas/fx-hero-a.png","atlas/fx-hero-b.png":"assets/atlas/fx-hero-b.png","atlas/hero-milo-moves-b.png":"assets/atlas/hero-milo-moves-b.png","atlas/hero-milo.png":"assets/atlas/hero-milo.png","atlas/hero-portraits.png":"assets/atlas/hero-portraits.png","atlas/hero-rowan-moves-b.png":"assets/atlas/hero-rowan-moves-b.png","atlas/hero-rowan.png":"assets/atlas/hero-rowan.png","atlas/hero-wren-moves-b.png":"assets/atlas/hero-wren-moves-b.png","atlas/hero-wren.png":"assets/atlas/hero-wren.png","atlas/icons-armor-a.png":"assets/atlas/icons-armor-a.png","atlas/icons-armor-b.png":"assets/atlas/icons-armor-b.png","atlas/icons-items.png":"assets/atlas/icons-items.png","atlas/icons-weapons-a.png":"assets/atlas/icons-weapons-a.png","atlas/icons-weapons-b.png":"assets/atlas/icons-weapons-b.png","atlas/intro-1.png":"assets/atlas/intro-1.png","atlas/intro-2.png":"assets/atlas/intro-2.png","atlas/landing-pad.png":"assets/atlas/landing-pad.png","atlas/medals.png":"assets/atlas/medals.png","atlas/milo-attack.png":"assets/atlas/milo-attack.png","atlas/milo-extra.png":"assets/atlas/milo-extra.png","atlas/milo-hold.png":"assets/atlas/milo-hold.png","atlas/milo-moves.png":"assets/atlas/milo-moves.png","atlas/milo-walk-side.png":"assets/atlas/milo-walk-side.png","atlas/relic-entrances.png":"assets/atlas/relic-entrances.png","atlas/relics.png":"assets/atlas/relics.png","atlas/rowan-attack.png":"assets/atlas/rowan-attack.png","atlas/rowan-extra.png":"assets/atlas/rowan-extra.png","atlas/rowan-hold.png":"assets/atlas/rowan-hold.png","atlas/rowan-moves.png":"assets/atlas/rowan-moves.png","atlas/royal-vault.png":"assets/atlas/royal-vault.png","atlas/screen-inventory.png":"assets/atlas/screen-inventory.png","atlas/screen-pause.png":"assets/atlas/screen-pause.png","atlas/screen-save.png":"assets/atlas/screen-save.png","atlas/ship-ext.png":"assets/atlas/ship-ext.png","atlas/ship-in-2x.png":"assets/atlas/ship-in-2x.png","atlas/ship-in.png":"assets/atlas/ship-in.png","atlas/ship-map.png":"assets/atlas/ship-map.png","atlas/ship-medal-board.png":"assets/atlas/ship-medal-board.png","atlas/ship-npcs.png":"assets/atlas/ship-npcs.png","atlas/ship-room-2x.png":"assets/atlas/ship-room-2x.png","atlas/ship-tiles.png":"assets/atlas/ship-tiles.png","atlas/title.png":"assets/atlas/title.png","atlas/treasure-room-b.png":"assets/atlas/treasure-room-b.png","atlas/treasure-room.png":"assets/atlas/treasure-room.png","atlas/ui-attack-icons-b.png":"assets/atlas/ui-attack-icons-b.png","atlas/ui-attack-icons.png":"assets/atlas/ui-attack-icons.png","atlas/ui-difficulty.png":"assets/atlas/ui-difficulty.png","atlas/ui-element-icons.png":"assets/atlas/ui-element-icons.png","atlas/ui-heart-pieces.png":"assets/atlas/ui-heart-pieces.png","atlas/ui-hud-icons.png":"assets/atlas/ui-hud-icons.png","atlas/ui-kit.png":"assets/atlas/ui-kit.png","atlas/ui-panels.png":"assets/atlas/ui-panels.png","atlas/ui-stat-icons.png":"assets/atlas/ui-stat-icons.png","atlas/ui-touch.png":"assets/atlas/ui-touch.png","atlas/w1-ambient.png":"assets/atlas/w1-ambient.png","atlas/w1-big-trees.png":"assets/atlas/w1-big-trees.png","atlas/w1-boss.png":"assets/atlas/w1-boss.png","atlas/w1-castle-courtyard.png":"assets/atlas/w1-castle-courtyard.png","atlas/w1-castle-interior.png":"assets/atlas/w1-castle-interior.png","atlas/w1-castle-kit-a.png":"assets/atlas/w1-castle-kit-a.png","atlas/w1-castle-kit-b.png":"assets/atlas/w1-castle-kit-b.png","atlas/w1-cliffs.png":"assets/atlas/w1-cliffs.png","atlas/w1-clouds.png":"assets/atlas/w1-clouds.png","atlas/w1-dungeon-enemies.png":"assets/atlas/w1-dungeon-enemies.png","atlas/w1-dungeon-life.png":"assets/atlas/w1-dungeon-life.png","atlas/w1-dungeon-objects.png":"assets/atlas/w1-dungeon-objects.png","atlas/w1-dungeon.png":"assets/atlas/w1-dungeon.png","atlas/w1-enemies.png":"assets/atlas/w1-enemies.png","atlas/w1-entrance.png":"assets/atlas/w1-entrance.png","atlas/w1-furniture.png":"assets/atlas/w1-furniture.png","atlas/w1-fx.png":"assets/atlas/w1-fx.png","atlas/w1-ground.png":"assets/atlas/w1-ground.png","atlas/w1-interior.png":"assets/atlas/w1-interior.png","atlas/w1-landmark-castle.png":"assets/atlas/w1-landmark-castle.png","atlas/w1-landmarks.png":"assets/atlas/w1-landmarks.png","atlas/w1-lights.png":"assets/atlas/w1-lights.png","atlas/w1-liquid-a.png":"assets/atlas/w1-liquid-a.png","atlas/w1-liquid-b.png":"assets/atlas/w1-liquid-b.png","atlas/w1-maze-game.png":"assets/atlas/w1-maze-game.png","atlas/w1-nature.png":"assets/atlas/w1-nature.png","atlas/w1-npcs-b.png":"assets/atlas/w1-npcs-b.png","atlas/w1-npcs.png":"assets/atlas/w1-npcs.png","atlas/w1-puzzle-b.png":"assets/atlas/w1-puzzle-b.png","atlas/w1-puzzle.png":"assets/atlas/w1-puzzle.png","atlas/w1-royals.png":"assets/atlas/w1-royals.png","atlas/w1-setpieces.png":"assets/atlas/w1-setpieces.png","atlas/w1-shop.png":"assets/atlas/w1-shop.png","atlas/w1-sky.png":"assets/atlas/w1-sky.png","atlas/w1-subs.png":"assets/atlas/w1-subs.png","atlas/w1-town-b.png":"assets/atlas/w1-town-b.png","atlas/w1-town-c.png":"assets/atlas/w1-town-c.png","atlas/w1-town-paving.png":"assets/atlas/w1-town-paving.png","atlas/w1-town-props.png":"assets/atlas/w1-town-props.png","atlas/w1-town.png":"assets/atlas/w1-town.png","atlas/w1-villagers.png":"assets/atlas/w1-villagers.png","atlas/w1-water-extras.png":"assets/atlas/w1-water-extras.png","atlas/w1-weapons.png":"assets/atlas/w1-weapons.png","atlas/w1-yard-garden.png":"assets/atlas/w1-yard-garden.png","atlas/w2-ambient.png":"assets/atlas/w2-ambient.png","atlas/w2-big-trees.png":"assets/atlas/w2-big-trees.png","atlas/w2-boss.png":"assets/atlas/w2-boss.png","atlas/w2-cliffs.png":"assets/atlas/w2-cliffs.png","atlas/w2-clouds.png":"assets/atlas/w2-clouds.png","atlas/w2-dungeon-extras.png":"assets/atlas/w2-dungeon-extras.png","atlas/w2-dungeon-life.png":"assets/atlas/w2-dungeon-life.png","atlas/w2-dungeon-objects.png":"assets/atlas/w2-dungeon-objects.png","atlas/w2-dungeon.png":"assets/atlas/w2-dungeon.png","atlas/w2-enemies.png":"assets/atlas/w2-enemies.png","atlas/w2-entrance.png":"assets/atlas/w2-entrance.png","atlas/w2-furniture.png":"assets/atlas/w2-furniture.png","atlas/w2-fx.png":"assets/atlas/w2-fx.png","atlas/w2-ground.png":"assets/atlas/w2-ground.png","atlas/w2-interior.png":"assets/atlas/w2-interior.png","atlas/w2-landmark-pillars.png":"assets/atlas/w2-landmark-pillars.png","atlas/w2-landmarks.png":"assets/atlas/w2-landmarks.png","atlas/w2-lights.png":"assets/atlas/w2-lights.png","atlas/w2-liquid-a.png":"assets/atlas/w2-liquid-a.png","atlas/w2-liquid-b.png":"assets/atlas/w2-liquid-b.png","atlas/w2-nature.png":"assets/atlas/w2-nature.png","atlas/w2-npcs-b.png":"assets/atlas/w2-npcs-b.png","atlas/w2-npcs.png":"assets/atlas/w2-npcs.png","atlas/w2-puzzle-b.png":"assets/atlas/w2-puzzle-b.png","atlas/w2-puzzle.png":"assets/atlas/w2-puzzle.png","atlas/w2-royal-vault.png":"assets/atlas/w2-royal-vault.png","atlas/w2-setpieces.png":"assets/atlas/w2-setpieces.png","atlas/w2-shop.png":"assets/atlas/w2-shop.png","atlas/w2-sky.png":"assets/atlas/w2-sky.png","atlas/w2-subs.png":"assets/atlas/w2-subs.png","atlas/w2-town-b.png":"assets/atlas/w2-town-b.png","atlas/w2-town-c.png":"assets/atlas/w2-town-c.png","atlas/w2-town-paving.png":"assets/atlas/w2-town-paving.png","atlas/w2-town-props.png":"assets/atlas/w2-town-props.png","atlas/w2-town.png":"assets/atlas/w2-town.png","atlas/w2-villagers.png":"assets/atlas/w2-villagers.png","atlas/w2-water-extras.png":"assets/atlas/w2-water-extras.png","atlas/w2-weapons.png":"assets/atlas/w2-weapons.png","atlas/w2-yard-garden.png":"assets/atlas/w2-yard-garden.png","atlas/w3-ambient.png":"assets/atlas/w3-ambient.png","atlas/w3-big-trees.png":"assets/atlas/w3-big-trees.png","atlas/w3-boss.png":"assets/atlas/w3-boss.png","atlas/w3-cliffs.png":"assets/atlas/w3-cliffs.png","atlas/w3-clouds.png":"assets/atlas/w3-clouds.png","atlas/w3-dungeon-extras.png":"assets/atlas/w3-dungeon-extras.png","atlas/w3-dungeon-life.png":"assets/atlas/w3-dungeon-life.png","atlas/w3-dungeon-objects.png":"assets/atlas/w3-dungeon-objects.png","atlas/w3-dungeon.png":"assets/atlas/w3-dungeon.png","atlas/w3-enemies.png":"assets/atlas/w3-enemies.png","atlas/w3-entrance.png":"assets/atlas/w3-entrance.png","atlas/w3-furniture.png":"assets/atlas/w3-furniture.png","atlas/w3-fx.png":"assets/atlas/w3-fx.png","atlas/w3-ground.png":"assets/atlas/w3-ground.png","atlas/w3-interior.png":"assets/atlas/w3-interior.png","atlas/w3-landmark-shell.png":"assets/atlas/w3-landmark-shell.png","atlas/w3-landmarks.png":"assets/atlas/w3-landmarks.png","atlas/w3-lights.png":"assets/atlas/w3-lights.png","atlas/w3-liquid-a.png":"assets/atlas/w3-liquid-a.png","atlas/w3-liquid-b.png":"assets/atlas/w3-liquid-b.png","atlas/w3-nature.png":"assets/atlas/w3-nature.png","atlas/w3-npcs-b.png":"assets/atlas/w3-npcs-b.png","atlas/w3-npcs.png":"assets/atlas/w3-npcs.png","atlas/w3-puzzle-b.png":"assets/atlas/w3-puzzle-b.png","atlas/w3-puzzle.png":"assets/atlas/w3-puzzle.png","atlas/w3-royal-vault.png":"assets/atlas/w3-royal-vault.png","atlas/w3-setpieces.png":"assets/atlas/w3-setpieces.png","atlas/w3-shop.png":"assets/atlas/w3-shop.png","atlas/w3-sky.png":"assets/atlas/w3-sky.png","atlas/w3-subs.png":"assets/atlas/w3-subs.png","atlas/w3-town-b.png":"assets/atlas/w3-town-b.png","atlas/w3-town-c.png":"assets/atlas/w3-town-c.png","atlas/w3-town-paving.png":"assets/atlas/w3-town-paving.png","atlas/w3-town-props.png":"assets/atlas/w3-town-props.png","atlas/w3-town.png":"assets/atlas/w3-town.png","atlas/w3-villagers.png":"assets/atlas/w3-villagers.png","atlas/w3-water-extras.png":"assets/atlas/w3-water-extras.png","atlas/w3-weapons.png":"assets/atlas/w3-weapons.png","atlas/w3-yard-garden.png":"assets/atlas/w3-yard-garden.png","atlas/w4-ambient.png":"assets/atlas/w4-ambient.png","atlas/w4-big-trees.png":"assets/atlas/w4-big-trees.png","atlas/w4-boss.png":"assets/atlas/w4-boss.png","atlas/w4-cliffs.png":"assets/atlas/w4-cliffs.png","atlas/w4-cloud-edge.png":"assets/atlas/w4-cloud-edge.png","atlas/w4-clouds.png":"assets/atlas/w4-clouds.png","atlas/w4-dungeon-life.png":"assets/atlas/w4-dungeon-life.png","atlas/w4-dungeon-objects.png":"assets/atlas/w4-dungeon-objects.png","atlas/w4-dungeon.png":"assets/atlas/w4-dungeon.png","atlas/w4-enemies.png":"assets/atlas/w4-enemies.png","atlas/w4-entrance.png":"assets/atlas/w4-entrance.png","atlas/w4-furniture.png":"assets/atlas/w4-furniture.png","atlas/w4-fx.png":"assets/atlas/w4-fx.png","atlas/w4-ground.png":"assets/atlas/w4-ground.png","atlas/w4-interior.png":"assets/atlas/w4-interior.png","atlas/w4-landmark-cake.png":"assets/atlas/w4-landmark-cake.png","atlas/w4-landmarks.png":"assets/atlas/w4-landmarks.png","atlas/w4-lights.png":"assets/atlas/w4-lights.png","atlas/w4-liquid-a.png":"assets/atlas/w4-liquid-a.png","atlas/w4-liquid-b.png":"assets/atlas/w4-liquid-b.png","atlas/w4-nature.png":"assets/atlas/w4-nature.png","atlas/w4-npcs-b.png":"assets/atlas/w4-npcs-b.png","atlas/w4-npcs.png":"assets/atlas/w4-npcs.png","atlas/w4-puzzle-b.png":"assets/atlas/w4-puzzle-b.png","atlas/w4-puzzle.png":"assets/atlas/w4-puzzle.png","atlas/w4-royal-vault.png":"assets/atlas/w4-royal-vault.png","atlas/w4-setpieces.png":"assets/atlas/w4-setpieces.png","atlas/w4-shop.png":"assets/atlas/w4-shop.png","atlas/w4-sky.png":"assets/atlas/w4-sky.png","atlas/w4-subs.png":"assets/atlas/w4-subs.png","atlas/w4-town-b.png":"assets/atlas/w4-town-b.png","atlas/w4-town-c.png":"assets/atlas/w4-town-c.png","atlas/w4-town-paving.png":"assets/atlas/w4-town-paving.png","atlas/w4-town-props.png":"assets/atlas/w4-town-props.png","atlas/w4-town.png":"assets/atlas/w4-town.png","atlas/w4-villagers.png":"assets/atlas/w4-villagers.png","atlas/w4-water-extras.png":"assets/atlas/w4-water-extras.png","atlas/w4-weapons.png":"assets/atlas/w4-weapons.png","atlas/w4-yard-garden.png":"assets/atlas/w4-yard-garden.png","atlas/w5-ambient.png":"assets/atlas/w5-ambient.png","atlas/w5-big-trees.png":"assets/atlas/w5-big-trees.png","atlas/w5-boss.png":"assets/atlas/w5-boss.png","atlas/w5-cliffs.png":"assets/atlas/w5-cliffs.png","atlas/w5-clouds.png":"assets/atlas/w5-clouds.png","atlas/w5-dungeon-life.png":"assets/atlas/w5-dungeon-life.png","atlas/w5-dungeon-objects.png":"assets/atlas/w5-dungeon-objects.png","atlas/w5-dungeon.png":"assets/atlas/w5-dungeon.png","atlas/w5-enemies.png":"assets/atlas/w5-enemies.png","atlas/w5-entrance.png":"assets/atlas/w5-entrance.png","atlas/w5-furniture.png":"assets/atlas/w5-furniture.png","atlas/w5-fx.png":"assets/atlas/w5-fx.png","atlas/w5-ground.png":"assets/atlas/w5-ground.png","atlas/w5-interior.png":"assets/atlas/w5-interior.png","atlas/w5-landmark-temple.png":"assets/atlas/w5-landmark-temple.png","atlas/w5-landmark-trees.png":"assets/atlas/w5-landmark-trees.png","atlas/w5-landmarks.png":"assets/atlas/w5-landmarks.png","atlas/w5-lights.png":"assets/atlas/w5-lights.png","atlas/w5-liquid-a.png":"assets/atlas/w5-liquid-a.png","atlas/w5-liquid-b.png":"assets/atlas/w5-liquid-b.png","atlas/w5-nature.png":"assets/atlas/w5-nature.png","atlas/w5-npcs-b.png":"assets/atlas/w5-npcs-b.png","atlas/w5-npcs.png":"assets/atlas/w5-npcs.png","atlas/w5-puzzle-b.png":"assets/atlas/w5-puzzle-b.png","atlas/w5-puzzle.png":"assets/atlas/w5-puzzle.png","atlas/w5-royal-vault.png":"assets/atlas/w5-royal-vault.png","atlas/w5-setpieces.png":"assets/atlas/w5-setpieces.png","atlas/w5-shop.png":"assets/atlas/w5-shop.png","atlas/w5-sky.png":"assets/atlas/w5-sky.png","atlas/w5-subs.png":"assets/atlas/w5-subs.png","atlas/w5-temple-buildings.png":"assets/atlas/w5-temple-buildings.png","atlas/w5-town-b.png":"assets/atlas/w5-town-b.png","atlas/w5-town-c.png":"assets/atlas/w5-town-c.png","atlas/w5-town-paving.png":"assets/atlas/w5-town-paving.png","atlas/w5-town-props.png":"assets/atlas/w5-town-props.png","atlas/w5-town.png":"assets/atlas/w5-town.png","atlas/w5-villagers.png":"assets/atlas/w5-villagers.png","atlas/w5-water-extras.png":"assets/atlas/w5-water-extras.png","atlas/w5-weapons.png":"assets/atlas/w5-weapons.png","atlas/w5-yard-garden.png":"assets/atlas/w5-yard-garden.png","atlas/w6-ambient.png":"assets/atlas/w6-ambient.png","atlas/w6-big-trees.png":"assets/atlas/w6-big-trees.png","atlas/w6-boss.png":"assets/atlas/w6-boss.png","atlas/w6-cliffs.png":"assets/atlas/w6-cliffs.png","atlas/w6-clouds.png":"assets/atlas/w6-clouds.png","atlas/w6-dungeon-life.png":"assets/atlas/w6-dungeon-life.png","atlas/w6-dungeon-objects.png":"assets/atlas/w6-dungeon-objects.png","atlas/w6-dungeon.png":"assets/atlas/w6-dungeon.png","atlas/w6-enemies.png":"assets/atlas/w6-enemies.png","atlas/w6-entrance.png":"assets/atlas/w6-entrance.png","atlas/w6-furniture.png":"assets/atlas/w6-furniture.png","atlas/w6-fx.png":"assets/atlas/w6-fx.png","atlas/w6-ground.png":"assets/atlas/w6-ground.png","atlas/w6-interior.png":"assets/atlas/w6-interior.png","atlas/w6-landmark-flowers.png":"assets/atlas/w6-landmark-flowers.png","atlas/w6-landmarks.png":"assets/atlas/w6-landmarks.png","atlas/w6-lights.png":"assets/atlas/w6-lights.png","atlas/w6-liquid-a.png":"assets/atlas/w6-liquid-a.png","atlas/w6-liquid-b.png":"assets/atlas/w6-liquid-b.png","atlas/w6-nature.png":"assets/atlas/w6-nature.png","atlas/w6-npcs-b.png":"assets/atlas/w6-npcs-b.png","atlas/w6-npcs.png":"assets/atlas/w6-npcs.png","atlas/w6-puzzle-b.png":"assets/atlas/w6-puzzle-b.png","atlas/w6-puzzle.png":"assets/atlas/w6-puzzle.png","atlas/w6-royal-vault.png":"assets/atlas/w6-royal-vault.png","atlas/w6-setpieces.png":"assets/atlas/w6-setpieces.png","atlas/w6-shop.png":"assets/atlas/w6-shop.png","atlas/w6-sky.png":"assets/atlas/w6-sky.png","atlas/w6-sproutling.png":"assets/atlas/w6-sproutling.png","atlas/w6-subs.png":"assets/atlas/w6-subs.png","atlas/w6-town-b.png":"assets/atlas/w6-town-b.png","atlas/w6-town-c.png":"assets/atlas/w6-town-c.png","atlas/w6-town-paving.png":"assets/atlas/w6-town-paving.png","atlas/w6-town-props.png":"assets/atlas/w6-town-props.png","atlas/w6-town.png":"assets/atlas/w6-town.png","atlas/w6-villagers.png":"assets/atlas/w6-villagers.png","atlas/w6-water-extras.png":"assets/atlas/w6-water-extras.png","atlas/w6-weapons.png":"assets/atlas/w6-weapons.png","atlas/w6-yard-garden.png":"assets/atlas/w6-yard-garden.png","atlas/w7-ambient.png":"assets/atlas/w7-ambient.png","atlas/w7-big-trees.png":"assets/atlas/w7-big-trees.png","atlas/w7-boss-winged.png":"assets/atlas/w7-boss-winged.png","atlas/w7-boss.png":"assets/atlas/w7-boss.png","atlas/w7-cliffs.png":"assets/atlas/w7-cliffs.png","atlas/w7-cloud-edge.png":"assets/atlas/w7-cloud-edge.png","atlas/w7-clouds.png":"assets/atlas/w7-clouds.png","atlas/w7-dungeon-life.png":"assets/atlas/w7-dungeon-life.png","atlas/w7-dungeon-objects.png":"assets/atlas/w7-dungeon-objects.png","atlas/w7-dungeon.png":"assets/atlas/w7-dungeon.png","atlas/w7-enemies.png":"assets/atlas/w7-enemies.png","atlas/w7-entrance.png":"assets/atlas/w7-entrance.png","atlas/w7-furniture.png":"assets/atlas/w7-furniture.png","atlas/w7-fx.png":"assets/atlas/w7-fx.png","atlas/w7-ground.png":"assets/atlas/w7-ground.png","atlas/w7-interior.png":"assets/atlas/w7-interior.png","atlas/w7-landmark-spire.png":"assets/atlas/w7-landmark-spire.png","atlas/w7-landmarks.png":"assets/atlas/w7-landmarks.png","atlas/w7-lights.png":"assets/atlas/w7-lights.png","atlas/w7-liquid-a.png":"assets/atlas/w7-liquid-a.png","atlas/w7-liquid-b.png":"assets/atlas/w7-liquid-b.png","atlas/w7-map-island.png":"assets/atlas/w7-map-island.png","atlas/w7-nature.png":"assets/atlas/w7-nature.png","atlas/w7-npcs-b.png":"assets/atlas/w7-npcs-b.png","atlas/w7-npcs.png":"assets/atlas/w7-npcs.png","atlas/w7-puzzle-b.png":"assets/atlas/w7-puzzle-b.png","atlas/w7-puzzle.png":"assets/atlas/w7-puzzle.png","atlas/w7-royal-vault.png":"assets/atlas/w7-royal-vault.png","atlas/w7-setpieces.png":"assets/atlas/w7-setpieces.png","atlas/w7-shop.png":"assets/atlas/w7-shop.png","atlas/w7-sky.png":"assets/atlas/w7-sky.png","atlas/w7-subs.png":"assets/atlas/w7-subs.png","atlas/w7-town-b.png":"assets/atlas/w7-town-b.png","atlas/w7-town-c.png":"assets/atlas/w7-town-c.png","atlas/w7-town-paving.png":"assets/atlas/w7-town-paving.png","atlas/w7-town-props.png":"assets/atlas/w7-town-props.png","atlas/w7-town.png":"assets/atlas/w7-town.png","atlas/w7-villagers.png":"assets/atlas/w7-villagers.png","atlas/w7-water-extras.png":"assets/atlas/w7-water-extras.png","atlas/w7-weapons.png":"assets/atlas/w7-weapons.png","atlas/w7-yard-garden.png":"assets/atlas/w7-yard-garden.png","atlas/w8-ambient.png":"assets/atlas/w8-ambient.png","atlas/w8-big-trees.png":"assets/atlas/w8-big-trees.png","atlas/w8-boss-finale.png":"assets/atlas/w8-boss-finale.png","atlas/w8-boss-phase2.png":"assets/atlas/w8-boss-phase2.png","atlas/w8-boss-phase3.png":"assets/atlas/w8-boss-phase3.png","atlas/w8-boss.png":"assets/atlas/w8-boss.png","atlas/w8-cliffs.png":"assets/atlas/w8-cliffs.png","atlas/w8-cloud-edge.png":"assets/atlas/w8-cloud-edge.png","atlas/w8-clouds.png":"assets/atlas/w8-clouds.png","atlas/w8-dungeon-life.png":"assets/atlas/w8-dungeon-life.png","atlas/w8-dungeon-objects.png":"assets/atlas/w8-dungeon-objects.png","atlas/w8-dungeon.png":"assets/atlas/w8-dungeon.png","atlas/w8-enemies.png":"assets/atlas/w8-enemies.png","atlas/w8-entrance.png":"assets/atlas/w8-entrance.png","atlas/w8-furniture.png":"assets/atlas/w8-furniture.png","atlas/w8-fx.png":"assets/atlas/w8-fx.png","atlas/w8-ground.png":"assets/atlas/w8-ground.png","atlas/w8-interior.png":"assets/atlas/w8-interior.png","atlas/w8-landmark-star.png":"assets/atlas/w8-landmark-star.png","atlas/w8-landmarks.png":"assets/atlas/w8-landmarks.png","atlas/w8-lights.png":"assets/atlas/w8-lights.png","atlas/w8-liquid-a.png":"assets/atlas/w8-liquid-a.png","atlas/w8-liquid-b.png":"assets/atlas/w8-liquid-b.png","atlas/w8-map-island.png":"assets/atlas/w8-map-island.png","atlas/w8-maze-game.png":"assets/atlas/w8-maze-game.png","atlas/w8-nature.png":"assets/atlas/w8-nature.png","atlas/w8-npcs-b.png":"assets/atlas/w8-npcs-b.png","atlas/w8-npcs-c.png":"assets/atlas/w8-npcs-c.png","atlas/w8-npcs.png":"assets/atlas/w8-npcs.png","atlas/w8-puzzle-b.png":"assets/atlas/w8-puzzle-b.png","atlas/w8-puzzle.png":"assets/atlas/w8-puzzle.png","atlas/w8-setpieces.png":"assets/atlas/w8-setpieces.png","atlas/w8-shop.png":"assets/atlas/w8-shop.png","atlas/w8-sky.png":"assets/atlas/w8-sky.png","atlas/w8-town-b.png":"assets/atlas/w8-town-b.png","atlas/w8-town-c.png":"assets/atlas/w8-town-c.png","atlas/w8-town-paving.png":"assets/atlas/w8-town-paving.png","atlas/w8-town-props.png":"assets/atlas/w8-town-props.png","atlas/w8-town.png":"assets/atlas/w8-town.png","atlas/w8-villagers.png":"assets/atlas/w8-villagers.png","atlas/w8-water-extras.png":"assets/atlas/w8-water-extras.png","atlas/w8-weapons.png":"assets/atlas/w8-weapons.png","atlas/w8-yard-garden.png":"assets/atlas/w8-yard-garden.png","atlas/wren-attack.png":"assets/atlas/wren-attack.png","atlas/wren-extra.png":"assets/atlas/wren-extra.png","atlas/wren-hold.png":"assets/atlas/wren-hold.png","atlas/wren-moves.png":"assets/atlas/wren-moves.png","music/bossrush.mp3":"assets/music/bossrush.mp3","music/credits.mp3":"assets/music/credits.mp3","music/dungeon.mp3":"assets/music/dungeon.mp3","music/forge.mp3":"assets/music/forge.mp3","music/gameover.mp3":"assets/music/gameover.mp3","music/inn.mp3":"assets/music/inn.mp3","music/intro.mp3":"assets/music/intro.mp3","music/miniboss.mp3":"assets/music/miniboss.mp3","music/ship.mp3":"assets/music/ship.mp3","music/shop.mp3":"assets/music/shop.mp3","music/survival.mp3":"assets/music/survival.mp3","music/title.mp3":"assets/music/title.mp3","music/triumph.mp3":"assets/music/triumph.mp3","music/victory.mp3":"assets/music/victory.mp3","music/w1_area2.mp3":"assets/music/w1_area2.mp3","music/w1_boss.mp3":"assets/music/w1_boss.mp3","music/w1_dungeon.mp3":"assets/music/w1_dungeon.mp3","music/w1_overworld.mp3":"assets/music/w1_overworld.mp3","music/w1_town.mp3":"assets/music/w1_town.mp3","music/w2_area2.mp3":"assets/music/w2_area2.mp3","music/w2_boss.mp3":"assets/music/w2_boss.mp3","music/w2_dungeon.mp3":"assets/music/w2_dungeon.mp3","music/w2_overworld.mp3":"assets/music/w2_overworld.mp3","music/w2_town.mp3":"assets/music/w2_town.mp3","music/w3_area2.mp3":"assets/music/w3_area2.mp3","music/w3_boss.mp3":"assets/music/w3_boss.mp3","music/w3_dungeon.mp3":"assets/music/w3_dungeon.mp3","music/w3_overworld.mp3":"assets/music/w3_overworld.mp3","music/w3_town.mp3":"assets/music/w3_town.mp3","music/w4_area2.mp3":"assets/music/w4_area2.mp3","music/w4_boss.mp3":"assets/music/w4_boss.mp3","music/w4_dungeon.mp3":"assets/music/w4_dungeon.mp3","music/w4_overworld.mp3":"assets/music/w4_overworld.mp3","music/w4_town.mp3":"assets/music/w4_town.mp3","music/w5_area2.mp3":"assets/music/w5_area2.mp3","music/w5_boss.mp3":"assets/music/w5_boss.mp3","music/w5_dungeon.mp3":"assets/music/w5_dungeon.mp3","music/w5_overworld.mp3":"assets/music/w5_overworld.mp3","music/w5_town.mp3":"assets/music/w5_town.mp3","music/w6_area2.mp3":"assets/music/w6_area2.mp3","music/w6_boss.mp3":"assets/music/w6_boss.mp3","music/w6_dungeon.mp3":"assets/music/w6_dungeon.mp3","music/w6_overworld.mp3":"assets/music/w6_overworld.mp3","music/w6_town.mp3":"assets/music/w6_town.mp3","music/w7_area2.mp3":"assets/music/w7_area2.mp3","music/w7_boss.mp3":"assets/music/w7_boss.mp3","music/w7_boss_final.mp3":"assets/music/w7_boss_final.mp3","music/w7_dungeon.mp3":"assets/music/w7_dungeon.mp3","music/w7_overworld.mp3":"assets/music/w7_overworld.mp3","music/w7_town.mp3":"assets/music/w7_town.mp3","music/w8_area2.mp3":"assets/music/w8_area2.mp3","music/w8_boss.mp3":"assets/music/w8_boss.mp3","music/w8_boss_final.mp3":"assets/music/w8_boss_final.mp3","music/w8_dungeon.mp3":"assets/music/w8_dungeon.mp3","music/w8_farewell.mp3":"assets/music/w8_farewell.mp3","music/w8_overworld.mp3":"assets/music/w8_overworld.mp3","music/w8_town.mp3":"assets/music/w8_town.mp3"};
+window.ASSETS = {"atlas/_test.png":"assets/atlas/_test.png","atlas/dawnbreaker-weapons.png":"assets/atlas/dawnbreaker-weapons.png","atlas/fx-hero-a.png":"assets/atlas/fx-hero-a.png","atlas/fx-hero-b.png":"assets/atlas/fx-hero-b.png","atlas/fx-tools.png":"assets/atlas/fx-tools.png","atlas/hero-milo-moves-b.png":"assets/atlas/hero-milo-moves-b.png","atlas/hero-milo-tools.png":"assets/atlas/hero-milo-tools.png","atlas/hero-milo.png":"assets/atlas/hero-milo.png","atlas/hero-portraits.png":"assets/atlas/hero-portraits.png","atlas/hero-rowan-moves-b.png":"assets/atlas/hero-rowan-moves-b.png","atlas/hero-rowan-tools.png":"assets/atlas/hero-rowan-tools.png","atlas/hero-rowan.png":"assets/atlas/hero-rowan.png","atlas/hero-wren-moves-b.png":"assets/atlas/hero-wren-moves-b.png","atlas/hero-wren-tools.png":"assets/atlas/hero-wren-tools.png","atlas/hero-wren.png":"assets/atlas/hero-wren.png","atlas/icons-armor-a.png":"assets/atlas/icons-armor-a.png","atlas/icons-armor-b.png":"assets/atlas/icons-armor-b.png","atlas/icons-items.png":"assets/atlas/icons-items.png","atlas/icons-weapons-a.png":"assets/atlas/icons-weapons-a.png","atlas/icons-weapons-b.png":"assets/atlas/icons-weapons-b.png","atlas/intro-1.png":"assets/atlas/intro-1.png","atlas/intro-2.png":"assets/atlas/intro-2.png","atlas/landing-pad.png":"assets/atlas/landing-pad.png","atlas/medals.png":"assets/atlas/medals.png","atlas/milo-attack.png":"assets/atlas/milo-attack.png","atlas/milo-extra.png":"assets/atlas/milo-extra.png","atlas/milo-hold.png":"assets/atlas/milo-hold.png","atlas/milo-moves.png":"assets/atlas/milo-moves.png","atlas/milo-walk-side.png":"assets/atlas/milo-walk-side.png","atlas/relic-entrances.png":"assets/atlas/relic-entrances.png","atlas/relics.png":"assets/atlas/relics.png","atlas/rowan-attack.png":"assets/atlas/rowan-attack.png","atlas/rowan-extra.png":"assets/atlas/rowan-extra.png","atlas/rowan-hold.png":"assets/atlas/rowan-hold.png","atlas/rowan-moves.png":"assets/atlas/rowan-moves.png","atlas/royal-vault.png":"assets/atlas/royal-vault.png","atlas/screen-inventory.png":"assets/atlas/screen-inventory.png","atlas/screen-pause.png":"assets/atlas/screen-pause.png","atlas/screen-save.png":"assets/atlas/screen-save.png","atlas/ship-ext.png":"assets/atlas/ship-ext.png","atlas/ship-in-2x.png":"assets/atlas/ship-in-2x.png","atlas/ship-in.png":"assets/atlas/ship-in.png","atlas/ship-map.png":"assets/atlas/ship-map.png","atlas/ship-medal-board.png":"assets/atlas/ship-medal-board.png","atlas/ship-npcs.png":"assets/atlas/ship-npcs.png","atlas/ship-room-2x.png":"assets/atlas/ship-room-2x.png","atlas/ship-tiles.png":"assets/atlas/ship-tiles.png","atlas/title.png":"assets/atlas/title.png","atlas/treasure-room-b.png":"assets/atlas/treasure-room-b.png","atlas/treasure-room.png":"assets/atlas/treasure-room.png","atlas/ui-attack-icons-b.png":"assets/atlas/ui-attack-icons-b.png","atlas/ui-attack-icons.png":"assets/atlas/ui-attack-icons.png","atlas/ui-difficulty.png":"assets/atlas/ui-difficulty.png","atlas/ui-element-icons.png":"assets/atlas/ui-element-icons.png","atlas/ui-heart-pieces.png":"assets/atlas/ui-heart-pieces.png","atlas/ui-hud-icons.png":"assets/atlas/ui-hud-icons.png","atlas/ui-kit.png":"assets/atlas/ui-kit.png","atlas/ui-panels.png":"assets/atlas/ui-panels.png","atlas/ui-stat-icons.png":"assets/atlas/ui-stat-icons.png","atlas/ui-touch.png":"assets/atlas/ui-touch.png","atlas/w1-ambient.png":"assets/atlas/w1-ambient.png","atlas/w1-big-trees.png":"assets/atlas/w1-big-trees.png","atlas/w1-boss.png":"assets/atlas/w1-boss.png","atlas/w1-castle-courtyard.png":"assets/atlas/w1-castle-courtyard.png","atlas/w1-castle-interior.png":"assets/atlas/w1-castle-interior.png","atlas/w1-castle-kit-a.png":"assets/atlas/w1-castle-kit-a.png","atlas/w1-castle-kit-b.png":"assets/atlas/w1-castle-kit-b.png","atlas/w1-cliffs.png":"assets/atlas/w1-cliffs.png","atlas/w1-clouds.png":"assets/atlas/w1-clouds.png","atlas/w1-dungeon-enemies.png":"assets/atlas/w1-dungeon-enemies.png","atlas/w1-dungeon-life.png":"assets/atlas/w1-dungeon-life.png","atlas/w1-dungeon-objects.png":"assets/atlas/w1-dungeon-objects.png","atlas/w1-dungeon.png":"assets/atlas/w1-dungeon.png","atlas/w1-enemies.png":"assets/atlas/w1-enemies.png","atlas/w1-entrance.png":"assets/atlas/w1-entrance.png","atlas/w1-furniture.png":"assets/atlas/w1-furniture.png","atlas/w1-fx.png":"assets/atlas/w1-fx.png","atlas/w1-ground.png":"assets/atlas/w1-ground.png","atlas/w1-interior.png":"assets/atlas/w1-interior.png","atlas/w1-landmark-castle.png":"assets/atlas/w1-landmark-castle.png","atlas/w1-landmarks.png":"assets/atlas/w1-landmarks.png","atlas/w1-lights.png":"assets/atlas/w1-lights.png","atlas/w1-liquid-a.png":"assets/atlas/w1-liquid-a.png","atlas/w1-liquid-b.png":"assets/atlas/w1-liquid-b.png","atlas/w1-maze-game.png":"assets/atlas/w1-maze-game.png","atlas/w1-nature.png":"assets/atlas/w1-nature.png","atlas/w1-npcs-b.png":"assets/atlas/w1-npcs-b.png","atlas/w1-npcs.png":"assets/atlas/w1-npcs.png","atlas/w1-puzzle-b.png":"assets/atlas/w1-puzzle-b.png","atlas/w1-puzzle.png":"assets/atlas/w1-puzzle.png","atlas/w1-royals.png":"assets/atlas/w1-royals.png","atlas/w1-setpieces.png":"assets/atlas/w1-setpieces.png","atlas/w1-shop.png":"assets/atlas/w1-shop.png","atlas/w1-sky.png":"assets/atlas/w1-sky.png","atlas/w1-subs.png":"assets/atlas/w1-subs.png","atlas/w1-town-b.png":"assets/atlas/w1-town-b.png","atlas/w1-town-c.png":"assets/atlas/w1-town-c.png","atlas/w1-town-paving.png":"assets/atlas/w1-town-paving.png","atlas/w1-town-props.png":"assets/atlas/w1-town-props.png","atlas/w1-town.png":"assets/atlas/w1-town.png","atlas/w1-villagers.png":"assets/atlas/w1-villagers.png","atlas/w1-water-extras.png":"assets/atlas/w1-water-extras.png","atlas/w1-weapons.png":"assets/atlas/w1-weapons.png","atlas/w1-yard-garden.png":"assets/atlas/w1-yard-garden.png","atlas/w2-ambient.png":"assets/atlas/w2-ambient.png","atlas/w2-big-trees.png":"assets/atlas/w2-big-trees.png","atlas/w2-boss.png":"assets/atlas/w2-boss.png","atlas/w2-cliffs.png":"assets/atlas/w2-cliffs.png","atlas/w2-clouds.png":"assets/atlas/w2-clouds.png","atlas/w2-dungeon-extras.png":"assets/atlas/w2-dungeon-extras.png","atlas/w2-dungeon-life.png":"assets/atlas/w2-dungeon-life.png","atlas/w2-dungeon-objects.png":"assets/atlas/w2-dungeon-objects.png","atlas/w2-dungeon.png":"assets/atlas/w2-dungeon.png","atlas/w2-enemies.png":"assets/atlas/w2-enemies.png","atlas/w2-entrance.png":"assets/atlas/w2-entrance.png","atlas/w2-furniture.png":"assets/atlas/w2-furniture.png","atlas/w2-fx.png":"assets/atlas/w2-fx.png","atlas/w2-ground.png":"assets/atlas/w2-ground.png","atlas/w2-interior.png":"assets/atlas/w2-interior.png","atlas/w2-landmark-pillars.png":"assets/atlas/w2-landmark-pillars.png","atlas/w2-landmarks.png":"assets/atlas/w2-landmarks.png","atlas/w2-lights.png":"assets/atlas/w2-lights.png","atlas/w2-liquid-a.png":"assets/atlas/w2-liquid-a.png","atlas/w2-liquid-b.png":"assets/atlas/w2-liquid-b.png","atlas/w2-nature.png":"assets/atlas/w2-nature.png","atlas/w2-npcs-b.png":"assets/atlas/w2-npcs-b.png","atlas/w2-npcs.png":"assets/atlas/w2-npcs.png","atlas/w2-puzzle-b.png":"assets/atlas/w2-puzzle-b.png","atlas/w2-puzzle.png":"assets/atlas/w2-puzzle.png","atlas/w2-royal-vault.png":"assets/atlas/w2-royal-vault.png","atlas/w2-setpieces.png":"assets/atlas/w2-setpieces.png","atlas/w2-shop.png":"assets/atlas/w2-shop.png","atlas/w2-sky.png":"assets/atlas/w2-sky.png","atlas/w2-subs.png":"assets/atlas/w2-subs.png","atlas/w2-town-b.png":"assets/atlas/w2-town-b.png","atlas/w2-town-c.png":"assets/atlas/w2-town-c.png","atlas/w2-town-paving.png":"assets/atlas/w2-town-paving.png","atlas/w2-town-props.png":"assets/atlas/w2-town-props.png","atlas/w2-town.png":"assets/atlas/w2-town.png","atlas/w2-villagers.png":"assets/atlas/w2-villagers.png","atlas/w2-water-extras.png":"assets/atlas/w2-water-extras.png","atlas/w2-weapons.png":"assets/atlas/w2-weapons.png","atlas/w2-yard-garden.png":"assets/atlas/w2-yard-garden.png","atlas/w3-ambient.png":"assets/atlas/w3-ambient.png","atlas/w3-big-trees.png":"assets/atlas/w3-big-trees.png","atlas/w3-boss.png":"assets/atlas/w3-boss.png","atlas/w3-cliffs.png":"assets/atlas/w3-cliffs.png","atlas/w3-clouds.png":"assets/atlas/w3-clouds.png","atlas/w3-dungeon-extras.png":"assets/atlas/w3-dungeon-extras.png","atlas/w3-dungeon-life.png":"assets/atlas/w3-dungeon-life.png","atlas/w3-dungeon-objects.png":"assets/atlas/w3-dungeon-objects.png","atlas/w3-dungeon.png":"assets/atlas/w3-dungeon.png","atlas/w3-enemies.png":"assets/atlas/w3-enemies.png","atlas/w3-entrance.png":"assets/atlas/w3-entrance.png","atlas/w3-furniture.png":"assets/atlas/w3-furniture.png","atlas/w3-fx.png":"assets/atlas/w3-fx.png","atlas/w3-ground.png":"assets/atlas/w3-ground.png","atlas/w3-interior.png":"assets/atlas/w3-interior.png","atlas/w3-landmark-shell.png":"assets/atlas/w3-landmark-shell.png","atlas/w3-landmarks.png":"assets/atlas/w3-landmarks.png","atlas/w3-lights.png":"assets/atlas/w3-lights.png","atlas/w3-liquid-a.png":"assets/atlas/w3-liquid-a.png","atlas/w3-liquid-b.png":"assets/atlas/w3-liquid-b.png","atlas/w3-nature.png":"assets/atlas/w3-nature.png","atlas/w3-npcs-b.png":"assets/atlas/w3-npcs-b.png","atlas/w3-npcs.png":"assets/atlas/w3-npcs.png","atlas/w3-puzzle-b.png":"assets/atlas/w3-puzzle-b.png","atlas/w3-puzzle.png":"assets/atlas/w3-puzzle.png","atlas/w3-royal-vault.png":"assets/atlas/w3-royal-vault.png","atlas/w3-setpieces.png":"assets/atlas/w3-setpieces.png","atlas/w3-shop.png":"assets/atlas/w3-shop.png","atlas/w3-sky.png":"assets/atlas/w3-sky.png","atlas/w3-subs.png":"assets/atlas/w3-subs.png","atlas/w3-town-b.png":"assets/atlas/w3-town-b.png","atlas/w3-town-c.png":"assets/atlas/w3-town-c.png","atlas/w3-town-paving.png":"assets/atlas/w3-town-paving.png","atlas/w3-town-props.png":"assets/atlas/w3-town-props.png","atlas/w3-town.png":"assets/atlas/w3-town.png","atlas/w3-villagers.png":"assets/atlas/w3-villagers.png","atlas/w3-water-extras.png":"assets/atlas/w3-water-extras.png","atlas/w3-weapons.png":"assets/atlas/w3-weapons.png","atlas/w3-yard-garden.png":"assets/atlas/w3-yard-garden.png","atlas/w4-ambient.png":"assets/atlas/w4-ambient.png","atlas/w4-big-trees.png":"assets/atlas/w4-big-trees.png","atlas/w4-boss.png":"assets/atlas/w4-boss.png","atlas/w4-cliffs.png":"assets/atlas/w4-cliffs.png","atlas/w4-cloud-edge.png":"assets/atlas/w4-cloud-edge.png","atlas/w4-clouds.png":"assets/atlas/w4-clouds.png","atlas/w4-dungeon-life.png":"assets/atlas/w4-dungeon-life.png","atlas/w4-dungeon-objects.png":"assets/atlas/w4-dungeon-objects.png","atlas/w4-dungeon.png":"assets/atlas/w4-dungeon.png","atlas/w4-enemies.png":"assets/atlas/w4-enemies.png","atlas/w4-entrance.png":"assets/atlas/w4-entrance.png","atlas/w4-furniture.png":"assets/atlas/w4-furniture.png","atlas/w4-fx.png":"assets/atlas/w4-fx.png","atlas/w4-ground.png":"assets/atlas/w4-ground.png","atlas/w4-interior.png":"assets/atlas/w4-interior.png","atlas/w4-landmark-cake.png":"assets/atlas/w4-landmark-cake.png","atlas/w4-landmarks.png":"assets/atlas/w4-landmarks.png","atlas/w4-lights.png":"assets/atlas/w4-lights.png","atlas/w4-liquid-a.png":"assets/atlas/w4-liquid-a.png","atlas/w4-liquid-b.png":"assets/atlas/w4-liquid-b.png","atlas/w4-nature.png":"assets/atlas/w4-nature.png","atlas/w4-npcs-b.png":"assets/atlas/w4-npcs-b.png","atlas/w4-npcs.png":"assets/atlas/w4-npcs.png","atlas/w4-puzzle-b.png":"assets/atlas/w4-puzzle-b.png","atlas/w4-puzzle.png":"assets/atlas/w4-puzzle.png","atlas/w4-royal-vault.png":"assets/atlas/w4-royal-vault.png","atlas/w4-setpieces.png":"assets/atlas/w4-setpieces.png","atlas/w4-shop.png":"assets/atlas/w4-shop.png","atlas/w4-sky.png":"assets/atlas/w4-sky.png","atlas/w4-subs.png":"assets/atlas/w4-subs.png","atlas/w4-town-b.png":"assets/atlas/w4-town-b.png","atlas/w4-town-c.png":"assets/atlas/w4-town-c.png","atlas/w4-town-paving.png":"assets/atlas/w4-town-paving.png","atlas/w4-town-props.png":"assets/atlas/w4-town-props.png","atlas/w4-town.png":"assets/atlas/w4-town.png","atlas/w4-villagers.png":"assets/atlas/w4-villagers.png","atlas/w4-water-extras.png":"assets/atlas/w4-water-extras.png","atlas/w4-weapons.png":"assets/atlas/w4-weapons.png","atlas/w4-yard-garden.png":"assets/atlas/w4-yard-garden.png","atlas/w5-ambient.png":"assets/atlas/w5-ambient.png","atlas/w5-big-trees.png":"assets/atlas/w5-big-trees.png","atlas/w5-boss.png":"assets/atlas/w5-boss.png","atlas/w5-cliffs.png":"assets/atlas/w5-cliffs.png","atlas/w5-clouds.png":"assets/atlas/w5-clouds.png","atlas/w5-dungeon-life.png":"assets/atlas/w5-dungeon-life.png","atlas/w5-dungeon-objects.png":"assets/atlas/w5-dungeon-objects.png","atlas/w5-dungeon.png":"assets/atlas/w5-dungeon.png","atlas/w5-enemies.png":"assets/atlas/w5-enemies.png","atlas/w5-entrance.png":"assets/atlas/w5-entrance.png","atlas/w5-furniture.png":"assets/atlas/w5-furniture.png","atlas/w5-fx.png":"assets/atlas/w5-fx.png","atlas/w5-ground.png":"assets/atlas/w5-ground.png","atlas/w5-interior.png":"assets/atlas/w5-interior.png","atlas/w5-landmark-temple.png":"assets/atlas/w5-landmark-temple.png","atlas/w5-landmark-trees.png":"assets/atlas/w5-landmark-trees.png","atlas/w5-landmarks.png":"assets/atlas/w5-landmarks.png","atlas/w5-lights.png":"assets/atlas/w5-lights.png","atlas/w5-liquid-a.png":"assets/atlas/w5-liquid-a.png","atlas/w5-liquid-b.png":"assets/atlas/w5-liquid-b.png","atlas/w5-nature.png":"assets/atlas/w5-nature.png","atlas/w5-npcs-b.png":"assets/atlas/w5-npcs-b.png","atlas/w5-npcs.png":"assets/atlas/w5-npcs.png","atlas/w5-puzzle-b.png":"assets/atlas/w5-puzzle-b.png","atlas/w5-puzzle.png":"assets/atlas/w5-puzzle.png","atlas/w5-royal-vault.png":"assets/atlas/w5-royal-vault.png","atlas/w5-setpieces.png":"assets/atlas/w5-setpieces.png","atlas/w5-shop.png":"assets/atlas/w5-shop.png","atlas/w5-sky.png":"assets/atlas/w5-sky.png","atlas/w5-subs.png":"assets/atlas/w5-subs.png","atlas/w5-temple-buildings.png":"assets/atlas/w5-temple-buildings.png","atlas/w5-town-b.png":"assets/atlas/w5-town-b.png","atlas/w5-town-c.png":"assets/atlas/w5-town-c.png","atlas/w5-town-paving.png":"assets/atlas/w5-town-paving.png","atlas/w5-town-props.png":"assets/atlas/w5-town-props.png","atlas/w5-town.png":"assets/atlas/w5-town.png","atlas/w5-villagers.png":"assets/atlas/w5-villagers.png","atlas/w5-water-extras.png":"assets/atlas/w5-water-extras.png","atlas/w5-weapons.png":"assets/atlas/w5-weapons.png","atlas/w5-yard-garden.png":"assets/atlas/w5-yard-garden.png","atlas/w6-ambient.png":"assets/atlas/w6-ambient.png","atlas/w6-big-trees.png":"assets/atlas/w6-big-trees.png","atlas/w6-boss.png":"assets/atlas/w6-boss.png","atlas/w6-cliffs.png":"assets/atlas/w6-cliffs.png","atlas/w6-clouds.png":"assets/atlas/w6-clouds.png","atlas/w6-dungeon-life.png":"assets/atlas/w6-dungeon-life.png","atlas/w6-dungeon-objects.png":"assets/atlas/w6-dungeon-objects.png","atlas/w6-dungeon.png":"assets/atlas/w6-dungeon.png","atlas/w6-enemies.png":"assets/atlas/w6-enemies.png","atlas/w6-entrance.png":"assets/atlas/w6-entrance.png","atlas/w6-furniture.png":"assets/atlas/w6-furniture.png","atlas/w6-fx.png":"assets/atlas/w6-fx.png","atlas/w6-ground.png":"assets/atlas/w6-ground.png","atlas/w6-interior.png":"assets/atlas/w6-interior.png","atlas/w6-landmark-flowers.png":"assets/atlas/w6-landmark-flowers.png","atlas/w6-landmarks.png":"assets/atlas/w6-landmarks.png","atlas/w6-lights.png":"assets/atlas/w6-lights.png","atlas/w6-liquid-a.png":"assets/atlas/w6-liquid-a.png","atlas/w6-liquid-b.png":"assets/atlas/w6-liquid-b.png","atlas/w6-nature.png":"assets/atlas/w6-nature.png","atlas/w6-npcs-b.png":"assets/atlas/w6-npcs-b.png","atlas/w6-npcs.png":"assets/atlas/w6-npcs.png","atlas/w6-puzzle-b.png":"assets/atlas/w6-puzzle-b.png","atlas/w6-puzzle.png":"assets/atlas/w6-puzzle.png","atlas/w6-royal-vault.png":"assets/atlas/w6-royal-vault.png","atlas/w6-setpieces.png":"assets/atlas/w6-setpieces.png","atlas/w6-shop.png":"assets/atlas/w6-shop.png","atlas/w6-sky.png":"assets/atlas/w6-sky.png","atlas/w6-sproutling.png":"assets/atlas/w6-sproutling.png","atlas/w6-subs.png":"assets/atlas/w6-subs.png","atlas/w6-town-b.png":"assets/atlas/w6-town-b.png","atlas/w6-town-c.png":"assets/atlas/w6-town-c.png","atlas/w6-town-paving.png":"assets/atlas/w6-town-paving.png","atlas/w6-town-props.png":"assets/atlas/w6-town-props.png","atlas/w6-town.png":"assets/atlas/w6-town.png","atlas/w6-villagers.png":"assets/atlas/w6-villagers.png","atlas/w6-water-extras.png":"assets/atlas/w6-water-extras.png","atlas/w6-weapons.png":"assets/atlas/w6-weapons.png","atlas/w6-yard-garden.png":"assets/atlas/w6-yard-garden.png","atlas/w7-ambient.png":"assets/atlas/w7-ambient.png","atlas/w7-big-trees.png":"assets/atlas/w7-big-trees.png","atlas/w7-boss-winged.png":"assets/atlas/w7-boss-winged.png","atlas/w7-boss.png":"assets/atlas/w7-boss.png","atlas/w7-cliffs.png":"assets/atlas/w7-cliffs.png","atlas/w7-cloud-edge.png":"assets/atlas/w7-cloud-edge.png","atlas/w7-clouds.png":"assets/atlas/w7-clouds.png","atlas/w7-dungeon-life.png":"assets/atlas/w7-dungeon-life.png","atlas/w7-dungeon-objects.png":"assets/atlas/w7-dungeon-objects.png","atlas/w7-dungeon.png":"assets/atlas/w7-dungeon.png","atlas/w7-enemies.png":"assets/atlas/w7-enemies.png","atlas/w7-entrance.png":"assets/atlas/w7-entrance.png","atlas/w7-furniture.png":"assets/atlas/w7-furniture.png","atlas/w7-fx.png":"assets/atlas/w7-fx.png","atlas/w7-ground.png":"assets/atlas/w7-ground.png","atlas/w7-interior.png":"assets/atlas/w7-interior.png","atlas/w7-landmark-spire.png":"assets/atlas/w7-landmark-spire.png","atlas/w7-landmarks.png":"assets/atlas/w7-landmarks.png","atlas/w7-lights.png":"assets/atlas/w7-lights.png","atlas/w7-liquid-a.png":"assets/atlas/w7-liquid-a.png","atlas/w7-liquid-b.png":"assets/atlas/w7-liquid-b.png","atlas/w7-map-island.png":"assets/atlas/w7-map-island.png","atlas/w7-nature.png":"assets/atlas/w7-nature.png","atlas/w7-npcs-b.png":"assets/atlas/w7-npcs-b.png","atlas/w7-npcs.png":"assets/atlas/w7-npcs.png","atlas/w7-puzzle-b.png":"assets/atlas/w7-puzzle-b.png","atlas/w7-puzzle.png":"assets/atlas/w7-puzzle.png","atlas/w7-royal-vault.png":"assets/atlas/w7-royal-vault.png","atlas/w7-setpieces.png":"assets/atlas/w7-setpieces.png","atlas/w7-shop.png":"assets/atlas/w7-shop.png","atlas/w7-sky.png":"assets/atlas/w7-sky.png","atlas/w7-subs.png":"assets/atlas/w7-subs.png","atlas/w7-town-b.png":"assets/atlas/w7-town-b.png","atlas/w7-town-c.png":"assets/atlas/w7-town-c.png","atlas/w7-town-paving.png":"assets/atlas/w7-town-paving.png","atlas/w7-town-props.png":"assets/atlas/w7-town-props.png","atlas/w7-town.png":"assets/atlas/w7-town.png","atlas/w7-villagers.png":"assets/atlas/w7-villagers.png","atlas/w7-water-extras.png":"assets/atlas/w7-water-extras.png","atlas/w7-weapons.png":"assets/atlas/w7-weapons.png","atlas/w7-yard-garden.png":"assets/atlas/w7-yard-garden.png","atlas/w8-ambient.png":"assets/atlas/w8-ambient.png","atlas/w8-big-trees.png":"assets/atlas/w8-big-trees.png","atlas/w8-boss-finale.png":"assets/atlas/w8-boss-finale.png","atlas/w8-boss-phase2.png":"assets/atlas/w8-boss-phase2.png","atlas/w8-boss-phase3.png":"assets/atlas/w8-boss-phase3.png","atlas/w8-boss.png":"assets/atlas/w8-boss.png","atlas/w8-cliffs.png":"assets/atlas/w8-cliffs.png","atlas/w8-cloud-edge.png":"assets/atlas/w8-cloud-edge.png","atlas/w8-clouds.png":"assets/atlas/w8-clouds.png","atlas/w8-dungeon-life.png":"assets/atlas/w8-dungeon-life.png","atlas/w8-dungeon-objects.png":"assets/atlas/w8-dungeon-objects.png","atlas/w8-dungeon.png":"assets/atlas/w8-dungeon.png","atlas/w8-enemies.png":"assets/atlas/w8-enemies.png","atlas/w8-entrance.png":"assets/atlas/w8-entrance.png","atlas/w8-furniture.png":"assets/atlas/w8-furniture.png","atlas/w8-fx.png":"assets/atlas/w8-fx.png","atlas/w8-ground.png":"assets/atlas/w8-ground.png","atlas/w8-interior.png":"assets/atlas/w8-interior.png","atlas/w8-landmark-star.png":"assets/atlas/w8-landmark-star.png","atlas/w8-landmarks.png":"assets/atlas/w8-landmarks.png","atlas/w8-lights.png":"assets/atlas/w8-lights.png","atlas/w8-liquid-a.png":"assets/atlas/w8-liquid-a.png","atlas/w8-liquid-b.png":"assets/atlas/w8-liquid-b.png","atlas/w8-map-island.png":"assets/atlas/w8-map-island.png","atlas/w8-maze-game.png":"assets/atlas/w8-maze-game.png","atlas/w8-nature.png":"assets/atlas/w8-nature.png","atlas/w8-npcs-b.png":"assets/atlas/w8-npcs-b.png","atlas/w8-npcs-c.png":"assets/atlas/w8-npcs-c.png","atlas/w8-npcs.png":"assets/atlas/w8-npcs.png","atlas/w8-puzzle-b.png":"assets/atlas/w8-puzzle-b.png","atlas/w8-puzzle.png":"assets/atlas/w8-puzzle.png","atlas/w8-setpieces.png":"assets/atlas/w8-setpieces.png","atlas/w8-shop.png":"assets/atlas/w8-shop.png","atlas/w8-sky.png":"assets/atlas/w8-sky.png","atlas/w8-town-b.png":"assets/atlas/w8-town-b.png","atlas/w8-town-c.png":"assets/atlas/w8-town-c.png","atlas/w8-town-paving.png":"assets/atlas/w8-town-paving.png","atlas/w8-town-props.png":"assets/atlas/w8-town-props.png","atlas/w8-town.png":"assets/atlas/w8-town.png","atlas/w8-villagers.png":"assets/atlas/w8-villagers.png","atlas/w8-water-extras.png":"assets/atlas/w8-water-extras.png","atlas/w8-weapons.png":"assets/atlas/w8-weapons.png","atlas/w8-yard-garden.png":"assets/atlas/w8-yard-garden.png","atlas/wren-attack.png":"assets/atlas/wren-attack.png","atlas/wren-extra.png":"assets/atlas/wren-extra.png","atlas/wren-hold.png":"assets/atlas/wren-hold.png","atlas/wren-moves.png":"assets/atlas/wren-moves.png","music/bossrush.mp3":"assets/music/bossrush.mp3","music/credits.mp3":"assets/music/credits.mp3","music/dungeon.mp3":"assets/music/dungeon.mp3","music/forge.mp3":"assets/music/forge.mp3","music/gameover.mp3":"assets/music/gameover.mp3","music/inn.mp3":"assets/music/inn.mp3","music/intro.mp3":"assets/music/intro.mp3","music/miniboss.mp3":"assets/music/miniboss.mp3","music/ship.mp3":"assets/music/ship.mp3","music/shop.mp3":"assets/music/shop.mp3","music/survival.mp3":"assets/music/survival.mp3","music/title.mp3":"assets/music/title.mp3","music/triumph.mp3":"assets/music/triumph.mp3","music/victory.mp3":"assets/music/victory.mp3","music/w1_area2.mp3":"assets/music/w1_area2.mp3","music/w1_boss.mp3":"assets/music/w1_boss.mp3","music/w1_dungeon.mp3":"assets/music/w1_dungeon.mp3","music/w1_overworld.mp3":"assets/music/w1_overworld.mp3","music/w1_town.mp3":"assets/music/w1_town.mp3","music/w2_area2.mp3":"assets/music/w2_area2.mp3","music/w2_boss.mp3":"assets/music/w2_boss.mp3","music/w2_dungeon.mp3":"assets/music/w2_dungeon.mp3","music/w2_overworld.mp3":"assets/music/w2_overworld.mp3","music/w2_town.mp3":"assets/music/w2_town.mp3","music/w3_area2.mp3":"assets/music/w3_area2.mp3","music/w3_boss.mp3":"assets/music/w3_boss.mp3","music/w3_dungeon.mp3":"assets/music/w3_dungeon.mp3","music/w3_overworld.mp3":"assets/music/w3_overworld.mp3","music/w3_town.mp3":"assets/music/w3_town.mp3","music/w4_area2.mp3":"assets/music/w4_area2.mp3","music/w4_boss.mp3":"assets/music/w4_boss.mp3","music/w4_dungeon.mp3":"assets/music/w4_dungeon.mp3","music/w4_overworld.mp3":"assets/music/w4_overworld.mp3","music/w4_town.mp3":"assets/music/w4_town.mp3","music/w5_area2.mp3":"assets/music/w5_area2.mp3","music/w5_boss.mp3":"assets/music/w5_boss.mp3","music/w5_dungeon.mp3":"assets/music/w5_dungeon.mp3","music/w5_overworld.mp3":"assets/music/w5_overworld.mp3","music/w5_town.mp3":"assets/music/w5_town.mp3","music/w6_area2.mp3":"assets/music/w6_area2.mp3","music/w6_boss.mp3":"assets/music/w6_boss.mp3","music/w6_dungeon.mp3":"assets/music/w6_dungeon.mp3","music/w6_overworld.mp3":"assets/music/w6_overworld.mp3","music/w6_town.mp3":"assets/music/w6_town.mp3","music/w7_area2.mp3":"assets/music/w7_area2.mp3","music/w7_boss.mp3":"assets/music/w7_boss.mp3","music/w7_boss_final.mp3":"assets/music/w7_boss_final.mp3","music/w7_dungeon.mp3":"assets/music/w7_dungeon.mp3","music/w7_overworld.mp3":"assets/music/w7_overworld.mp3","music/w7_town.mp3":"assets/music/w7_town.mp3","music/w8_area2.mp3":"assets/music/w8_area2.mp3","music/w8_boss.mp3":"assets/music/w8_boss.mp3","music/w8_boss_final.mp3":"assets/music/w8_boss_final.mp3","music/w8_dungeon.mp3":"assets/music/w8_dungeon.mp3","music/w8_farewell.mp3":"assets/music/w8_farewell.mp3","music/w8_overworld.mp3":"assets/music/w8_overworld.mp3","music/w8_town.mp3":"assets/music/w8_town.mp3"};
 (function(){'use strict';
 var __f = {}, __m = {};
 function __def(id, fn) { __f[id] = fn; }
@@ -87,7 +87,7 @@ const CONFIG = deepFreeze({
     TAP_ATTACK_RADIUS: 64, AUTOWALK_MAX: 200, CHASE_REPATH_S: 0.4, TAP_TARGET_RADIUS: 24, TELEGRAPH_MIN: 0.5, TELEGRAPH_LITTLE_MULT: 1.5,
     // [D35] touch assist: melee facing snap radius, keyboard ranged auto-aim cone (full angle) + range, door tap margin (tiles), magnet px.
     MELEE_ASSIST_R: 40, FACE_HOLD: 0.4, AIM_CONE_DEG: 45, AIM_RANGE: 220, ARC_RANGE: 160, // [D37] arcing shots land on the aimed point, clamped to ARC_RANGE px
-    DOOR_TAP_MARGIN: 1.5, DOOR_TAP_BELOW_OW: 1, /* [TAP AUDIT] overworld doors reach only their front step below */ DOOR_MAGNET_PX: 10,
+    DOOR_TAP_MARGIN: 1.5, DOOR_TAP_BELOW_OW: 1, /* [TAP AUDIT] overworld doors reach only their front step below */ DOOR_TAP_TOWN_SIDE: 0.25, ARRIVE_GUARD_S: 3, /* [TAP FIX 9] after a flight: doorway taps are held this long after the art is painted */ /* [TAP FIX 1] town doors: off the building art only the door's own column (+ this many tiles each side) counts */ DOOR_MAGNET_PX: 10,
     MELEE_REACH: 26, MELEE_RANGE: 18, KB_TIME: 0.12, COMBAT_RADIUS: 220, ENEMY_BOX: 14,
     // [D34] every AP cost halved; AP moves in 0.5 steps (halves are exact binary fractions — stored rounded to 0.5, no drift).
     MELEE_AP: 0.5, RANGED_AP: 0.5,
@@ -148,6 +148,18 @@ const CONFIG = deepFreeze({
     BOMBS: { carry: 20, pack: 5, pricePerWorld: 8 },
     HOOK: { range: 7, zip: 0.35 }, // Vine Hook: grabs a hook post up to `range` tiles ahead, zips the hero across in `zip` s
   },
+  // [TOOL ANIMS] tool-use animations (game/toolanim.js): seconds unless noted. AIM = the hero's raise/throw beat before the
+  // effect leaves the hand; TRAVEL_PX_S = effect speed hero → target (TRAVEL_MIN..TRAVEL_MAX s); REACT = the target's reaction;
+  // LIFT = Power Glove bend/rise/hold/toss (+ TOSS_PX sideways, ARC_H px high, then CRUMBLE); BOMB = toss arc + kid-readable fuse;
+  // HOOK = vine shoot + landing hop around ITEMS.HOOK.zip; SHRINK = spin-shrink pose, MIN scale, NEAR px round an open pin hole
+  // (small inside it, pops back outside), GROW_S scale change; COMPASS = ping radius (px), needle spin, ping travel, re-arm gap.
+  TOOL_ANIM: { AIM: 0.22, TRAVEL_PX_S: 260, TRAVEL_MIN: 0.12, TRAVEL_MAX: 0.4, HOLD_AFTER: 0.1,
+    REACT: { catch: 0.5, fizzle: 0.6, burn: 0.85, melt: 0.6, freeze: 0.6, frost: 0.6, gust: 0.9, crumble: 0.5, open: 0.5 },
+    LIFT: { BEND: 0.18, RISE: 0.22, HOLD: 0.3, TOSS: 0.32, CRUMBLE: 0.4, TOSS_PX: 26, ARC_H: 18 },
+    BOMB: { TOSS: 0.3, FUSE: 0.55, ARC_H: 14 }, HOOK: { SHOOT: 0.18, LAND: 0.14, ZIP_H: 12, HOP_H: 4 },
+    SHRINK: { S: 0.5, MIN: 0.4, NEAR: 22, HOLD_S: 1.2, GROW_S: 0.3 },
+    FAN_GRACE: 0.8, // added to a fan's timed window: the Gust Jar beats a kid spends at the other two fans, so updraft rooms are no harder than before
+    COMPASS: { R: 150, SPIN: 0.45, PING: 0.45, RING: 0.5, GAP_S: 30 } },
   LIVES: { REVIVES_PER_VISIT: 5, REVIVE_HEARTS: 3, REVIVE_IFRAMES: 3 },
   RUSH: { HEAL_HEARTS: 5, BREATHER: 5, REVIVES: Infinity, HITS_CAP: 1.5 }, // [S62] in a rush a boss needs at most HITS_CAP × its Adventurer hits; [TAP AUDIT 2026-10-10] revives are unlimited (one revive: no tap run of 4 beat all 8 bosses) — the record keeps time + revives used
   SURVIVAL: { BASE: 3, MAX_ALIVE: 16, HP_PER_WAVE: 0.25, SPEED_PER_WAVE: 0.03, SPEED_CAP: 0.60, DMG_EVERY: 3, ELITE_FROM: 10, ELITE_CHANCE: 0.2, GAP: 3, DMG_WORLD_CAP: 3 }, // [S61] base hit = min(home world, W3) strength; waves add the rest
@@ -834,7 +846,7 @@ const NWORLDS = 8;
 const BIG = 1e9;
 
 function worldDefaults(i) {
-  return { unlocked: i === 0, dungeonsCleared: [], medallions: [], subBossesBeaten: [], bossBeaten: false, relicFound: false, rooms: {} };
+  return { unlocked: i === 0, dungeonsCleared: [], medallions: [], subBossesBeaten: [], bossBeaten: false, relicFound: false, rooms: {}, openGates: [] };
 }
 
 function defaults() {
@@ -878,6 +890,7 @@ function clampWorld(raw, i) {
     unlocked: bool(w.unlocked, d.unlocked) || i === 0,
     dungeonsCleared: strArr(w.dungeonsCleared), medallions: strArr(w.medallions), subBossesBeaten: strArr(w.subBossesBeaten),
     bossBeaten: bool(w.bossBeaten, false), relicFound: bool(w.relicFound, false),
+    openGates: strArr(w.openGates, 400), // [TOOL ANIMS] overworld tool gates already opened (secrets.js gateKey): they stay open
     rooms: Object.fromEntries(Object.entries(plainObj(w.rooms)).filter(([, v]) => v && typeof v === 'object').slice(0, 2000)),
   };
 }
@@ -2196,7 +2209,7 @@ function createInteractables(map) {
     const f = TYPES[o.type].react[verb];
     if (!f) return false;
     const ch = !!f(o, sys, source);
-    if (ch) { sys.syncAll(); if (sys.onChange) sys.onChange(o, verb); }
+    if (ch) { sys.syncAll(); if (sys.fx) sys.fx(o, verb, source); if (sys.onChange) sys.onChange(o, verb); } // [TOOL ANIMS] sys.fx: the shared use animation
     return ch;
   };
   sys.passProj = (o) => !!TYPES[o.type].passProj || !TYPES[o.type].solid || !TYPES[o.type].solid(o, sys);
@@ -2415,12 +2428,13 @@ function attackButtons(viewW) {
   const A = CONFIG.UI.ATTACK, H = CONFIG.VIEW.H, b = A.BIG, m = A.SMALL;
   const s1 = { x: viewW - A.PAD - b, y: H - A.PAD - b, w: b, h: b };
   return { slot1: s1, slot2: { x: s1.x - A.GAP - m, y: s1.y + b - m, w: m, h: m }, slot3: { x: s1.x + b - m, y: s1.y - A.GAP - m, w: m, h: m },
-    potion: { x: s1.x - 2 * (A.GAP + m), y: s1.y + b - m, w: m, h: m } }; // [TAP AUDIT] potion button left of slot 2 (shown while potions > 0)
+    potion: { x: s1.x - 2 * (A.GAP + m), y: s1.y + b - m, w: m, h: m }, // [TAP AUDIT] potion button left of slot 2 (shown while potions > 0)
+    bomb: { x: s1.x - 3 * (A.GAP + m), y: s1.y + b - m, w: m, h: m } }; // [TAP FIX 4] bomb button left of the potion's place (shown with the Bomb Bag)
 }
 
 function hudHit(viewW, px, py) {
   const b = hudButtons(viewW);
-  for (const k of Object.keys(b)) { const r = b[k]; if (k === 'pill' && !hudHit.pillOn) continue; if (k === 'map' && !hudHit.mapOn) continue; if (k === 'equip' && !hudHit.equipOn) continue; if (k.startsWith('slot') && !hudHit.attackOn) continue; if (k === 'potion' && !hudHit.potionOn) continue; if (px >= r.x && px < r.x + r.w && py >= r.y && py < r.y + r.h) return k; }
+  for (const k of Object.keys(b)) { const r = b[k]; if (k === 'pill' && !hudHit.pillOn) continue; if (k === 'map' && !hudHit.mapOn) continue; if (k === 'equip' && !hudHit.equipOn) continue; if (k.startsWith('slot') && !hudHit.attackOn) continue; if (k === 'potion' && !hudHit.potionOn) continue; if (k === 'bomb' && !hudHit.bombOn) continue; if (px >= r.x && px < r.x + r.w && py >= r.y && py < r.y + r.h) return k; }
   return null;
 }
 
@@ -2453,7 +2467,7 @@ function updateHud(hud, data, dt) {
 }
 
 function drawHud(ctx, hud, data, view, { ap, apCap, band, map = false, attack = false, equip = false }) {
-  hudHit.mapOn = map; hudHit.attackOn = attack; hudHit.equipOn = equip; hudHit.potionOn = attack && data.items.potions > 0;
+  hudHit.mapOn = map; hudHit.attackOn = attack; hudHit.equipOn = equip; hudHit.potionOn = attack && data.items.potions > 0; hudHit.bombOn = attack && data.tools.includes('bombBag');
   ctx.fillStyle = 'rgba(8,8,24,0.72)';
   ctx.fillRect(0, 0, view.w, HUD_H - 4);
   const K = CONFIG.UI.HUD_SCALE; ctx.save(); ctx.scale(K, K); layout.k = K; // [POST-W8 I] LEFT zone at 2x: hearts (2 rows of 10), AP gems under them, level + XP + element badges to their right
@@ -2590,6 +2604,20 @@ function drawAttackButtons(ctx, hud, data, view, ap) {
     record('button', 'slot' + s, r.x, r.y, r.w, r.h);
   }
   if (data.items.potions > 0) drawPotionButton(ctx, B.potion, data);
+  if (data.tools.includes('bombBag')) drawBombButton(ctx, B.bomb, data);
+}
+// [TAP FIX 4] the bomb button (tap audit): tap = throw one bomb the way the B key does (facing, auto-aimed at a foe in
+// front); the bag's count in the corner, dim at 0 (buy more in a shop). Shown only once the hero owns the Bomb Bag.
+function drawBombButton(ctx, r, data) {
+  const cx = r.x + r.w / 2, cy = r.y + r.h / 2, none = data.items.bombs <= 0;
+  drawCell(ctx, r.x, r.y, r.w, r.h, { sel: false, fill: CONFIG.CELL.FILL });
+  if (!fitSprite(ctx, 'icons-items', 'bomb', cx, cy, Math.round(r.w * CONFIG.UI.ATTACK.ICON))) { // code bomb
+    ctx.fillStyle = '#20202c'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy + 3, 12, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#ffb030'; ctx.fillRect(cx + 5, cy - 14, 4, 7);
+  }
+  if (none) { ctx.fillStyle = 'rgba(10,16,40,0.45)'; ctx.fillRect(r.x, r.y, r.w, r.h); }
+  ctx.font = 'bold 12px ' + CONFIG.FONTS.UI; ctx.textAlign = 'right'; ctx.textBaseline = 'bottom'; drawOutlined(ctx, '×' + data.items.bombs, r.x + r.w - 4, r.y + r.h - 2);
+  record('button', 'bomb', r.x, r.y, r.w, r.h);
 }
 // [TAP AUDIT] the potion button: tap = drink one (+hearts) when hurt; the count sits in the corner. Before this, a potion
 // could only be drunk with the keys V then B — a kid on an iPad had no way to use the potions they bought.
@@ -2725,12 +2753,13 @@ __def("game/autoaim.js", function () {
 const { CONFIG } = __req("config.js");
 const { AMMO, heroAmmo, HERO_AMMO } = __req("game/projectiles.js");
 const { PROJECTILE_TARGETS } = __req("game/interactables.js");
-const NEEDS = { torch: (o) => (o.lit ? null : 'FIRE'), iceBlock: (o) => (o.melted ? null : 'FIRE'), water: (o) => (o.frozen ? null : 'ICE'), crystal: () => '', crackedWall: () => 'BOMB', dreamTorch: (o) => (o.lit ? null : 'FIRE'), vent: (o) => (o.frozen ? null : 'ICE') };
+const NEEDS = { torch: (o) => (o.lit ? null : 'FIRE'), iceBlock: (o) => (o.melted ? null : 'FIRE'), water: (o) => (o.frozen ? null : 'ICE'), crystal: () => '', crackedWall: (o) => (o.open ? null : 'BOMB'), dreamTorch: (o) => (o.lit ? null : 'FIRE'), vent: (o) => (o.frozen ? null : 'ICE') };
 
 function findTapTarget(inter, wx, wy) {
   let best = null, bd = CONFIG.COMBAT.TAP_TARGET_RADIUS + 8;
   for (const o of inter.list) {
     if (!PROJECTILE_TARGETS.includes(o.type) && !NEEDS[o.type]) continue;
+    if (NEEDS[o.type] && NEEDS[o.type](o) === null) continue; // [TOOL ANIMS] already done (melted, lit, frozen, blasted): a tap there walks, it is not swallowed
     const c = inter.center(o), d = Math.hypot(c.x - wx, c.y - wy);
     if (d <= bd) { best = o; bd = d; }
   }
@@ -2846,6 +2875,7 @@ function drawGateArt(ctx, o, x, y, world) {
   const gone = o.open || o.lifted || o.burnt;
   if (gone) { // what is left: a dark opening where the rock was; nothing where the boulder or the brambles were
     if (o.type === 'crackedRock' || o.type === 'crackedWall') { ctx.fillStyle = '#10101a'; ctx.beginPath(); ctx.ellipse(x + 8, y + 11, 6, 5, 0, 0, Math.PI * 2); ctx.fill(); }
+    if (o.type === 'bramble' && imgReady('fx-tools')) { const A = ATLAS['fx-tools'], n = Object.keys(A.meta.frames)[7], f = A.meta.frames[n], k = 12 / Math.max(f.w, f.h); drawSprite(ctx, 'fx-tools', n, Math.round(x + 8 - (f.w * k) / 2), Math.round(y + 15 - f.h * k), { scale: k }); } // [TOOL ANIMS] #387 the ash heap a burnt bramble leaves (walkable)
     return true;
   }
   const names = Object.keys(ATLAS[sh].meta.frames), n = names[Math.min(a[1], names.length - 1)], f = ATLAS[sh].meta.frames[n];
@@ -3010,6 +3040,8 @@ function gateOpen(o) { const g = GATE[o.type]; return !g || !!g.open(o); }
 // the post you zipped up with; once 'hooked' it ignored taps, stranding a tap-only kid)
 function tapGate(o) { return TOOL_GATES.includes(o.type) && (!gateOpen(o) || o.type === 'hookPoint'); }
 
+// [TAP FIX 3] a tap on something across a gap (no walk route) in a bounce-pad room: the pad bubble at once
+function showCrossing(h) { h.bubble = { icon: 'bouncePad', prop: true, missing: false, text: 'Hop across first!', t: P.BUBBLE_S }; }
 // A tap on a gate you cannot open yet: the missing-item bubble at once.
 function showNeed(h, o) { const g = GATE[o.type]; if (g) h.bubble = { icon: g.icon, missing: true, text: g.need, t: P.BUBBLE_S }; }
 
@@ -3047,6 +3079,7 @@ function updateHelp(h, cx, dt) {
   const { data, hero, inter } = cx;
   if (h.banner && (h.banner.t -= dt) <= 0) h.banner = null;
   if (h.bubble && (h.bubble.t -= dt) <= 0) h.bubble = null;
+  if (h.bubble && !h.bubble.missing && (hero.toolPose || hero.zip)) h.bubble = null; // [TOOL ANIMS] the 'Tap it!' hint makes way once the tool is in use (it hid the reaction)
   if (h.card && (h.card.t -= dt) <= 0) h.card = null;
   // item-get card: a tool appears in data.tools for the first time this session
   if (h.tools === null) h.tools = [...data.tools];
@@ -3164,7 +3197,8 @@ function drawHelpScreen(ctx, h, view, heroScreen, world = 1) {
     ctx.fillStyle = '#ffffff'; ctx.strokeStyle = '#10101a'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x, y, bw, bh, 14) : ctx.rect(x, y, bw, bh); ctx.fill(); ctx.stroke();
     for (const [dx, dy, r] of [[-6, bh + 6, 5], [-12, bh + 14, 3]]) { ctx.beginPath(); ctx.arc(x + bw / 2 + dx, y + dy, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); }
-    itemIcon(ctx, b.icon, x + (b.missing ? 22 : 24), y + bh / 2, 32, b.missing);
+    if (b.prop) { ctx.save(); ctx.translate(x + 8, y + 9); ctx.scale(2, 2); if (!drawDungeonPropArt(ctx, { type: b.icon, tx: 0, ty: 0 }, 0, 0, world)) itemIcon(ctx, b.icon, 8, 8, 16, false); ctx.restore(); } // [TAP FIX 3] a puzzle piece (the pad)
+    else itemIcon(ctx, b.icon, x + (b.missing ? 22 : 24), y + bh / 2, 32, b.missing);
     ctx.font = uiFont(b.missing ? 30 : 22); ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillStyle = b.missing ? '#d03030' : '#2a8a3a';
     ctx.fillText(b.missing ? '?' : '☝', x + 50, y + bh / 2 + 1);
     ctx.font = uiFont(14); const tw = ctx.measureText(b.text).width + 16;
@@ -3192,7 +3226,7 @@ function drawHelpScreen(ctx, h, view, heroScreen, world = 1) {
   }
 }
 
-return { TOOL_GATES, puzzleHint, TOOL_CARDS, TOOL_ICONS, canOpen, gateOpen, tapGate, showNeed, showHint, placeClueTablet, createHelp, helpEnterRoom, updateHelp, drawHelpWorld, itemIcon, drawHelpScreen };
+return { TOOL_GATES, puzzleHint, TOOL_CARDS, TOOL_ICONS, canOpen, gateOpen, tapGate, showCrossing, showNeed, showHint, placeClueTablet, createHelp, helpEnterRoom, updateHelp, drawHelpWorld, itemIcon, drawHelpScreen };
 });
 __def("scenes/pause.js", function () {
 // Pause menu (modal): Resume, Equipment, Map, Quests, Save, Mute, Quit to Title. [D42] no Return to Wayfarer — the ship is
@@ -4142,7 +4176,9 @@ function chaseTarget(h, map, x, y, dt, id) {
 
 function updateHero(h, map, dt) {
   // [POST-W8 D] the item-get pose (hands up, prize overhead) holds the hero still: no walking, no tap paths or tap-attack walks
-  if (h.itemGet) { h.path = null; h.attackId = null; h.moving = false; h.dirY = 0; h.animT = 0; h.frame = 1; if (h.flash > 0) h.flash -= dt; if (h.faceHold > 0) h.faceHold -= dt; return; }
+  // [TOOL ANIMS] a tool's action beat (game/toolanim.js) holds him the same way, and runs out here wherever the hero is updated
+  if (h.toolPose && (h.toolPose.t += dt) >= h.toolPose.dur) h.toolPose = null;
+  if (h.itemGet || h.toolPose) { h.path = null; h.attackId = null; h.moving = false; h.dirY = 0; h.animT = 0; h.frame = 1; if (h.flash > 0) h.flash -= dt; if (h.faceHold > 0) h.faceHold -= dt; return; }
   let ix = (held('right') ? 1 : 0) - (held('left') ? 1 : 0);
   let iy = (held('down') ? 1 : 0) - (held('up') ? 1 : 0);
   if (ix || iy) h.path = null;
@@ -4191,12 +4227,67 @@ function attackScale(id, atk) {
   return (ATK_SCALE[id] = atkH > walkH * 1.1 ? walkH / atkH : 1);
 }
 
-// Atlas art when delivered (hero-<id> walk, <id>-attack during a swing), code-drawn fallback otherwise.
+// [TOOL ANIMS] the hero off the ground (vine zip, bounce pads: h.z, with a shadow left on the ground) and Shrink Cap size
+// (h.scale), both around his feet; then the normal drawing.
 function drawHero(ctx, h, cam) {
+  const s = h.scale && h.scale < 1 ? h.scale : 1, z = h.z || 0;
+  if (s === 1 && !z) return drawHeroAt(ctx, h, cam);
+  const fx = Math.round(h.x - cam.x), fy = Math.round(h.y - cam.y);
+  if (z) { ctx.fillStyle = 'rgba(0,0,0,0.25)'; ctx.beginPath(); ctx.ellipse(fx, fy, 6 * s, 2.5 * s, 0, 0, Math.PI * 2); ctx.fill(); }
+  ctx.save(); ctx.translate(fx, fy - z); ctx.scale(s, s); ctx.translate(-fx, -fy); drawHeroAt(ctx, h, cam); ctx.restore();
+  if (s < 1) h.drawnAttack = true; // tiny: no code weapon bar at full size beside him
+}
+
+// [TOOL ANIMS] the tool beat's pose: the hero's hero-<id>-tools sheet (#384-386: bend / lift / throw / raise per direction)
+// when it is in; until then his own <id>-moves frames (lift overhead — a rock already in his hands, so the animation does
+// not draw the real one over it — and the throw) and a squashed standing frame for the bend.
+const TOOL_COL = { bend: 0, lift: 1, throw: 2, raise: 3 };
+const TOOLS_ROW = { wren: { left: 'right', right: 'left' } }; // #386 Wren's sheet has its side rows the other way round (its 'left' row faces right)
+const TP_SCALE = {};
+function poseScale(id, sh, ref) { // the sheet's `ref` frame drawn at the standing walk height
+  const key = sh; if (TP_SCALE[key] !== undefined) return TP_SCALE[key];
+  const w0 = 'hero-' + id; if (!imgReady(w0) || !ATLAS[sh].meta.frames[ref]) return 1;
+  const wn = walkFrame(id, 'down', 1), wf = ATLAS[w0].meta.frames[wn], rf = ATLAS[sh].meta.frames[ref];
+  return (TP_SCALE[key] = ((opaqueBox(w0, wn).h * wf.w) / wf.src.w) / ((opaqueBox(sh, ref).h * rf.w) / rf.src.w));
+}
+function drawToolPose(ctx, h, x, y, flash) {
+  const P = h.toolPose, L = CONFIG.TOOL_ANIM.LIFT; P.baked = false;
+  if (P.kind === 'shrink') { const D = ['down', 'left', 'up', 'right'], f = h.facing; h.facing = D[Math.floor(P.t / 0.07) % 4]; const ok = drawPlain(ctx, h, x, y, flash); h.facing = f; return ok; } // a spin as he shrinks
+  const beat = P.kind !== 'lift' ? P.kind : P.t < L.BEND + L.RISE * 0.5 ? 'bend' : P.t < L.BEND + L.RISE + L.HOLD ? 'lift' : 'throw';
+  const tools = 'hero-' + h.id + '-tools';
+  if (imgReady(tools)) { drawSpriteFoot(ctx, tools, ((TOOLS_ROW[h.id] || {})[h.facing] || h.facing) + TOOL_COL[beat], x, y + 1, { flash, scale: poseScale(h.id, tools, 'down2') }); return true; }
+  if (beat === 'bend') { ctx.save(); ctx.translate(x, y); ctx.scale(1.08, 0.86); ctx.translate(-x, -y); const ok = drawPlain(ctx, h, x, y, flash); ctx.restore(); return ok; }
+  const mv = h.id + '-moves'; if (!imgReady(mv)) return false;
+  const f = beat === 'lift' ? (h.facing === 'up' ? 'up2' : 'down2') : h.facing + '1';
+  P.baked = beat === 'lift';
+  drawSpriteFoot(ctx, mv, f, x, y + 2, { flash, scale: poseScale(h.id, mv, 'down1') });
+  return true;
+}
+// [TOOL ANIMS] Vine Hook: the throw that shoots the vine, then hanging from it by both hands (tools sheet lift column, or the
+// hold sheet's both-hands-up frame meanwhile) while he zips across; the landing hop is the plain frame (h.z).
+function drawZipPose(ctx, h, x, y, flash) {
+  const H = CONFIG.TOOL_ANIM.HOOK, t = h.zip.t, zip = CONFIG.ITEMS.HOOK.zip;
+  if (t >= H.SHOOT + zip) return false;
+  const P = h.toolPose; h.toolPose = { kind: t < H.SHOOT || h.zip.tug ? 'throw' : 'lift', t: CONFIG.TOOL_ANIM.LIFT.BEND + CONFIG.TOOL_ANIM.LIFT.RISE, dur: 1 };
+  let ok;
+  if (t >= H.SHOOT && !h.zip.tug && !imgReady('hero-' + h.id + '-tools') && imgReady(h.id + '-hold')) { drawPose(ctx, h, x, y, h.id + '-hold', 0, 1.18); ok = true; }
+  else ok = drawToolPose(ctx, h, x, y, flash);
+  h.toolPose = P; return ok;
+}
+function drawPlain(ctx, h, x, y, flash) { // the standing walk frame (no swing)
+  if (imgReady('hero-' + h.id) && walkB(ctx, h, x, y + 1, flash)) return true;
+  if (imgReady('hero-' + h.id)) { drawSpriteFoot(ctx, 'hero-' + h.id, walkFrame(h.id, h.facing, 1), x, y + 1, { flash }); return true; }
+  return false;
+}
+
+// Atlas art when delivered (hero-<id> walk, <id>-attack during a swing), code-drawn fallback otherwise.
+function drawHeroAt(ctx, h, cam) {
   if (h.iframes > 0 && Math.floor(h.iframes * 12) % 2) { h.drawnAttack = true; return; } // [R2-19] the blink hides the weapon too
   const flash = h.flash > 0 && Math.floor(h.flash * 20) % 2 === 1;
   const x = Math.round(h.x - cam.x), y = Math.round(h.y - cam.y);
   if (h.itemGet) h.drawnAttack = true; // [R2-19] the prize poses below hide any swing (no code weapon bar over them)
+  if (h.toolPose && !h.itemGet) { h.drawnAttack = true; if (drawToolPose(ctx, h, x, y, flash)) return; }
+  if (h.zip && drawZipPose(ctx, h, x, y, flash)) { h.drawnAttack = true; return; }
   if (h.itemGet && h.itemGet.chest && imgReady(h.id + '-extra')) { // [A8] chest opened: the user's *-extra "treasure chest overhead" pose, the hero's walk height
     drawPose(ctx, h, x, y, h.id + '-extra', CHEST_FRAME[h.id] || 4, 1.3); return;
   }
@@ -5783,7 +5874,7 @@ const W5 = {
   // Relic (The Frozen Falls): the waterfall is the door — freeze it with ICE (Ice Bloom, W3) [D09]. Secrets use D27 mechanics.
   // Relic mini-dungeon (SPEC 2.8, D09): 5 rooms around its gate tool + one other (src/game/relics.js builds the rooms).
   relicDungeon: { id: 'frozen-falls', name: 'The Frozen Falls', relic: 'vine-heart', relicName: 'Vine Heart', tools: ['iceBloom', 'vineHook'],
-    foes: { 'rl-entry': [['vineviper', 14, 14], ['canopybat', 28, 12]], 'rl-gate1': [['coconutlobber', 10, 20], ['thornmole', 32, 22]], 'rl-gate2': [['armordillo', 20, 20]] } },
+    foes: { 'rl-entry': [['vineviper', 6, 5], ['canopybat', 18, 5]], /* [TAP FIX 8] the far side of the 24x18 entry room, not at the door */ 'rl-gate1': [['coconutlobber', 10, 20], ['thornmole', 32, 22]], 'rl-gate2': [['armordillo', 20, 20]] } },
   gates: {
     relic: { gate: 'water', tool: 'iceBloom' },
     secrets: [
@@ -6715,7 +6806,7 @@ Object.assign(TYPES, {
   cave: { solid: () => false, react: {} },
   heavyBoulder: { solid: (o) => !o.lifted, react: { blast: (o) => ((o.bounced = (o.bounced || 0) + 1), false), lift: (o) => (o.lifted ? false : (o.lifted = true)) } },
   bramble: { solid: (o) => !o.burnt, react: { burn: (o) => (o.burnt ? false : (o.burnt = true)) } },
-  fan: { solid: () => true, react: { blow: (o, sys) => { o.t = (o.window || 3) * (sys.tier === 'little' ? CONFIG.PUZZLE.TIMING_LITTLE_MULT : 1); emit(o, sys, true); return true; } } },
+  fan: { solid: () => true, react: { blow: (o, sys) => { o.t = ((o.window || 3) + CONFIG.TOOL_ANIM.FAN_GRACE) * (sys.tier === 'little' ? CONFIG.PUZZLE.TIMING_LITTLE_MULT : 1); emit(o, sys, true); return true; } } },
   windmill: { solid: () => true, react: { blow: (o, sys) => (o.spinning ? false : ((o.spinning = true), emit(o, sys, true), true)) } },
   pinwheel: { solid: () => true, react: { blow: (o, sys) => { o.t = 2; emit(o, sys, true); return true; } } },
   leafBoat: { solid: () => false, react: { blow: (o, sys, src) => sys.sail(o) } },
@@ -6965,6 +7056,11 @@ const { addStarSeed } = __req("game/progression.js");
 // Which tool opens each gate type (gates themselves still check verbs only, D05/D28).
 const GATE_TOOL = { crackedWall: 'bombBag', crackedRock: 'bombBag', bramble: 'fireBloom', iceBlock: 'fireBloom', heavyBoulder: 'powerGlove', pinHole: 'shrinkCap', hookPoint: 'vineHook', water: 'iceBloom' };
 
+// [TOOL ANIMS] an overworld tool gate, once opened, stays open on later visits and after a reload (data.worlds[w].openGates):
+// its use animation plays once, and a cleared way never grows back shut.
+const GATE_OPEN = { crackedWall: 'open', crackedRock: 'open', bramble: 'burnt', iceBlock: 'melted', heavyBoulder: 'lifted', pinHole: 'open', water: 'frozen', hookPoint: 'hooked' };
+function gateKey(o) { return o.type + '@' + o.tx + ',' + o.ty; }
+
 function secretKey(world, s) { return 's' + world + ':' + s.cx + ',' + s.cy; }
 
 function secretReward(world, s) {
@@ -6990,7 +7086,7 @@ function claimSecret(data, world, s) {
 
 function secretsFound(data, world) { return data.secrets.filter((k) => k.startsWith('s' + world + ':')).length; }
 
-return { GATE_TOOL, secretKey, secretReward, claimSecret, secretsFound };
+return { GATE_TOOL, GATE_OPEN, gateKey, secretKey, secretReward, claimSecret, secretsFound };
 });
 __def("game/maze.js", function () {
 // [D52] Maze mini-game (one per world; W1 first): talk to the keeper → the clock starts; walk through the fence maze into
@@ -8774,7 +8870,11 @@ function doorAt(doors, wx, wy, below = null) {
   const m = CONFIG.COMBAT.DOOR_TAP_MARGIN * T, mb = below == null ? m : Math.min(m, below * T);
   for (const d of doors) {
     const hw = (d.w || 1) * T / 2;
-    if (wx >= d.x - hw - m && wx <= d.x + hw + m && wy >= d.y - T / 2 - m && wy <= d.y + T / 2 + mb) return d;
+    if (!(wx >= d.x - hw - m && wx <= d.x + hw + m && wy >= d.y - T / 2 - m && wy <= d.y + T / 2 + mb)) continue;
+    // [TAP FIX 1] a town house (d.art = its walls' x span): the tap must land on the building art, or on the door's own
+    // column (its front step) — the lane beside a house stays a lane in stacked-house towns
+    if (d.art && !(wy <= d.y + T / 2 && wx >= d.art[0] && wx <= d.art[1]) && Math.abs(wx - d.x) > hw + CONFIG.COMBAT.DOOR_TAP_TOWN_SIDE * T) continue;
+    return d;
   }
   return null;
 }
@@ -8922,7 +9022,7 @@ function placeTown(ow, town) {
   for (const b of town.buildings) {
     const [x0, x1, rows] = wallSpan(b, buildingFrame(ow.world && ow.world.id, town, b, true), buildingScale(ow.world && ow.world.id, town, b, true)); // [A4] walls = where the building art stands
     for (let y = 0; y < b.h; y++) for (let x = 0; x < b.w; x++) { const wall = x >= x0 && x < x1 && y >= b.h - rows; m.set(ox + b.x + x, oy + b.y + y, wall ? TILE.WALL : TILE.TOWN, wall ? 1 : 0); }
-    const d = { id: b.id, name: b.name, tx: ox + b.x + b.door, ty: oy + b.y + b.h - 1, b };
+    const d = { id: b.id, name: b.name, tx: ox + b.x + b.door, ty: oy + b.y + b.h - 1, b, art: [(ox + b.x + x0) * T, (ox + b.x + x1) * T] }; // art: the walls' x span in world px (door tap zone, tap audit)
     m.set(d.tx, d.ty, TILE.TOWN, 0);
     doors.push(d);
   }
@@ -9256,6 +9356,7 @@ __def("game/items.js", function () {
 // V cycles the selected item (consumables + active tools); B uses it. Buy greys out at the cap; unique items refuse duplicates.
 const { CONFIG } = __req("config.js");
 const { TOOL_VERBS } = __req("game/interactables.js");
+const { sfx } = __req("engine/audio.js");
 const I = CONFIG.ITEMS;
 const ACTIVE_TOOLS = ['bombBag', 'vineHook', 'shrinkCap', 'powerGlove', 'gustJar'];
 
@@ -9319,18 +9420,24 @@ function startHook(data, hero, inter, map) {
     if (!inter.use(post, 'hook', data)) return false;
     post.hooked = true; // counts as 'opened' for relic tool-gate rooms
     const lx = post.tx - dx, ly = post.ty - dy;
-    if (k === 1 || map.isSolid(lx, ly)) return false; // already there / nowhere to land
-    hero.zip = { t: 0, x0: hero.x, y0: hero.y, x1: lx * T + 8, y1: ly * T + 12 }; hero.path = null;
+    const P = { px: post.tx * T + 8, py: post.ty * T + 8 };
+    // [TOOL ANIMS] right beside the post (a dungeon gate post, nothing to cross): the vine still shoots and tugs taut, he stays put
+    if (k === 1) { hero.zip = { t: 0, x0: hero.x, y0: hero.y, x1: hero.x, y1: hero.y, ...P, tug: true }; hero.path = null; sfx('swing'); return true; }
+    if (map.isSolid(lx, ly)) return false; // nowhere to land
+    hero.zip = { t: 0, x0: hero.x, y0: hero.y, x1: lx * T + 8, y1: ly * T + 12, ...P }; hero.path = null; sfx('swing');
     return true;
   }
   return false;
 }
 // Moves a zipping hero; returns true while the zip is running (skip normal movement that frame).
+// [TOOL ANIMS] three beats: the vine shoots to the post (he stays), he swings across hanging from it, a small landing hop.
 function updateHook(hero, dt) {
   const z = hero.zip; if (!z) return false;
-  z.t += dt; const k = Math.min(1, z.t / I.HOOK.zip);
-  hero.x = z.x0 + (z.x1 - z.x0) * k; hero.y = z.y0 + (z.y1 - z.y0) * k; hero.z = Math.sin(k * Math.PI) * 10;
-  if (k >= 1) { hero.zip = null; hero.z = 0; hero.hooks = (hero.hooks || 0) + 1; }
+  const H = CONFIG.TOOL_ANIM.HOOK, zt = I.HOOK.zip;
+  z.t += dt; const k = Math.max(0, Math.min(1, (z.t - H.SHOOT) / zt));
+  hero.x = z.x0 + (z.x1 - z.x0) * k; hero.y = z.y0 + (z.y1 - z.y0) * k; hero.z = z.tug ? 0 : Math.sin(k * Math.PI) * H.ZIP_H;
+  if (z.t > H.SHOOT + zt) { const l = Math.min(1, (z.t - H.SHOOT - zt) / H.LAND); hero.z = Math.sin(l * Math.PI) * H.HOP_H; if (!z.landed) { z.landed = true; sfx('click'); } }
+  if (z.t >= H.SHOOT + zt + H.LAND) { hero.zip = null; hero.z = 0; hero.hooks = (hero.hooks || 0) + 1; }
   return true;
 }
 
@@ -10204,6 +10311,399 @@ function createDungeonMap(view, d, onClose) {
 
 return { markSeen, createMap, createDungeonMap };
 });
+__def("game/toolanim.js", function () {
+// [TOOL ANIMS] One shared tool-use animation path for the overworld AND dungeons. Every gate change, whatever caused it
+// (a tool used by tap/key, an ammo shot, a bomb, an elemental swing), goes through inter.apply → sys.fx(o, verb, source)
+// → startToolAnim here. Game logic is unchanged (the gate opens at once, exactly as before); this module only shows it:
+// the hero's action beat (hero.toolPose: a movement lock like the item-get pose, drawn by hero.js), the effect travelling
+// hand → target, and the target's reaction. Scenes call updateToolAnim + drawToolAnim and draw each gate through
+// toolView(o) (null = this module draws it while its animation runs). Nothing replays: only a real change starts one.
+const { CONFIG } = __req("config.js");
+const { sfx } = __req("engine/audio.js");
+const { ATLAS, imgReady, drawSprite } = __req("engine/atlas.js");
+const { shake, floatText } = __req("game/fx.js");
+const { shotBurst } = __req("game/shotfx.js");
+const { itemIcon } = __req("game/puzzlehelp.js");
+const TA = CONFIG.TOOL_ANIM, T = CONFIG.VIEW.TILE;
+// #387 fx-tools (16 frames, in prompt order): 0-1 wind swirl small/big, 2-3 fire tongue, 4-5 campfire flame, 6 smoke puff,
+// 7 ash heap, 8 frost burst, 9 ice sheen tile, 10-11 sparkle ring big/small, 12 dust burst, 13 falling rock chunks,
+// 14 pebbles, 15 star sparkle. FX(i, x, y, size) draws frame i centred on (x, y), `size` world px across; false while
+// the sheet is missing (the code-drawn look stays as the fallback).
+const FXK = { WIND: 0, FIRE: 2, FLAME: 4, SMOKE: 6, ASH: 7, FROST: 8, SHEEN: 9, RING: 10, DUST: 12, ROCKS: 13, PEBBLES: 14, STAR: 15 };
+function fxTool(ctx, i, x, y, size, alpha = 1, rot = 0) {
+  if (!imgReady('fx-tools')) return false;
+  const A = ATLAS['fx-tools'], names = Object.keys(A.meta.frames), f = A.meta.frames[names[i]]; if (!f) return false;
+  const s = size / Math.max(f.w, f.h); ctx.save(); ctx.globalAlpha *= alpha; ctx.translate(x, y); if (rot) ctx.rotate(rot);
+  drawSprite(ctx, 'fx-tools', names[i], -(f.w * s) / 2, -(f.h * s) / 2, { scale: s }); ctx.restore(); return true;
+}
+const DIRV = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
+// what the target looked like before the change (drawn until the effect arrives)
+const BEFORE = { boulder: { lifted: false }, heavyBoulder: { lifted: false }, torch: { lit: false }, dreamTorch: { lit: false }, bramble: { burnt: false },
+  iceBlock: { melted: false }, water: { frozen: false }, vent: { frozen: false }, fan: { t: 0 }, pinwheel: { t: 0 }, windmill: { spinning: false },
+  crackedWall: { open: false }, crackedRock: { open: false }, pinHole: { open: false } };
+// type + verb → animation kind; the tool whose icon the hero raises; the hero's beat
+const KIND = (o, verb) => {
+  if ((o.type === 'boulder' || o.type === 'heavyBoulder') && verb === 'lift') return 'lift';
+  if ((o.type === 'torch' || o.type === 'dreamTorch') && (verb === 'burn' || verb === 'light')) return o.lit ? 'catch' : o.type === 'dreamTorch' ? 'fizzle' : null;
+  if (o.type === 'bramble' && verb === 'burn') return 'burn';
+  if (o.type === 'iceBlock' && (verb === 'melt' || verb === 'burn')) return 'melt';
+  if (o.type === 'water' && verb === 'freeze') return 'freeze';
+  if (o.type === 'vent' && verb === 'freeze') return 'frost';
+  if ((o.type === 'fan' || o.type === 'pinwheel' || o.type === 'windmill') && verb === 'blow') return 'gust';
+  if ((o.type === 'crackedWall' || o.type === 'crackedRock') && verb === 'blast') return 'crumble';
+  if (o.type === 'pinHole' && verb === 'shrink') return 'open';
+  return null;
+};
+const TOOL = { catch: 'fire-bloom', fizzle: 'fire-bloom', burn: 'fire-bloom', melt: 'fire-bloom', freeze: 'ice-bloom', frost: 'ice-bloom', gust: 'gust-jar', crumble: 'bomb-bag', open: 'shrink-cap' };
+const ELEM = { catch: 'fire', fizzle: 'fire', burn: 'fire', melt: 'fire', freeze: 'ice', frost: 'ice', gust: 'wind', crumble: 'bomb' };
+
+const anims = []; // { sys, o, kind, tool, t, aim, travel, react, from, to, ... }
+const parts = []; // small code-drawn particles: { x, y, vx, vy, g, life, max, c, s, kind }
+let lastSys = null;
+
+// Scenes: once per new interactables system. The hook lives on sys, so a dungeon room's fresh system gets it too.
+function attachToolAnim(sys, hero) {
+  sys.fx = (o, verb, source) => startToolAnim(sys, hero, o, verb, source);
+  sys.toolAnimCount = () => anims.filter((a) => a.sys === sys && !a.done).length; // acceptance: nothing replays
+}
+
+// A gate that is animating is drawn by this module; scenes skip it (null) or draw what comes back.
+function toolView(o) { return anims.some((a) => a.o === o && !a.done) ? null : o; }
+// The hero's action beat holds every tap, key and swing (like the item-get pose).
+function toolBusy(hero) { return !!(hero.toolPose || hero.zip); }
+
+// A world tap during the beat is held (not dropped, not doubled) and replayed the moment the beat ends — a kid tapping the
+// next fan or the far ledge right away still gets there. HUD taps (pause, map…) go through as normal.
+function holdTap(hero, ptr, st, isHud) {
+  if (toolBusy(hero)) { if (ptr.tapped && !isHud(ptr.x, ptr.y)) { st.heldTap = { x: ptr.x, y: ptr.y }; ptr.tapped = false; } return; }
+  if (st.heldTap && !ptr.tapped) Object.assign(ptr, st.heldTap, { tapped: true });
+  st.heldTap = null;
+}
+
+function heroHand(hero) { const [dx, dy] = DIRV[hero.facing] || [0, 1]; return { x: hero.x + dx * 7, y: hero.y - 14 + dy * 3 }; }
+function centre(o) { return { x: o.tx * T + 8, y: o.ty * T + 8 }; }
+function pose(hero, kind, dur, extra = {}) { hero.toolPose = { kind, t: 0, dur, ...extra }; hero.path = null; hero.attackId = null; }
+
+function startToolAnim(sys, hero, o, verb, source) {
+  const kind = KIND(o, verb); if (!kind) return;
+  if (anims.some((a) => a.o === o && !a.done && a.kind === kind)) return; // never stacks on itself
+  const tool = source === 'tool' && !hero.toolPose && !hero.zip; // the full beat only when the hero used the tool himself
+  const to = centre(o), from = tool || kind === 'freeze' ? heroHand(hero) : to; // freeze: the sheen spreads from the hero's side, shot or tool
+  const dist = Math.hypot(to.x - from.x, to.y - from.y);
+  const a = { sys, o, kind, tool, t: 0, done: false, from, to, aim: 0, travel: 0, react: TA.REACT[kind] || 0.5, fired: false, hit: false,
+    before: { ...o, ...(BEFORE[o.type] || {}) }, hero };
+  if (kind === 'lift') return startLift(a, hero);
+  if (tool) {
+    a.aim = TA.AIM;
+    a.travel = Math.max(TA.TRAVEL_MIN, Math.min(TA.TRAVEL_MAX, dist / TA.TRAVEL_PX_S));
+    if (kind === 'crumble') { a.travel = TA.BOMB.TOSS; a.fuse = TA.BOMB.FUSE; }
+    const beat = kind === 'crumble' ? a.aim + a.travel + a.fuse : kind === 'gust' ? a.aim + a.travel : a.aim + a.travel + TA.HOLD_AFTER; // gust: timed fans, no hold after the puff
+    if (kind === 'open') pose(hero, 'shrink', TA.SHRINK.S, { item: TOOL[kind] });
+    else pose(hero, kind === 'crumble' ? 'throw' : 'raise', beat, { item: TOOL[kind] });
+  }
+  a.fuse = a.fuse || 0;
+  if (kind === 'fizzle' || kind === 'catch') a.order = o.type === 'dreamTorch' ? (sys.progress || 0) : 0;
+  if (kind === 'fizzle') a.snuffed = sys.byType('dreamTorch').map((x) => ({ ...centre(x) }));
+  anims.push(a);
+}
+
+function startLift(a, hero) {
+  const L = TA.LIFT;
+  a.react = L.BEND + L.RISE + L.HOLD + L.TOSS + L.CRUMBLE;
+  const [dx, dy] = DIRV[hero.facing] || [0, 1];
+  let side = dx ? [0, 1] : [1, 0]; // tossed aside: perpendicular to the way the hero faces, onto open ground if one side is
+  const m = a.sys.map;
+  if (m && m.isSolid(Math.floor((hero.x + side[0] * L.TOSS_PX) / T), Math.floor((hero.y - 4 + side[1] * L.TOSS_PX) / T))) side = [-side[0], -side[1]];
+  a.land = { x: hero.x + side[0] * L.TOSS_PX + dx * 6, y: hero.y + side[1] * L.TOSS_PX + dy * 6 };
+  a.gx = a.o.role === 'relic' ? 8 : 0; // the relic cave's rock is drawn centred on its 2-tile mouth
+  a.foot = { x: a.o.tx * T + 8 + a.gx, y: a.o.ty * T + 16 };
+  pose(hero, 'lift', L.BEND + L.RISE + L.HOLD + L.TOSS, { item: 'power-glove' });
+  hero.toolPose.lift = a;
+  sfx('scrape');
+  anims.push(a);
+}
+
+// ------------------------------------------------------------------------------------------------ update
+function updateToolAnim(sys, hero, dt) {
+  if (sys !== lastSys) { for (const a of anims) if (a.sys !== sys) a.done = true; lastSys = sys; }
+  for (const a of anims) {
+    if (a.done) continue;
+    a.t += dt;
+    if (a.kind === 'lift') { updateLift(a); continue; }
+    if (!a.fired && a.t >= a.aim) { a.fired = true; if (a.tool) fireSound(a); }
+    if (a.fired && !a.hit && a.t >= a.aim + a.travel + a.fuse) { a.hit = true; impact(a); }
+    if (a.hit && a.t >= a.aim + a.travel + a.fuse + a.react) a.done = true;
+    if (a.hit && !a.done) reactParticles(a, dt);
+  }
+  for (let i = anims.length - 1; i >= 0; i--) if (anims[i].done) anims.splice(i, 1);
+  for (let i = parts.length - 1; i >= 0; i--) { const p = parts[i]; p.life -= dt; if (p.life <= 0) { parts.splice(i, 1); continue; } p.x += p.vx * dt; p.y += p.vy * dt; p.vy += (p.g || 0) * dt; }
+  updateShrink(sys, hero, dt);
+}
+
+function fireSound(a) { const e = ELEM[a.kind]; if (e === 'wind') { sfx('click'); sfx('rustle'); } else if (e === 'bomb') sfx('swing'); else sfx('shell'); }
+
+function impact(a) {
+  const { x, y } = a.to;
+  switch (a.kind) {
+    case 'catch': sfx('forge'); burst(x, y - 8, 8, ['#ffe060', '#ff8020', '#ffffff'], 40, -30); if (a.o.type === 'dreamTorch') floatText(x, y - 22, String(a.order), '#ffe070'); break;
+    case 'fizzle': sfx('wrong'); for (const c of a.snuffed) puff(c.x, c.y - 10, 3); floatText(x, y - 22, 'Start again!', '#ffffff'); break;
+    case 'burn': sfx('forge'); break;
+    case 'melt': sfx('forge'); break;
+    case 'freeze': case 'frost': sfx('rustle'); burst(x, y, 10, ['#ffffff', '#c8f0ff', '#80d0ff'], 50, 0); break;
+    case 'gust': sfx('spin'); break;
+    case 'crumble': if (a.tool) { shotBurst(x, y, ['BOMB']); sfx('splat'); } shake.t = 0.2; shake.amp = Math.max(shake.amp || 0, 2.5); chunks(x, y, 6); dust(x, y + 4, 8); break;
+    case 'open': sfx('portal'); sparkle(x, y, 10); break;
+  }
+}
+function reactParticles(a, dt) {
+  const k = (a.t - a.aim - a.travel - a.fuse) / a.react, { x, y } = a.to;
+  if (a.kind === 'burn' && Math.random() < dt * 14) { if (k < 0.75) flame(x - 6 + Math.random() * 12, y - 2 + Math.random() * 6); if (k > 0.3) puff(x - 4 + Math.random() * 8, y - 8, 1); }
+  if (a.kind === 'melt' && Math.random() < dt * 10) parts.push({ x: x - 5 + Math.random() * 10, y: y + 2, vx: 0, vy: 20, g: 60, life: 0.4, max: 0.4, c: '#80d0ff', s: 2 });
+  if (a.kind === 'gust' && k < 0.6 && Math.random() < dt * 12) parts.push({ x: x + (Math.random() - 0.5) * 14, y: y - 6, vx: (Math.random() - 0.5) * 50, vy: -20, g: 0, life: 0.35, max: 0.35, c: 'rgba(255,255,255,0.8)', s: 2 });
+}
+
+// --- Power Glove ---------------------------------------------------------------------------------------
+function updateLift(a) {
+  const L = TA.LIFT, t = a.t;
+  if (!a.lifted && t >= L.BEND) { a.lifted = true; sfx('scrape'); dust(a.foot.x, a.foot.y - 2, 4); }
+  if (!a.tossed && t >= L.BEND + L.RISE + L.HOLD) { a.tossed = true; sfx('swing'); }
+  if (!a.landed && t >= L.BEND + L.RISE + L.HOLD + L.TOSS) { a.landed = true; sfx('hit'); shake.t = 0.15; shake.amp = Math.max(shake.amp || 0, 2); dust(a.land.x, a.land.y, 10); chunks(a.land.x, a.land.y - 6, 5); }
+  if (t >= a.react) a.done = true;
+}
+// where the boulder is (foot point) + how it is drawn at time t; null = gone (crumbled)
+function liftPos(a, hero) {
+  const L = TA.LIFT, t = a.t, head = { x: hero.x, y: hero.y - 20 };
+  if (t < L.BEND) return { x: a.foot.x + (Math.random() - 0.5) * 1.2, y: a.foot.y, rot: 0, s: 1 };
+  if (t < L.BEND + L.RISE) { const k = (t - L.BEND) / L.RISE, e = 1 - (1 - k) * (1 - k); return { x: a.foot.x + (head.x - a.foot.x) * e, y: a.foot.y + (head.y - a.foot.y) * e, rot: 0, s: 1, front: k > 0.5 }; }
+  if (t < L.BEND + L.RISE + L.HOLD) return { x: head.x, y: head.y + Math.sin(t * 30) * 0.6, rot: 0, s: 1, front: true, held: true };
+  if (t < L.BEND + L.RISE + L.HOLD + L.TOSS) { const k = (t - L.BEND - L.RISE - L.HOLD) / L.TOSS; return { x: head.x + (a.land.x - head.x) * k, y: head.y + (a.land.y - head.y) * k - Math.sin(k * Math.PI) * L.ARC_H, rot: k * 2.4, s: 1, front: true }; }
+  const k = (t - (L.BEND + L.RISE + L.HOLD + L.TOSS)) / L.CRUMBLE; return { x: a.land.x, y: a.land.y, rot: 2.4, s: 1, crumble: k };
+}
+
+// --- Shrink Cap: small inside an open pin hole's reach, popping back outside it ----------------------------
+function updateShrink(sys, hero, dt) {
+  const S = TA.SHRINK, P = hero.toolPose;
+  if (P && P.kind === 'shrink') { hero.scale = 1 - (1 - S.MIN) * Math.min(1, P.t / S.S); hero.shrinkHold = S.HOLD_S; if (Math.random() < dt * 30) sparkle(hero.x, hero.y - 10, 1); return; }
+  if (hero.shrinkHold > 0) hero.shrinkHold -= dt;
+  const holes = sys.list.filter((o) => o.type === 'pinHole' && o.open);
+  const near = hero.shrinkHold > 0 || holes.some((o) => Math.hypot(hero.x - (o.tx * T + 8), hero.y - 4 - (o.ty * T + 8)) < S.NEAR);
+  const want = near ? S.MIN : 1, cur = hero.scale || 1;
+  if (Math.abs(want - cur) < 0.001) { if (want === 1) hero.scale = undefined; return; }
+  if (cur === 1 || (want === 1 && cur <= S.MIN + 0.001)) { sfx(want < 1 ? 'portal' : 'click'); sparkle(hero.x, hero.y - 8, 8); }
+  const step = ((1 - S.MIN) * dt) / S.GROW_S;
+  hero.scale = want < cur ? Math.max(want, cur - step) : Math.min(want, cur + step);
+  if (Math.random() < dt * 20) sparkle(hero.x, hero.y - 10, 1);
+}
+
+// --- particles -----------------------------------------------------------------------------------------
+function burst(x, y, n, cols, sp, vy0) { for (let i = 0; i < n; i++) { const an = Math.random() * Math.PI * 2, s = sp * (0.5 + Math.random() * 0.5); parts.push({ x, y, vx: Math.cos(an) * s, vy: Math.sin(an) * s + vy0, g: 40, life: 0.45, max: 0.45, c: cols[i % cols.length], s: 2 }); } }
+function dust(x, y, n) { if (imgReady('fx-tools')) { parts.push({ x, y: y - 3, vx: 0, vy: -6, g: 0, life: 0.5, max: 0.5, kind: 'fx', i: FXK.DUST, s: 10 + n * 1.4 }); return; } /* #387 one dust burst */ for (let i = 0; i < n; i++) { const an = Math.PI + Math.random() * Math.PI, s = 20 + Math.random() * 30; parts.push({ x, y, vx: Math.cos(an) * s, vy: Math.sin(an) * s * 0.4, g: 0, life: 0.5, max: 0.5, c: '#b8a080', s: 3 + Math.random() * 3, kind: 'puff' }); } }
+function chunks(x, y, n) { if (imgReady('fx-tools')) parts.push({ x, y: y - 4, vx: 0, vy: -20, g: 120, life: 0.55, max: 0.55, kind: 'fx', i: FXK.ROCKS, i2: FXK.PEBBLES, s: 16 }); /* #387 falling chunks → pebbles */ for (let i = 0; i < n; i++) { const an = -Math.PI / 2 + (Math.random() - 0.5) * 2.4, s = 40 + Math.random() * 50; parts.push({ x, y, vx: Math.cos(an) * s, vy: Math.sin(an) * s, g: 260, life: 0.55, max: 0.55, c: i % 2 ? '#7a7a72' : '#a0a098', s: 3 + (i % 3), kind: 'rock' }); } }
+function puff(x, y, n) { for (let i = 0; i < n; i++) parts.push({ x: x + (Math.random() - 0.5) * 6, y, vx: (Math.random() - 0.5) * 10, vy: -18 - Math.random() * 10, g: 0, life: 0.7, max: 0.7, c: '#8a8a90', s: 4 + Math.random() * 3, kind: 'puff' }); }
+function flame(x, y) { if (imgReady('fx-tools')) return; /* #387 the campfire frames carry the flames */ parts.push({ x, y, vx: (Math.random() - 0.5) * 8, vy: -30 - Math.random() * 20, g: 0, life: 0.35, max: 0.35, c: '#ff8020', s: 3, kind: 'flame' }); }
+function sparkle(x, y, n) { for (let i = 0; i < n; i++) { const an = Math.random() * Math.PI * 2, r = 4 + Math.random() * 10; parts.push({ x: x + Math.cos(an) * r, y: y + Math.sin(an) * r, vx: -Math.sin(an) * 30, vy: Math.cos(an) * 30 - 10, g: 0, life: 0.45, max: 0.45, c: i % 2 ? '#fff6a0' : '#ffffff', s: 2, kind: 'spark' }); } }
+
+// ------------------------------------------------------------------------------------------------ draw
+// drawObj(o, x, y): the scene's own gate drawing (tile top-left x, y), so the animation shows the same art as the gate.
+// layer 'back': targets + effects on the ground (after the scene's gate loop); 'front': things over the hero (after drawHero).
+function drawToolAnim(ctx, sys, hero, cam, drawObj, layer) {
+  const now = performance.now() / 1000;
+  for (const a of anims) {
+    if (a.done || a.sys !== sys) continue;
+    const ox = a.o.tx * T - cam.x, oy = a.o.ty * T - cam.y;
+    if (a.kind === 'lift') { drawLift(ctx, a, hero, cam, drawObj, layer); continue; }
+    const k = a.hit ? Math.min(1, (a.t - a.aim - a.travel - a.fuse) / a.react) : -1;
+    if (layer === 'back') {
+      if (!a.hit) drawObj(a.before, ox, oy);
+      else drawReaction(ctx, a, k, ox, oy, drawObj, now);
+    } else if (a.fired && !a.hit) drawTravel(ctx, a, cam, now);
+  }
+  if (layer === 'front') drawParts(ctx, cam);
+  if (layer === 'front') { // Shrink Cap: the sparkle swirl round him while he shrinks or pops back (#387 rings)
+    const P = hero.toolPose, sc = hero.scale || 1;
+    if ((P && P.kind === 'shrink') || (sc > TA.SHRINK.MIN + 0.01 && sc < 0.99)) fxTool(ctx, FXK.RING + (sc < 0.7 ? 1 : 0), hero.x - cam.x, hero.y - 10 * sc - cam.y, 14 + 18 * sc, 0.9, now * 3);
+  }
+  if (layer === 'front' && hero.zip) drawVine(ctx, hero, cam);
+}
+
+function drawReaction(ctx, a, k, x, y, drawObj, now) {
+  const cx = x + 8, cy = y + 8;
+  switch (a.kind) {
+    case 'catch': { // the flame flickers to life with a warm glow
+      drawObj(a.before, x, y); ctx.globalAlpha = k; drawObj(a.o, x, y); ctx.globalAlpha = 1;
+      glow(ctx, cx, y - 2, 18 * (0.4 + k), 0.55 * (1 - k * 0.5), '255,190,90');
+      flameShape(ctx, cx, y + 2, 0.3 + 0.9 * Math.min(1, k * 1.6) * (1 - 0.3 * k), now);
+      break;
+    }
+    case 'fizzle': drawObj(a.o, x, y); break; // wrong order: puffs of smoke over every candle (particles), all unlit
+    case 'burn': { // flame + smoke → ash
+      ctx.save(); ctx.globalAlpha = Math.max(0, 1 - k * 1.2); ctx.translate(cx, y + 16); ctx.scale(1, Math.max(0.2, 1 - k * 0.7)); ctx.translate(-cx, -(y + 16));
+      ctx.filter = `brightness(${Math.max(0.25, 1 - k)})`; drawObj(a.before, x, y); ctx.filter = 'none'; ctx.restore();
+      if (k < 0.8 && !fxTool(ctx, FXK.FLAME + (Math.floor(now * 10) % 2), cx, y + 6, 18 * (1 - k * 0.5))) for (let i = 0; i < 3; i++) flameShape(ctx, cx - 5 + i * 5, y + 13 - i % 2 * 3, (0.5 + 0.3 * Math.sin(now * 20 + i)) * (1 - k * 0.8), now + i);
+      if (k > 0.55) fxTool(ctx, FXK.ASH, cx, y + 12, 12, Math.min(1, (k - 0.55) * 3)); // the ash heap it leaves (drawGateArt keeps it)
+      glow(ctx, cx, cy, 16, 0.4 * (1 - k), '255,150,60');
+      ctx.globalAlpha = Math.min(1, k * 1.5); drawObj(a.o, x, y); ctx.globalAlpha = 1;
+      break;
+    }
+    case 'melt': {
+      ctx.save(); ctx.globalAlpha = 1 - k; ctx.translate(cx, y + 16); ctx.scale(1, 1 - k * 0.8); ctx.translate(-cx, -(y + 16)); drawObj(a.before, x, y); ctx.restore();
+      ctx.globalAlpha = k; drawObj(a.o, x, y); ctx.globalAlpha = 1; break;
+    }
+    case 'freeze': { // the ice sheen spreads from the hero's side, with white crack lines
+      drawObj(a.before, x, y);
+      const dx = a.to.x - a.from.x, dy = a.to.y - a.from.y, hor = Math.abs(dx) >= Math.abs(dy), e = Math.min(1, k * 1.4);
+      ctx.save(); ctx.beginPath();
+      if (!dx && !dy) ctx.rect(cx - 8 * e, cy - 8 * e, 16 * e, 16 * e);
+      else if (hor) ctx.rect(dx >= 0 ? x : x + 16 - 16 * e, y, 16 * e, 16); else ctx.rect(x, dy >= 0 ? y : y + 16 - 16 * e, 16, 16 * e);
+      ctx.clip(); drawObj(a.o, x, y); if (!fxTool(ctx, FXK.SHEEN, cx, cy, 16, 0.75 * (1 - k * 0.6))) { ctx.fillStyle = 'rgba(220,245,255,0.35)'; ctx.fillRect(x, y, 16, 16); } ctx.restore();
+      if (k < 0.35) fxTool(ctx, FXK.FROST, cx, cy, 10 + 16 * k, 1 - k / 0.35);
+      if (k > 0.3 && !imgReady('fx-tools')) { ctx.strokeStyle = `rgba(255,255,255,${1 - k * 0.7})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x + 2, y + 5); ctx.lineTo(x + 7, y + 8); ctx.lineTo(x + 6, y + 13); ctx.moveTo(x + 7, y + 8); ctx.lineTo(x + 13, y + 6); ctx.moveTo(x + 9, y + 11); ctx.lineTo(x + 14, y + 13); ctx.stroke(); }
+      break;
+    }
+    case 'frost': {
+      drawObj(a.before, x, y); ctx.globalAlpha = k; drawObj(a.o, x, y); ctx.globalAlpha = 1;
+      if (!fxTool(ctx, FXK.FROST, cx, cy, 10 + 14 * k, 1 - k)) { ctx.fillStyle = `rgba(230,250,255,${0.6 * (1 - k)})`; ctx.beginPath(); ctx.arc(cx, cy, 4 + 10 * k, 0, Math.PI * 2); ctx.fill(); }
+      break;
+    }
+    case 'gust': { // the fan spins up fast, wobbles, settles
+      const w = Math.sin(now * 45) * 1.6 * (1 - k);
+      drawObj(a.o, x + w, y);
+      if (k < 0.75) { ctx.strokeStyle = `rgba(255,255,255,${0.9 * (1 - k / 0.75)})`; ctx.lineWidth = 1.5; for (let i = 0; i < 3; i++) { const ph = now * 18 + (i * Math.PI * 2) / 3; ctx.beginPath(); ctx.arc(cx, cy, 9 + i, ph, ph + 1.2); ctx.stroke(); } } // spin lines round it
+      break;
+    }
+    case 'crumble': { // the cracked rock shakes, chunks fall away (particles), the opening shows through
+      if (k < 0.35) { const s = (Math.random() - 0.5) * 2; ctx.save(); ctx.globalAlpha = 1 - k / 0.35; drawObj(a.before, x + s, y); ctx.restore(); }
+      ctx.globalAlpha = Math.min(1, k * 2); drawObj(a.o, x, y); ctx.globalAlpha = 1;
+      if (k < 0.3) { ctx.fillStyle = `rgba(255,240,200,${0.8 * (1 - k / 0.3)})`; ctx.beginPath(); ctx.arc(cx, cy, 10 + 20 * k, 0, Math.PI * 2); ctx.fill(); }
+      break;
+    }
+    case 'open': drawObj(a.before, x, y); ctx.globalAlpha = k; drawObj(a.o, x, y); ctx.globalAlpha = 1; fxTool(ctx, FXK.RING + (k > 0.5 ? 1 : 0), cx, cy, 20 - 6 * k, 1 - k * 0.6); break;
+  }
+}
+
+// the effect on its way from the hero's hand to the target
+function drawTravel(ctx, a, cam, now) {
+  const k = Math.min(1, (a.t - a.aim) / Math.max(0.001, a.travel)), e = ELEM[a.kind];
+  const x = a.from.x + (a.to.x - a.from.x) * k - cam.x, y0 = a.from.y + (a.to.y - a.from.y) * k - cam.y, ang = Math.atan2(a.to.y - a.from.y, a.to.x - a.from.x);
+  if (e === 'bomb') {
+    const fuse = a.t >= a.aim + a.travel, y = fuse ? a.to.y - cam.y : y0 - Math.sin(k * Math.PI) * TA.BOMB.ARC_H;
+    const bx = fuse ? a.to.x - cam.x : x;
+    if (imgReady('fx-hero-b')) drawSprite(ctx, 'fx-hero-b', 'round-bomb-with-lit', bx - 9, y - 12, { scale: 0.56 });
+    else { ctx.fillStyle = '#10101a'; ctx.beginPath(); ctx.arc(bx, y, 5, 0, Math.PI * 2); ctx.fill(); ctx.fillStyle = '#404050'; ctx.beginPath(); ctx.arc(bx - 1, y - 1, 4, 0, Math.PI * 2); ctx.fill(); }
+    if (fuse) { const f = (a.t - a.aim - a.travel) / a.fuse; ctx.fillStyle = Math.floor(now * 12) % 2 ? '#ffe060' : '#ff6020'; ctx.fillRect(Math.round(bx + 3), Math.round(y - 9 + f * 3), 2, 2); if (f > 0.6 && Math.floor(now * 16) % 2) { ctx.fillStyle = 'rgba(255,80,60,0.35)'; ctx.beginPath(); ctx.arc(bx, y, 7, 0, Math.PI * 2); ctx.fill(); } }
+    return;
+  }
+  if (e === 'wind') { // a stream of swirls
+    for (let i = 0; i < 4; i++) { const kk = Math.max(0, k - i * 0.16); if (kk <= 0) continue; const sx = a.from.x + (a.to.x - a.from.x) * kk - cam.x, sy = a.from.y + (a.to.y - a.from.y) * kk - cam.y; if (!fxTool(ctx, FXK.WIND + (i % 2), sx, sy, 10 + i * 2, 1 - i * 0.15, ang)) swirl(ctx, sx, sy, 5 + i * 1.5, now * 14 + i); }
+    ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1; ctx.beginPath(); for (const o of [-4, 4]) { const nx = -Math.sin(ang) * o, ny = Math.cos(ang) * o; ctx.moveTo(a.from.x - cam.x + nx, a.from.y - cam.y + ny); ctx.lineTo(x + nx, y0 + ny); } ctx.stroke(); // streak lines behind the gust
+    return;
+  }
+  ctx.save(); ctx.translate(x, y0); ctx.rotate(ang);
+  if (e === 'fire' && fxTool(ctx, FXK.FIRE + (Math.floor(now * 12) % 2), -2, 0, 18)) { /* #387 fire tongue (drawn pointing along its flight) */ }
+  else if (e === 'ice' && fxTool(ctx, FXK.FROST, 0, 0, 12, 1, now * 6)) { /* #387 frost burst */ }
+  else if (e === 'fire') {
+    if (imgReady('fx-hero-a')) drawSprite(ctx, 'fx-hero-a', 'flower-shaped-fire-shot', -8, -8, { scale: 0.5 });
+    ctx.fillStyle = 'rgba(255,140,40,0.85)'; ctx.beginPath(); ctx.moveTo(6, 0); ctx.quadraticCurveTo(-2, -5, -14, 0); ctx.quadraticCurveTo(-2, 5, 6, 0); ctx.fill();
+    ctx.fillStyle = '#ffe060'; ctx.beginPath(); ctx.moveTo(5, 0); ctx.quadraticCurveTo(-1, -2.5, -8, 0); ctx.quadraticCurveTo(-1, 2.5, 5, 0); ctx.fill();
+  } else if (e === 'ice') {
+    ctx.fillStyle = 'rgba(200,240,255,0.7)'; ctx.beginPath(); ctx.moveTo(6, 0); ctx.lineTo(-12, -3); ctx.lineTo(-12, 3); ctx.fill();
+    ctx.rotate(now * 8); ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5; ctx.beginPath(); for (let i = 0; i < 3; i++) { const an = (i * Math.PI) / 3; ctx.moveTo(Math.cos(an) * 5, Math.sin(an) * 5); ctx.lineTo(-Math.cos(an) * 5, -Math.sin(an) * 5); } ctx.stroke();
+  }
+  ctx.restore();
+}
+
+function drawLift(ctx, a, hero, cam, drawObj, layer) {
+  const p = liftPos(a, hero), front = !!p.front;
+  if ((layer === 'front') !== front && !(p.crumble != null && layer === 'back')) return;
+  if (p.held && hero.toolPose && hero.toolPose.baked) return; // the stopgap lift frame already shows a boulder in his hands
+  if (p.crumble != null) { if (layer !== 'back') return; ctx.save(); ctx.globalAlpha = Math.max(0, 1 - p.crumble * 1.4); const s = 1 - p.crumble * 0.5; ctx.translate(p.x - cam.x, p.y - cam.y); ctx.scale(s, s * (1 - p.crumble * 0.4)); ctx.translate(-8 - a.gx, -16); drawObj(a.before, 0, 0); ctx.restore(); return; }
+  ctx.save(); ctx.translate(p.x - cam.x, p.y - cam.y); if (p.rot) { ctx.translate(0, -8); ctx.rotate(p.rot); ctx.translate(0, 8); } ctx.translate(-8 - a.gx, -16); drawObj(a.before, 0, 0); ctx.restore();
+}
+
+function drawVine(ctx, hero, cam) {
+  const z = hero.zip; if (!z || z.px == null) return;
+  const H = TA.HOOK, hand = { x: hero.x - cam.x, y: hero.y - 16 - (hero.z || 0) - cam.y }, post = { x: z.px - cam.x, y: z.py - 6 - cam.y };
+  const k = z.t < H.SHOOT ? z.t / H.SHOOT : 1; if (z.t > H.SHOOT + CONFIG.ITEMS.HOOK.zip) return; // landed: the vine lets go
+  const ex = hand.x + (post.x - hand.x) * k, ey = hand.y + (post.y - hand.y) * k, sag = k < 1 ? 4 * Math.sin(k * Math.PI) : 0;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#1a3a12'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(hand.x, hand.y); ctx.quadraticCurveTo((hand.x + ex) / 2, (hand.y + ey) / 2 + sag, ex, ey); ctx.stroke();
+  ctx.strokeStyle = '#5ac040'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(hand.x, hand.y); ctx.quadraticCurveTo((hand.x + ex) / 2, (hand.y + ey) / 2 + sag, ex, ey); ctx.stroke();
+  for (let i = 1; i < 4; i++) { const t = i / 4; ctx.fillStyle = '#80e060'; ctx.fillRect(Math.round(hand.x + (ex - hand.x) * t) - 1, Math.round(hand.y + (ey - hand.y) * t + sag * Math.sin(t * Math.PI) * 0.5) - 2, 2, 2); }
+  if (imgReady('fx-hero-a') && k < 1) drawSprite(ctx, 'fx-hero-a', 'leaf-shaped-vine-hook', ex - 6, ey - 6, { scale: 0.4 });
+}
+
+function drawParts(ctx, cam) {
+  for (const p of parts) {
+    const k = p.life / p.max, x = p.x - cam.x, y = p.y - cam.y;
+    if (p.kind === 'fx') { fxTool(ctx, p.i + (p.i2 != null && k < 0.5 ? p.i2 - p.i : 0), x, y, p.s, Math.min(1, k * 2)); continue; }
+    if (p.kind === 'puff' && fxTool(ctx, FXK.SMOKE, x, y, p.s * 2 * (1.4 - k * 0.6), 0.8 * k)) continue; // #387 smoke puff
+    if (p.kind === 'puff') { ctx.fillStyle = p.c; ctx.globalAlpha = 0.6 * k; ctx.beginPath(); ctx.arc(x, y, p.s * (1.6 - k * 0.6), 0, Math.PI * 2); ctx.fill(); ctx.globalAlpha = 1; continue; }
+    if (p.kind === 'rock') { // a little rock chunk: dark outline, grey body, a light top edge, tumbling
+      ctx.save(); ctx.translate(Math.round(x), Math.round(y)); ctx.rotate(Math.floor((1 - k) * 8) * 0.6); const r = p.s / 2;
+      ctx.fillStyle = '#10101a'; ctx.beginPath(); ctx.moveTo(-r - 1, 0); ctx.lineTo(-r * 0.4, -r - 1); ctx.lineTo(r + 1, -r * 0.5); ctx.lineTo(r * 0.6, r + 1); ctx.lineTo(-r * 0.6, r + 0.5); ctx.fill();
+      ctx.fillStyle = p.c; ctx.beginPath(); ctx.moveTo(-r, 0); ctx.lineTo(-r * 0.4, -r); ctx.lineTo(r, -r * 0.5); ctx.lineTo(r * 0.6, r); ctx.lineTo(-r * 0.6, r * 0.6); ctx.fill();
+      ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.fillRect(-r * 0.4, -r * 0.8, Math.max(1, r * 0.8), 1); ctx.restore(); continue; }
+    if (p.kind === 'flame') { ctx.fillStyle = k > 0.5 ? '#ffe060' : p.c; ctx.globalAlpha = Math.min(1, k * 1.5); ctx.fillRect(Math.round(x - 1), Math.round(y - 2), 3, 4); ctx.globalAlpha = 1; continue; }
+    ctx.globalAlpha = Math.min(1, k * 1.5); ctx.fillStyle = p.c; ctx.fillRect(Math.round(x - p.s / 2), Math.round(y - p.s / 2), p.s, p.s); ctx.globalAlpha = 1;
+  }
+}
+
+function glow(ctx, x, y, r, a, rgb) { const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${rgb},${a})`); g.addColorStop(1, `rgba(${rgb},0)`); ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); }
+function flameShape(ctx, x, y, s, now) {
+  if (s <= 0) return; const f = 1 + Math.sin(now * 25) * 0.12;
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s * f);
+  ctx.fillStyle = '#ff6a10'; ctx.beginPath(); ctx.moveTo(0, -12); ctx.quadraticCurveTo(6, -4, 4, 0); ctx.quadraticCurveTo(0, 3, -4, 0); ctx.quadraticCurveTo(-6, -4, 0, -12); ctx.fill();
+  ctx.fillStyle = '#ffe060'; ctx.beginPath(); ctx.moveTo(0, -7); ctx.quadraticCurveTo(3, -2, 2, 0); ctx.quadraticCurveTo(0, 1.5, -2, 0); ctx.quadraticCurveTo(-3, -2, 0, -7); ctx.fill();
+  ctx.restore();
+}
+function swirl(ctx, x, y, r, ph) {
+  ctx.strokeStyle = 'rgba(16,16,26,0.5)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(x, y, r, ph, ph + 4.2); ctx.stroke();
+  ctx.strokeStyle = '#e8f8ff'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(x, y, r, ph, ph + 4.2); ctx.stroke();
+  ctx.beginPath(); ctx.arc(x + r * 0.4, y, r * 0.45, ph + 2, ph + 5.5); ctx.stroke();
+}
+
+// The tool the hero holds up in a raise/throw beat (icons-items), drawn at the hand after the hero.
+function drawToolInHand(ctx, hero, cam) {
+  const P = hero.toolPose; if (!P || !P.item || P.kind !== 'raise') return; // a throw shows its bomb in flight; lift / shrink hold nothing
+  const h = heroHand(hero), at = { down: [0, -15], up: [0, -31], left: [-9, -15], right: [9, -15] }[hero.facing] || [0, -15]; // the raise pose's hands (seen from behind: held up over the head)
+  itemIcon(ctx, P.item, hero.x + at[0] - cam.x, hero.y + at[1] - cam.y, 10, false);
+  if (P.kind === 'raise' && P.item === 'gust-jar' && P.t > TA.AIM * 0.8 && P.t < TA.AIM + 0.12) { ctx.fillStyle = '#c08a50'; ctx.fillRect(Math.round(h.x - cam.x + 2), Math.round(h.y - cam.y - 12 - (P.t - TA.AIM * 0.8) * 60), 3, 3); } // the cork pops
+}
+
+// --- Star Compass: a reveal moment outdoors -------------------------------------------------------------
+// Coming within COMPASS.R of a secret not yet found (or the relic cave not yet entered) with the Star Compass: it pops open
+// over the hero's head, the needle spins and settles on it, and a sparkle ping sweeps out to the spot (once per spot per
+// visit, at most one every GAP_S). Quick and small: nothing stops, the hero keeps walking. targets: [{ key, x, y }].
+function createCompass() { return { pinged: new Set(), gap: 0, ping: null }; }
+function updateCompass(C, hero, targets, dt) {
+  const K = TA.COMPASS;
+  if (C.ping) { C.ping.t += dt; if (!C.ping.arrived && C.ping.t >= K.SPIN + K.PING) { C.ping.arrived = true; sfx('coin'); sparkle(C.ping.x, C.ping.y, 10); } if (C.ping.t >= K.SPIN + K.PING + K.RING) C.ping = null; return; }
+  if (C.gap > 0) { C.gap -= dt; return; }
+  const t = targets.find((q) => !C.pinged.has(q.key) && Math.hypot(q.x - hero.x, q.y - hero.y) < K.R);
+  if (!t) return;
+  C.pinged.add(t.key); C.gap = K.GAP_S; C.ping = { t: 0, x: t.x, y: t.y, arrived: false }; sfx('click');
+}
+function drawCompass(ctx, C, hero, cam) {
+  const P = C && C.ping; if (!P) return;
+  const K = TA.COMPASS, hx = hero.x - cam.x, hy = hero.y - 36 - cam.y, pop = Math.min(1, P.t / 0.12), ang = Math.atan2(P.y - hero.y, P.x - hero.x);
+  if (P.t < K.SPIN + K.PING) { // the compass over his head: pops open, needle spins, then points
+    const s = 0.6 + 0.4 * pop; itemIcon(ctx, 'star-compass', hx, hy, 14 * s, false);
+    const na = P.t < K.SPIN ? P.t * 40 : ang; ctx.strokeStyle = '#e02020'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx + Math.cos(na) * 6 * s, hy + Math.sin(na) * 6 * s); ctx.stroke();
+  }
+  if (P.t >= K.SPIN && P.t < K.SPIN + K.PING) { // the sparkle ping sweeping out
+    const k = (P.t - K.SPIN) / K.PING, x = hx + (P.x - cam.x - hx) * k, y = hy + (P.y - cam.y - hy) * k;
+    for (let i = 0; i < 4; i++) { const kk = Math.max(0, k - i * 0.08), sx = hx + (P.x - cam.x - hx) * kk, sy = hy + (P.y - cam.y - hy) * kk; ctx.fillStyle = i ? 'rgba(255,240,140,' + (0.8 - i * 0.2) + ')' : '#ffffff'; ctx.fillRect(Math.round(sx) - 1, Math.round(sy) - 1, 3 - (i > 1 ? 1 : 0), 3 - (i > 1 ? 1 : 0)); }
+    if (!fxTool(ctx, FXK.STAR, x, y, 12, 1, P.t * 4)) star(ctx, x, y, 4, '#ffe060');
+  }
+  if (P.t >= K.SPIN + K.PING) { const k = (P.t - K.SPIN - K.PING) / K.RING, x = P.x - cam.x, y = P.y - cam.y; // the star mark rings out over the spot
+    ctx.strokeStyle = `rgba(255,230,100,${1 - k})`; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(x, y, 4 + 14 * k, 0, Math.PI * 2); ctx.stroke(); if (!fxTool(ctx, FXK.STAR, x, y - 4 * k, 18 * (1 - k * 0.3), 1 - k * 0.6)) star(ctx, x, y - 4 * k, 6 * (1 - k * 0.3), `rgba(255,224,96,${1 - k * 0.6})`); }
+}
+function star(ctx, x, y, r, c) { ctx.fillStyle = c; ctx.beginPath(); for (let i = 0; i < 10; i++) { const rr = i % 2 ? r * 0.45 : r, t = (i * Math.PI) / 5 - Math.PI / 2; ctx.lineTo(x + Math.cos(t) * rr, y + Math.sin(t) * rr); } ctx.fill(); }
+
+const _toolAnimTest = { anims, parts }; // acceptance probes read these
+
+return { fxTool, attachToolAnim, toolView, toolBusy, holdTap, startToolAnim, updateToolAnim, drawToolAnim, drawToolInHand, createCompass, updateCompass, drawCompass, _toolAnimTest };
+});
 __def("game/kits/milo.js", function () {
 // Milo, the Brawler: fast jabs (1 AP/hit), shell toss (2 AP, bounces), flowers (1 AP), Spin Dash (3 AP), Cape Swipe (2 AP).
 // [POST-W8 B] both specials go the tapped way (c.aimDir: tapped angle, else the facing — keyboard play unchanged).
@@ -10226,6 +10726,18 @@ function findTapBlock(inter, wx, wy) {
     if (o.type !== 'block' || o.slide) continue;
     const d = Math.hypot(o.tx * 16 + 8 - wx, o.ty * 16 + 8 - wy);
     if (d < bd) { bd = d; best = o; }
+  }
+  return best;
+}
+
+// [TAP FIX 5] a tap on a block that is still sliding: the nearest sliding block (where it is drawn) and the tap's offset from
+// its drawn centre, so the tap can be replayed on the block once it stops (same side pick) → { o, ox, oy } or null
+function findSlidingBlock(inter, wx, wy, slideS) {
+  let best = null, bd = TAP_R;
+  for (const o of inter ? inter.list : []) {
+    if (o.type !== 'block' || !o.slide) continue;
+    const k = o.slide.t / slideS, cx = o.tx * 16 + 8 - o.slide.dx * 16 * k, cy = o.ty * 16 + 8 - o.slide.dy * 16 * k, d = Math.hypot(cx - wx, cy - wy);
+    if (d < bd) { bd = d; best = { o, ox: wx - cx, oy: wy - cy }; }
   }
   return best;
 }
@@ -10257,7 +10769,7 @@ function drawPushPlan(ctx, plan, cam, t) {
   ctx.restore();
 }
 
-return { findTapBlock, planPush, drawPushPlan };
+return { findTapBlock, findSlidingBlock, planPush, drawPushPlan };
 });
 __def("game/kits/wren.js", function () {
 // Wren, the Inkling: roller wide arc (1 AP/hit), blaster (1 AP), inks (1 AP), Splat Bomb (2 AP AoE), Ink Gatling (4 AP, 8-shot cone).
@@ -10770,6 +11282,7 @@ __def("game/puzzles.js", function () {
 const { CONFIG } = __req("config.js");
 const { TYPES } = __req("game/interactables.js");
 const { toolGatesSolved } = __req("game/relics.js");
+const { GATE_OPEN } = __req("game/secrets.js");
 // Ordered switches: hit them in `order`; a wrong hit resets the sequence (switches flash).
 TYPES.orderSwitch = { solid: () => true, react: { hit: (o, sys) => sys.orderHit(o) } };
 // Reset lever: puts every puzzle block back where it started.
@@ -10920,6 +11433,7 @@ function setupRoomPuzzle(sys, room, st, roomId, hero = null) {
   }
   if (st.puzzles[roomId] && p && p.kind === 'seedPlant') { for (const so of sys.byType('soil')) so.planted = true; for (const sd of sys.byType('seed')) sd.taken = true; }
   if (st.puzzles[roomId] && p && p.kind === 'ventFreeze') for (const o of sys.byType('vent')) o.frozen = true;
+  if (st.puzzles[roomId] && p && p.kind === 'toolGates') { for (const o of sys.list) if (p.types.includes(o.type) && GATE_OPEN[o.type]) o[GATE_OPEN[o.type]] = true; sys.syncAll(); } // [TOOL ANIMS] a solved gate room stays open (no regrown rocks, no replay)
   if (st.puzzles[roomId] && p && p.kind === 'gearTiming') for (const g of sys.byType('gearSwitch')) { g.on = true; g.latched = true; }
   if (st.puzzles[roomId] && p && p.kind === 'leverPairs') for (const l of sys.byType('lever')) { l.on = true; l.latched = true; }
   if (st.puzzles[roomId] && p && p.kind === 'torchOrder') for (const t of sys.byType('dreamTorch')) t.lit = true;
@@ -11247,15 +11761,17 @@ const { font, drawOutlined } = __req("engine/text.js");
 const { save } = __req("engine/save.js");
 const { createStatPicker } = __req("scenes/statpicker.js");
 const { createHero, updateHero, drawHero, setTapTarget, heroArt } = __req("game/hero.js");
+const { findPath } = __req("engine/path.js");
 const { createEntities, resetRoom, spawn } = __req("game/entities.js");
 const { createCombat } = __req("game/combat.js");
 const { bindSession, session, currentBand, apCapOf, spendAp } = __req("game/ap.js");
 const { createProjectiles, fire: fireProj, updateProjectiles, ammoUnlocked, AMMO } = __req("game/projectiles.js");
 const { coneAim, findTapTarget, chooseAmmo } = __req("game/autoaim.js");
 const { usePotion, cycleItem, takeBomb, startHook, updateHook, useToolsAhead } = __req("game/items.js");
+const { attachToolAnim, updateToolAnim, drawToolAnim, toolView, toolBusy, drawToolInHand, holdTap } = __req("game/toolanim.js");
 const { MILO_SPECIALS } = __req("game/kits/milo.js");
 const { createEquipment } = __req("scenes/equipment.js");
-const { findTapBlock, planPush, drawPushPlan } = __req("game/blocktap.js");
+const { findTapBlock, findSlidingBlock, planPush, drawPushPlan } = __req("game/blocktap.js");
 const { inkGatling } = __req("game/kits/wren.js");
 const { drawShot, drawSpecialFx } = __req("game/shotfx.js");
 const { createMathPopup } = __req("game/math-popup.js");
@@ -11280,7 +11796,7 @@ const { spawnBoss } = __req("game/bosses.js");
 const { drawBoss, drawBossBar } = __req("art/fallback/bosses.js");
 const { TYPES } = __req("game/interactables.js");
 const { createLife, stampLife, updateLife, drawLife } = __req("game/dungeonlife.js");
-const { createHelp, helpEnterRoom, updateHelp, drawHelpWorld, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES, tapGate, showHint, placeClueTablet, puzzleHint } = __req("game/puzzlehelp.js");
+const { createHelp, helpEnterRoom, updateHelp, drawHelpWorld, drawHelpScreen, canOpen, gateOpen, showNeed, TOOL_GATES, tapGate, showHint, placeClueTablet, puzzleHint, showCrossing } = __req("game/puzzlehelp.js");
 const { drawProp, drawDungeonPropArt } = __req("art/fallback/props.js");
 const { grantGear } = __req("game/gear.js");
 const { gainXp, refreshHearts } = __req("game/progression.js");
@@ -11335,6 +11851,17 @@ function createDungeon(view, data, dg, opts = {}) {
   // before, a walk across Giggle Caverns' south bank stepped on the pad and flung the hero back over the lava
   const moverAt = (x, y) => { const g = d.map.inside(x, y) ? d.map.ground[d.map.idx(x, y)] : -1; return g === DT.PIT || g === DT.STAIRS || !!(d.inter && d.inter.allAt(x, y).some((o) => o.type === 'bouncePad')); };
   const walkTo = (wx, wy) => setTapTarget(hero, d.map, wx, wy, moverAt);
+  d.throwBomb = () => { if (toolBusy(hero)) return; if (takeBomb(data)) { const [dx, dy] = DIRV[hero.facing]; const c = coneAim(hero.x, hero.y - 10, dx, dy, ents, d.inter); fireProj(projs, hero, 'bomb', c ? c.dx : dx, c ? c.dy : dy); } else say('No bombs left!'); };
+  // [TAP FIX 3] a tap-walk with no route in a bounce-pad room (the goal is across the gap): "Hop across first!" + the door
+  // arrow over the nearest pad the hero can walk to. Feedback only — gaps, pads and routes are unchanged.
+  const walkOrHop = (wx, wy) => {
+    if (walkTo(wx, wy)) return true;
+    const pads = d.inter ? d.inter.byType('bouncePad') : [], hx = Math.floor(hero.x / 16), hy = Math.floor((hero.y - 1) / 16);
+    if (!pads.length || hero.bounce || d.map.isSolid(Math.floor(wx / 16), Math.floor(wy / 16))) return false;
+    const pad = pads.filter((o) => findPath(d.map, hx, hy, o.tx, o.ty)).sort((p, q) => Math.hypot(p.tx - hx, p.ty - hy) - Math.hypot(q.tx - hx, q.ty - hy))[0];
+    if (pad) { showCrossing(d.help); d.doorArrow = { x: pad.tx * 16 + 8, y: pad.ty * 16 + 8, t: 2 }; }
+    return false;
+  };
   const openQuestion = () => { if (scenes.top() === d) scenes.push(createMathPopup(view, { onClose: () => scenes.pop() })); };
   const W = WORLDS[dg.world] || {};
   d.help = createHelp(); // [DUNGEON-LIFE C]
@@ -11389,7 +11916,7 @@ function createDungeon(view, data, dg, opts = {}) {
   const DIRV = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
   d.aim = null; // [D37] tapped angle for specials; else keyboard cone auto-aim
   d.aimAngle = () => { if (d.aim != null) return d.aim; const [dx, dy] = DIRV[hero.facing]; const c = coneAim(hero.x, hero.y - 10, dx, dy, ents, d.inter); return c ? Math.atan2(c.dy, c.dx) : null; };
-  const kit = createKit(hero.id, data, { busy: () => !!hero.itemGet, swing: () => combat.startSwing(), special: (k) => combat.special(k, 34),
+  const kit = createKit(hero.id, data, { busy: () => !!hero.itemGet || toolBusy(hero), swing: () => combat.startSwing(), special: (k) => combat.special(k, 34),
     fire: (ammo, tdx, tdy) => { if (tdx != null) return d.fire(ammo, tdx, tdy); const [dx, dy] = DIRV[hero.facing]; const c = coneAim(hero.x, hero.y - 10, dx, dy, ents, d.inter); return c ? d.fire(ammo, c.dx, c.dy) : d.fire(ammo, dx, dy); } });
   d.kit = kit;
   // [POST-W8 J] Rowan's Spin Attack / Milo's Cape Swipe on a tapped enemy: walk up, fire once it is in the move's reach (dungeon spins use radius 34)
@@ -11436,7 +11963,7 @@ function createDungeon(view, data, dg, opts = {}) {
     if (!plan) { say('This block is stuck — use the reset switch!'); return; }
     d.useOnArrive = { o, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, push: plan.push, stand: plan.stand };
     d.pushPlan = { ...plan, t: 0.8 };
-    if (Math.hypot(hero.x - plan.stand.x, hero.y - plan.stand.y) > 6) walkTo(plan.stand.x, plan.stand.y);
+    if (Math.hypot(hero.x - plan.stand.x, hero.y - plan.stand.y) > 6) walkOrHop(plan.stand.x, plan.stand.y);
   }
   // walking (or a door tap) into a closed door: unlock, ask, or block with a message + nudge back (never freeze)
   function bumpDoor(ahead) {
@@ -11463,7 +11990,7 @@ function createDungeon(view, data, dg, opts = {}) {
     if (!sides.length) return;
     const [sx, sy] = sides[0], stand = { x: (o.tx + sx) * 16 + 8, y: (o.ty + sy) * 16 + 12 };
     d.useOnArrive = { o, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, hit: [-sx, -sy], stand };
-    if (Math.hypot(hero.x - stand.x, hero.y - stand.y) > 6) walkTo(stand.x, stand.y);
+    if (Math.hypot(hero.x - stand.x, hero.y - stand.y) > 6) walkOrHop(stand.x, stand.y);
   }
   // [DUNGEON-LIFE] roaming foes placed by hand (room.foes: [id, x, y], already in this room's tiles); they come back on
   // every visit. A spot inside a wall/solid moves to the nearest free tile.
@@ -11495,10 +12022,11 @@ function createDungeon(view, data, dg, opts = {}) {
     d.map = null; d.inter = null;
     rebuild();
     d.inter = createMechanics(d.map, { hero, tier: data.tier, get buddies() { return d.buddies ? buddyWeights(d.buddies) : []; }, enemiesLeft: () => ents.list.filter((e) => e.alive && e.kind === 'enemy').length });
+    attachToolAnim(d.inter, hero); // [TOOL ANIMS] every gate change animates through the shared path (same as outdoors)
     d.puzzle = setupRoomPuzzle(d.inter, d.room, st, id, hero);
     d.life = !d.run && !d.sv ? createLife(dg, d.room, d.map, id, st, d.inter) : null; // [DUNGEON-LIFE]
     helpEnterRoom(d.help, d.room, !!st.puzzles[id]);
-    d.useOnArrive = null;
+    d.useOnArrive = null; d.queuedTap = null;
     d.inter.syncAll();
     d.boss = null;
     let p;
@@ -11576,6 +12104,7 @@ function createDungeon(view, data, dg, opts = {}) {
     if (!d.artPainted && d.map) { const art = dungeonArtPainter(dg.world, dg.theme, () => d.map); if (art) { d.artPainted = true; d.map.prerender(art, 2); } }
     updateHud(hud, data, dt);
     updateFx(dt);
+    if (d.inter) updateToolAnim(d.inter, hero, dt); // [TOOL ANIMS]
     if (d.msgT > 0) d.msgT -= dt;
     if (d.bumpT > 0) d.bumpT -= dt;
     if (pressed('question')) { openQuestion(); return; }
@@ -11586,6 +12115,7 @@ function createDungeon(view, data, dg, opts = {}) {
     }
     if (pressed('map')) { scenes.push(createDungeonMap(view, d, () => scenes.pop())); return; } // [D40]
     if (pressed('pause') && opts.pause) { opts.pause(!!(d.sealed && d.boss), d.leaveRun); return; } // [D38] boss fights: Resume/Quit only
+    holdTap(hero, input.pointer, d, (x, y) => !!hudHit(view.w, x, y)); // [TOOL ANIMS] a world tap mid-beat waits for the beat
     if (input.pointer.tapped) { // touch: HUD buttons, tap an enemy to attack, else tap-to-move
       const b = hudHit(view.w, input.pointer.x, input.pointer.y);
       if (b === 'q') { openQuestion(); return; }
@@ -11594,19 +12124,22 @@ function createDungeon(view, data, dg, opts = {}) {
       if (b === 'pause' && opts.pause) { opts.pause(!!(d.sealed && d.boss), d.leaveRun); return; }
       if (b === 'pill') { if (data.statPoints > 0) scenes.push(createStatPicker(view, data, () => scenes.pop())); return; }
       if (b === 'save') { floatText(hero.x, hero.y - 34, save.auto('manual') ? 'Saved!' : 'Could not save', '#80ff90'); return; } // [R3-8] confirm over the hero's head
+      if (b === 'bomb') { d.throwBomb(); return; } // [TAP FIX 4] bomb by tap: the B-key throw
       if (b === 'potion') { if (usePotion(data)) { sfx('heal'); floatText(hero.x, hero.y - 34, '+' + CONFIG.ITEMS.POTION.hearts + ' hearts!', '#ff8090'); } else say('Hearts are full!'); return; } // [TAP AUDIT] potion by tap
       if (b && b.startsWith('slot')) kit.select(Number(b[4]));
       else if (!b) {
+        if (toolBusy(hero)) return; // [TOOL ANIMS] a tap during a tool's beat waits: no second use, no walk-off mid-pose
         const w = cam.toWorld(input.pointer.x, input.pointer.y);
-        hero.specialWalk = null; // [POST-W8 J] any new tap cancels a pending walk-in (nothing was spent)
+        hero.specialWalk = null; d.queuedTap = null; // [POST-W8 J] any new tap cancels a pending walk-in (nothing was spent)
         const bt = d.buddies && freeBuddies(d.buddies).length ? buddyTargetAt({ ents, inter: d.inter }, w.x, w.y) : null; // [W6] tap → send a Sproutling
         if (bt && sendBuddy(d.buddies, hero, bt)) return;
         const tb = d.help.tablet; // [POST-W8 H] tap the clue tablet: the room's hint card again, as often as wanted
         if (tb && !st.puzzles[d.roomId] && w.x >= tb.tx * 16 - 6 && w.x < tb.tx * 16 + 38 && w.y >= tb.ty * 16 - 14 && w.y < tb.ty * 16 + 20) { showHint(d.help, d.room); return; }
         const blk = findTapBlock(d.inter, w.x, w.y); // [POST-W8 F] nearest block within 22 px
         { const [ccx, ccy] = roomSpots(d.room).chest, tile = d.map.inside(ccx, ccy) ? d.map.ground[d.map.idx(ccx, ccy)] : -1; // [DUNGEON-LIFE D] tap a chest / pedestal = walk up and open it
-          if ((tile === DT.CHEST || tile === DT.MEDAL) && Math.hypot(ccx * 16 + 8 - w.x, ccy * 16 + 8 - w.y) < 16) { const stand = { x: ccx * 16 + 8, y: (ccy + 1) * 16 + 12 }; d.useOnArrive = { chest: true, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand }; walkTo(stand.x, stand.y); return; } }
+          if ((tile === DT.CHEST || tile === DT.MEDAL) && Math.hypot(ccx * 16 + 8 - w.x, ccy * 16 + 8 - w.y) < 16) { const stand = { x: ccx * 16 + 8, y: (ccy + 1) * 16 + 12 }; d.useOnArrive = { chest: true, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand }; if (!walkOrHop(stand.x, stand.y)) d.useOnArrive = null; return; } }
         if (blk) { tapPush(blk, w.x, w.y); return; } // [PUSH-BLOCKS] tap a block = walk to its side and push it one tile
+        { const sb = findSlidingBlock(d.inter, w.x, w.y, CONFIG.PUZZLE_HELP.SLIDE_S); if (sb) { d.queuedTap = sb; return; } } // [TAP FIX 5] still sliding: keep the tap (one per room) for when it stops
         // [TOUCH PAINT] walkable objects you hit (paint tiles: TAP_HIT_FLOOR) count too; the nearest one wins (paint tiles touch)
         const hitObj = d.inter && d.inter.list.filter((o) => o.type !== 'block' && TYPES[o.type] && TYPES[o.type].react && TYPES[o.type].react.hit && (TYPES[o.type].solid(o) || TAP_HIT_FLOOR.has(o.type)) && Math.hypot(o.tx * 16 + 8 - w.x, o.ty * 16 + 8 - w.y) < 14)
           .sort((p, q) => Math.hypot(p.tx * 16 + 8 - w.x, p.ty * 16 + 8 - w.y) - Math.hypot(q.tx * 16 + 8 - w.x, q.ty * 16 + 8 - w.y))[0];
@@ -11620,7 +12153,7 @@ function createDungeon(view, data, dg, opts = {}) {
         }
         if (gate || (tgt && c && c.need)) { // a gate you open with a tool (or still can't): walk up and use it, or say what's missing
           const o = gate || tgt;
-          if (canOpen(data, hero.id, o)) { d.useOnArrive = { o, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; walkTo(o.tx * 16 + 8, (o.ty + 1) * 16 + 12); }
+          if (canOpen(data, hero.id, o)) { d.useOnArrive = { o, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; walkOrHop(o.tx * 16 + 8, (o.ty + 1) * 16 + 12); }
           else showNeed(d.help, o); // the thought bubble right away: which item is missing
           return;
         }
@@ -11629,29 +12162,30 @@ function createDungeon(view, data, dg, opts = {}) {
         if (door && door.side !== 'exit' && (d.room.doors[door.side] || {}).lock === 'puzzle' && !st.puzzles[d.roomId]) showHint(d.help, d.room, 'Solve the puzzle to open it!'); // [POST-W8 H]
         if (door) { // [D35] generous door tap: arrow + walk straight through (closed doors: walk up to them and say why)
           d.doorArrow = { x: door.x, y: door.y - 8, t: 2 }; hero.attackId = null;
-          if (door.side === 'exit' || doorOpen(dg, st, d.roomId, door.side)) walkTo(door.x, door.y + 4);
-          else { walkTo(door.fx, door.fy); d.useOnArrive = { door, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand: { x: door.fx, y: door.fy + 8 } }; } // [DUNGEON-LIFE D] arrive → try the door (key, math, message)
+          if (door.side === 'exit' || doorOpen(dg, st, d.roomId, door.side)) walkOrHop(door.x, door.y + 4);
+          else if (walkOrHop(door.fx, door.fy)) { d.useOnArrive = { door, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, stand: { x: door.fx, y: door.fy + 8 } }; } // [DUNGEON-LIFE D] arrive → try the door (key, math, message)
         } else if (kit.slot === 3 && walkInSpecial(w)) { // [POST-W8 J] tap a foe with Spin / Cape Swipe: walk in, fire in reach
         } else if (kit.slot === 3) { d.aim = Math.atan2(w.y - (hero.y - 10), w.x - hero.x); kit.use(); d.aim = null;
         } else if (kit.slot === 2 && AMMO[kit.ammo()] && AMMO[kit.ammo()].kind === 'arc') { kit.fireAt(w.x - hero.x, w.y - (hero.y - 10));
         } else if (kit.slot === 2 && ents.list.some((q) => q.alive && q.kind === 'enemy' && Math.hypot(q.x - w.x, q.y - q.h / 2 - w.y) < CONFIG.COMBAT.TAP_ATTACK_RADIUS)) {
           const e = ents.list.find((q) => q.alive && q.kind === 'enemy' && Math.hypot(q.x - w.x, q.y - q.h / 2 - w.y) < CONFIG.COMBAT.TAP_ATTACK_RADIUS); kit.fireAt(e.x - hero.x, e.y - e.h / 2 - (hero.y - 10));
-        } else if (!combat.tapAt(w.x, w.y)) walkTo(w.x, w.y);
+        } else if (!combat.tapAt(w.x, w.y)) walkOrHop(w.x, w.y);
       }
     }
     // items in dungeons too: V cycles, B uses (potion heals, bomb is thrown)
     if (pressed('cycle')) d.item = cycleItem(data, d.item);
     if (pressed('item') && d.item === 'potion') usePotion(data);
-    if (pressed('item') && ['shrinkCap', 'powerGlove'].includes(d.item)) { if (!useToolsAhead(data, d.inter, d.item)) say('Nothing to use it on here.'); }
-    if (pressed('interact') && d.inter) useToolsAhead(data, d.inter);
-    if (pressed('item') && d.item === 'gustJar') { const [dx, dy] = DIRV[hero.facing]; fireProj(projs, hero, 'gust', dx, dy); }
-    if (pressed('item') && d.item === 'vineHook' && !startHook(data, hero, d.inter, d.map)) say('No hook post ahead!');
-    if (pressed('item') && d.item === 'bomb') { if (takeBomb(data)) { const [dx, dy] = DIRV[hero.facing]; const c = coneAim(hero.x, hero.y - 10, dx, dy, ents, d.inter); fireProj(projs, hero, 'bomb', c ? c.dx : dx, c ? c.dy : dy); } else say('No bombs left!'); }
+    if (!toolBusy(hero) && pressed('item') && ['shrinkCap', 'powerGlove'].includes(d.item)) { if (!useToolsAhead(data, d.inter, d.item)) say('Nothing to use it on here.'); }
+    if (pressed('interact') && d.inter && !toolBusy(hero)) useToolsAhead(data, d.inter);
+    if (!toolBusy(hero) && pressed('item') && d.item === 'gustJar') { const [dx, dy] = DIRV[hero.facing]; fireProj(projs, hero, 'gust', dx, dy); }
+    if (!toolBusy(hero) && pressed('item') && d.item === 'vineHook' && !startHook(data, hero, d.inter, d.map)) say('No hook post ahead!');
+    if (pressed('item') && d.item === 'bomb') d.throwBomb();
     kit.update();
     if (d.inter) for (const o of d.inter.list) if (o.type === 'block' && o.slide) { // [PUSH-BLOCKS] scrape while sliding; click + sparkle on a plate
       if (!o.slide.snd) { o.slide.snd = true; sfx('scrape'); }
       if ((o.slide.t -= dt) <= 0) { o.slide = null; if (d.inter.allAt(o.tx, o.ty).some((p) => p.type === 'plate')) { sfx('click'); confetti(o.tx * 16 + 8, o.ty * 16 + 4, 14); } }
     }
+    if (d.queuedTap && !d.queuedTap.o.slide) { const q = d.queuedTap; d.queuedTap = null; if (d.inter && d.inter.list.includes(q.o)) tapPush(q.o, q.o.tx * 16 + 8 + q.ox, q.o.ty * 16 + 8 + q.oy); } // [TAP FIX 5] the block stopped: the kept tap now
     updateLife(d.life, { hero, map: d.map, ents, inter: d.inter, world: dg.world, projs }, dt); // [DUNGEON-LIFE]
     updateHelp(d.help, { data, hero, inter: d.inter, map: d.map, room: d.room, solved: !!st.puzzles[d.roomId], doors: d.doors(), keys: st.keys, bigKey: st.bigKey,
       doorLocked: (side) => (d.room.doors[side] && !doorOpen(dg, st, d.roomId, side) ? d.room.doors[side].lock : null) }, dt);
@@ -11812,6 +12346,7 @@ function createDungeon(view, data, dg, opts = {}) {
         ctx.fillStyle = busy ? 'rgba(255,230,120,' + a + ')' : 'rgba(120,220,255,' + a.toFixed(2) + ')'; ctx.fillRect(o.tx * 16 - cam.x - 2, o.ty * 16 - cam.y - 2, 20, 20);
         if (!busy) { ctx.setLineDash([3, 3]); ctx.strokeStyle = 'rgba(255,255,255,0.7)'; ctx.lineWidth = 1; ctx.strokeRect(o.tx * 16 - cam.x + 0.5, o.ty * 16 - cam.y + 0.5, 15, 15); ctx.setLineDash([]); }
       }
+      if (!toolView(o)) continue; // [TOOL ANIMS] an animating gate is drawn by the animation (below)
       const sl = o.slide, sk = sl ? sl.t / CONFIG.PUZZLE_HELP.SLIDE_S : 0, ox = sl ? -sl.dx * 16 * sk : 0, oy = sl ? -sl.dy * 16 * sk : 0; // [PUSH-BLOCKS] smooth slide
       if (o.type === 'resetSwitch') { // [PUSH-BLOCKS] a clear rune with a circular arrow (it puts the blocks back)
         const x = o.tx * 16 - cam.x, y = o.ty * 16 - cam.y;
@@ -11837,6 +12372,8 @@ function createDungeon(view, data, dg, opts = {}) {
       }
       drawProp(ctx, o, o.tx * 16 - cam.x + ox, o.ty * 16 - cam.y + oy, d.inter);
     }
+    const drawObj = (o, x, y) => { if (!drawDungeonPropArt(ctx, o, x, y, dg.world, d.inter)) drawProp(ctx, o, x, y, d.inter); };
+    if (d.inter) drawToolAnim(ctx, d.inter, hero, cam, drawObj, 'back'); // [TOOL ANIMS]
     if (d.pushPlan && (d.pushPlan.t -= 1 / 60) > 0) drawPushPlan(ctx, d.pushPlan, cam, tnow); else d.pushPlan = null; // [POST-W8 F]
     for (const b of blocks) { // [PUSH-BLOCKS] near a block: faint arrows on the sides it can move to
       if (b.slide || Math.hypot(b.tx * 16 + 8 - hero.x, b.ty * 16 + 8 - (hero.y - 8)) > CONFIG.PUZZLE_HELP.BLOCK_NEAR_PX) continue;
@@ -11884,6 +12421,7 @@ function createDungeon(view, data, dg, opts = {}) {
     });
     if (d.buddies) { ctx.save(); ctx.translate(-Math.round(cam.x), -Math.round(cam.y)); drawBuddies(ctx, d.buddies); ctx.restore(); }
     drawHero(ctx, hero, cam);
+    if (d.inter) { drawToolInHand(ctx, hero, cam); drawToolAnim(ctx, d.inter, hero, cam, drawObj, 'front'); } // [TOOL ANIMS]
     drawItemGet(ctx, hero, cam, 1 / 60);
     drawSpecialFx(ctx, hero, cam); // [HERO-SHOTS]
     drawFx(ctx, cam.x, cam.y);
@@ -11899,7 +12437,12 @@ function createDungeon(view, data, dg, opts = {}) {
     drawHud(ctx, hud, data, view, { ap: data.ap, apCap: apCapOf(), band: currentBand(), map: true, attack: scenes.top() === d && !(d.bossLine && d.bossLine.t > 0), equip: !(d.sealed && d.boss) /* [POST-W8 K] */ }); // [HUD-ATTACK] hidden under dialogs, math and menus
     { const hs = cam.toScreen(hero.x, hero.y - 26); drawHelpScreen(ctx, d.help, view, hs, dg.world); } // [DUNGEON-LIFE C] banner, bubbles, item card
     // per-floor mini-map (under the HUD, right side)
-    const fl = d.room.floor, mx = view.w - 70, my = CONFIG.UI.HUD_RESERVED_H + 6; // [R3-5] under the (taller) HUD
+    const fl = d.room.floor, mx = view.w - 70; let my = CONFIG.UI.HUD_RESERVED_H + 6; // [R3-5] under the (taller) HUD
+    // [TAP FIX 6] a door's art under the box (e.g. kl-sub's east door once the camera scrolls down): the box steps down
+    // just below that door, so door and map both stay in full view — same rule in every room
+    for (const q of d.doors()) { const a = cam.toScreen(q.x - 20, q.y - 30), b = cam.toScreen(q.x + 20, q.y + 14);
+      if (a.x < mx + 60 && b.x > mx - 4 && a.y < my + 40 && b.y > my - 4 && b.y + 10 < view.h - 200) my = Math.round(b.y) + 10; }
+    d.miniBox = [mx - 4, my - 4, 64, 44]; // (tests)
     ctx.fillStyle = 'rgba(0,0,0,0.5)'; ctx.fillRect(mx - 4, my - 4, 64, 44);
     for (const [id, r] of Object.entries(dg.rooms)) {
       if (r.floor !== fl) continue;
@@ -12831,7 +13374,7 @@ const { enemyDef, TEST_ENEMIES } = __req("game/enemies.js");
 const { drawEnemy, drawHazard } = __req("art/fallback/enemies.js");
 const { createMechanics } = __req("game/mechanics.js");
 const { buildRelicDungeon } = __req("game/relics.js");
-const { claimSecret, secretKey } = __req("game/secrets.js");
+const { claimSecret, secretKey, GATE_OPEN, gateKey } = __req("game/secrets.js");
 const { questSpots } = __req("game/questgoals.js");
 const { createBuddies, sendBuddy, buddyTargetAt, updateBuddies, buddyWeights, drawBuddies, drawNest, freeBuddies } = __req("game/buddies.js");
 const { createProjectiles, fire, updateProjectiles, ammoUnlocked, AMMO } = __req("game/projectiles.js");
@@ -12884,6 +13427,7 @@ const { inkGatling } = __req("game/kits/wren.js");
 const { pressed: keyPressed } = __req("engine/input.js");
 const { createEquipment } = __req("scenes/equipment.js");
 const { usePotion, cycleItem, takeBomb, startHook, updateHook, useToolsAhead } = __req("game/items.js");
+const { attachToolAnim, updateToolAnim, drawToolAnim, toolView, toolBusy, drawToolInHand, holdTap, createCompass, updateCompass, drawCompass } = __req("game/toolanim.js");
 function createArena(view, data, opts = {}) {
   bindSession(data);
   refreshHearts(data); // max hearts always follow progress (levels, bosses, gear) — e.g. after loading a save
@@ -12975,6 +13519,7 @@ function createArena(view, data, opts = {}) {
     enemiesLeft: () => ents.list.filter((e) => e.alive && e.kind === 'enemy').length,
     onFall: () => { a.fell++; Object.assign(hero, { x: START.x, y: START.y, slide: null }); combat.hurt(1, hero.x, hero.y - 20); },
   });
+  attachToolAnim(inter, hero); // [TOOL ANIMS] every gate change animates through the shared path
   const projs = createProjectiles();
   a.inter = inter; a.projs = projs; a.msg = null;
   const say = (text) => { a.msg = text; floatText(hero.x, hero.y - 34, text, '#80c0ff'); };
@@ -13028,7 +13573,7 @@ function createArena(view, data, opts = {}) {
   a.combat = combat;
   const DIR = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] };
   const act = {
-    busy: () => !!hero.itemGet, // [POST-W8 D] the item-get pose: no attacks
+    busy: () => !!hero.itemGet || toolBusy(hero), // [POST-W8 D] the item-get pose: no attacks [TOOL ANIMS] nor during a tool's beat
     swing: () => { hero.attackId = null; return combat.startSwing(); },
     // keyboard fires along the facing, auto-aimed at the nearest enemy/switch inside the cone; a tap passes an exact angle
     fire: (ammo, tdx, tdy) => { if (tdx != null) return a.fire(ammo, tdx, tdy); const [dx, dy] = DIR[hero.facing]; const c = coneAim(hero.x, hero.y - 10, dx, dy, ents, inter); return c ? a.fire(ammo, c.dx, c.dy) : a.fire(ammo, dx, dy); },
@@ -13080,6 +13625,12 @@ function createArena(view, data, opts = {}) {
     return spawn(ents, { archetype: 'melee', ...def, hp, maxHp: hp });
   };
   if (ow) for (const g of ow.feat.gates) if (!g.passive) inter.add(g.type, g.tx, g.ty, { role: g.role });
+  if (ow) { // [TOOL ANIMS] gates opened on an earlier visit stay open (set directly: no use animation replays)
+    const wd = data.worlds[ow.world.id - 1]; wd.openGates = wd.openGates || [];
+    for (const o of inter.list) if (o.role && GATE_OPEN[o.type] && wd.openGates.includes(gateKey(o))) o[GATE_OPEN[o.type]] = true;
+    inter.syncAll();
+    inter.onChange = (o) => { const f = GATE_OPEN[o.type]; if (o.role && f && o[f] && !wd.openGates.includes(gateKey(o))) wd.openGates.push(gateKey(o)); };
+  }
   const npcs = ow && ow.townInfo ? [...spawnNpcs(ents, ow.world.town, ow.townInfo.origin), ...spawnVillagers(ents, ow), ...spawnCastleFolk(ents, ow)] : [];
   const maze = ow ? createMaze(ow) : null; // [D52] the world's timed maze mini-game
   if (maze) npcs.push(spawn(ents, mazeKeeper(maze, ow.world)));
@@ -13143,11 +13694,28 @@ function createArena(view, data, opts = {}) {
   // Overworld entrances: dungeons 1–4 in world-data order, B = main-boss arena (needs every medallion).
   // Board the Wayfarer: the ship room replaces nothing — it sits on top; leaving puts the hero back on the pad.
   // [D35] doors & exits the hero walks into (tap zones, arrow, magnet)
+  a.throwBomb = () => { if (toolBusy(hero)) return; if (takeBomb(data)) { const [dx, dy] = DIR[hero.facing]; const c = coneAim(hero.x, hero.y - 10, dx, dy, ents, inter); fire(projs, hero, 'bomb', c ? c.dx : dx, c ? c.dy : dy); } else say(data.tools.includes('bombBag') ? 'No bombs left!' : 'Need the Bomb Bag!'); };
+  // [TAP FIX 7] headroom for a relic cave mouth: walking up toward it from below, the camera rises (at most until the hero
+  // nears the bottom of the view) so the mouth's art clears the HUD bar — at the overworld zoom only ~4 tiles show above
+  // the hero, and W2's mouth sits across the soda gap (seen only from the approach). Smooth: the lift grows and fades with
+  // the hero's distance. The cave, ledge, hook posts and gate are unchanged.
+  const relicLift = () => {
+    const f = ow && ow.feat.relic; if (!f) return 0;
+    const z = cam.zoom, h = view.h / z, below = hero.y - f.ty * 16, side = Math.abs(hero.x - (f.tx * 16 + 16));
+    if (below <= 0 || below > 12 * 16 || side > 8 * 16) return 0;
+    const top = (f.ty - 2) * 16, need = (hero.y - 12 - h / 2) - (top - CONFIG.UI.HUD_RESERVED_H / z - 4);
+    const fade = Math.min(1, (12 * 16 - below) / (3 * 16), (8 * 16 - side) / (2 * 16));
+    return Math.max(0, Math.min(need, h / 2 - 50)) * fade;
+  };
+  // [TAP FIX 9] right after an Earth Map flight (until ARRIVE_GUARD_S after the world's art is painted) a doorway tap is
+  // held as a pending use: the tap maps through the settled camera, and if the walk to the doorway is dropped before it
+  // gets there, it is re-issued until the hero walks in (or USE_TIMEOUT_S). Only doorway taps; nothing else changes.
+  a.arrival = opts.arrived ? { t: 0 } : null; a.entryWalk = null;
   a.doors = [];
   if (ow) treeAnchors(ow, TILE.TREE, TILE); // [TREES 2x] big canopies (before the first chunk paint)
   if (ow && ow.world.lush) map.enableMini(CONFIG.UI.MAP_MINI); // [R2-19] the map screen's painted miniature
   if (ow) {
-    if (ow.townInfo) for (const d of ow.townInfo.doors) a.doors.push({ x: d.tx * 16 + 8, y: d.ty * 16 + 8, w: 1, dir: 'up', ref: d });
+    if (ow.townInfo) for (const d of ow.townInfo.doors) a.doors.push({ x: d.tx * 16 + 8, y: d.ty * 16 + 8, w: 1, dir: 'up', ref: d, art: d.art });
     const f = ow.feat;
     for (const e of [...Object.values(f.dungeons), f.boss]) if (e) a.doors.push({ x: e.tx * 16 + 16, y: e.ty * 16 + 8, w: 2, dir: 'up' });
     if (f.relic) a.doors.push({ x: f.relic.tx * 16 + 8, y: f.relic.ty * 16 + 8, w: 1, dir: 'up', ax: f.relic.tx * 16 + 16 }); // the relic mouth is one tile wide (its gate tile); [R2-23] its art is centred on the 2-tile mouth, so is the arrow
@@ -13184,7 +13752,7 @@ function createArena(view, data, opts = {}) {
     scenes.push(createShip(view, data, {
       pause: () => scenes.push(a.pauseFor({})),
       onExit: () => { scenes.pop(); data.location = { ...data.location, area: 'overworld' }; Object.assign(hero, { x: START.x, y: START.y, facing: 'down', path: null }); save.auto('area'); },
-      onFly: (w) => scenes.replace(createArena(view, data, { ...opts, world: w })),
+      onFly: (w) => scenes.replace(createArena(view, data, { ...opts, world: w, arrived: true })), // [TAP FIX 9] arrived: the doorway-tap guard
       onHeroSwitch: (id) => a.switchHero(id),
     }));
   };
@@ -13248,11 +13816,19 @@ function createArena(view, data, opts = {}) {
   };
   a.drawLandmarksTo = (g) => { if (ow) { drawLandmarks(g, ow, { x: 0, y: 0 }); drawCastleFloor(g, ow.feat.castleKit, { x: 0, y: 0 }); drawCastle(g, ow.feat.castleKit, { x: 0, y: 0 }, 1e9, 'back'); drawBigTrees(g, ow, { x: 0, y: 0 }); drawEntrances(g, ow, { x: 0, y: 0 }); } }; // tools/render_maps.js
   a.update = (dt) => {
+    if (a.arrival && (!ow || a.artDone) && (a.arrival.t += dt) > CONFIG.COMBAT.ARRIVE_GUARD_S) a.arrival = null;
     if (ow && !a.artDone && worldArtReady(ow)) { a.artDone = true; map.prerender(tilePainter(ow), ow.paintScale || 1); } // [S59] repaint once the world's sheets load
     if (resumeDungeon) { const k = Object.values(ow.world.dungeons).indexOf(resumeDungeon) + 1, e = ow.feat.dungeons[String(k)]; const dg = resumeDungeon; resumeDungeon = null; if (e) { a.enterEntrance(dg, e, true); return; } }
     updateHud(hud, data, dt);
     if (a.tut && !a.tut.done) { updateTutorial(a.tut, data, hero, dt); if (a.tut.done) save.auto('tutorial'); } // [A8e]
     updateFx(dt);
+    updateToolAnim(inter, hero, dt); // [TOOL ANIMS]
+    if (ow && data.tools.includes('starCompass')) { // [TOOL ANIMS] the Star Compass pings secrets / the relic cave as he comes near
+      a.compass = a.compass || createCompass(); const wid = ow.world.id, f = ow.feat;
+      const T = f.secrets.filter((q) => !data.secrets.includes(secretKey(wid, q))).map((q) => ({ key: secretKey(wid, q), x: q.tx * 16 + 8, y: q.ty * 16 + 8 }));
+      if (f.relic && !data.worlds[wid - 1].relicFound) T.push({ key: 'relic', x: f.relic.tx * 16 + 8, y: f.relic.ty * 16 + 8 });
+      updateCompass(a.compass, hero, T, dt);
+    }
     if (a.notice && (a.notice.t -= dt) <= 0) a.notice = null;
     if (ow && !a.pilotOut) { const p = spawnPilot(ents, ow, data); if (p.length) { a.pilotOut = p[0]; npcs.push(p[0]); } } // [R3-12] Juno steps out once the boss is beaten
     if (a.pilotOut && !a.pilotTold && Math.hypot(a.pilotOut.x - hero.x, a.pilotOut.y - hero.y) < CONFIG.PADKIT.PILOT_TALK_R) { a.pilotTold = true; a.talkTo(a.pilotOut); return; } // she greets you once per visit
@@ -13266,19 +13842,23 @@ function createArena(view, data, opts = {}) {
       else if (L.phase === 'out' && L.t >= LK.PAN_S) { a.lookout = null; cam.zoom = L.mode; }
       return;
     }
+    holdTap(hero, input.pointer, a, (x, y) => !!hudHit(view.w, x, y)); // [TOOL ANIMS] a world tap mid-beat waits for the beat
     if (input.pointer.tapped) {
       const b = hudHit(view.w, input.pointer.x, input.pointer.y);
       if (b === 'q') { openQuestion(); return; }
       if (b === 'equip') { scenes.push(createEquipment(view, data, () => scenes.pop())); return; } // [POST-W8 K] the HUD helmet button
       if (b && b.startsWith('slot')) kit.select(Number(b[4]));
+      if (b === 'bomb') { a.throwBomb(); return; } // [TAP FIX 4] bomb by tap: the B-key throw
       if (b === 'potion') { if (usePotion(data)) { sfx('heal'); floatText(hero.x, hero.y - 34, '+' + CONFIG.ITEMS.POTION.hearts + ' hearts!', '#ff8090'); } else say('Hearts are full!'); return; } // [TAP AUDIT] potion by tap
       if (b === 'pause') { a.openPause(); return; }
       if (b === 'map' && ow) { a.openMap(); return; }
       if (b === 'pill') { if (data.statPoints > 0) scenes.push(createStatPicker(view, data, () => scenes.pop())); return; }
       if (b === 'save') { floatText(hero.x, hero.y - 34, save.auto('manual') ? 'Saved!' : 'Could not save', '#80ff90'); if (a.tut) tutEvent(a.tut, data, 'save'); return; }
       if (!b) {
+        if (toolBusy(hero)) return; // [TOOL ANIMS] a tap during a tool's beat waits: no second use, no walk-off mid-pose
+        if (a.arrival) cam.follow(hero.x, hero.y - 12 - relicLift(), map.pxW, map.pxH); // [TAP FIX 9] map the tap through the settled camera
         const w = cam.toWorld(input.pointer.x, input.pointer.y);
-        hero.specialWalk = null; // [POST-W8 J] any new tap cancels a pending walk-in (nothing was spent)
+        hero.specialWalk = null; a.entryWalk = null; // [POST-W8 J] any new tap cancels a pending walk-in (nothing was spent)
         if (ow && ow.rocket && Math.abs(w.x - (ow.rocket.tx * 16 + 8)) < 24 && w.y > (ow.rocket.ty - 4) * 16 && w.y < (ow.rocket.ty + 1) * 16) {
           if (Math.hypot(hero.x - (ow.rocket.tx * 16 + 8), hero.y - ow.rocket.ty * 16) < 96) { a.board(); return; }
           setTapTarget(hero, map, ow.rocket.tx * 16 + 8, ow.rocket.ty * 16 + 8); return;
@@ -13308,12 +13888,16 @@ function createArena(view, data, opts = {}) {
           if (st) { setTapTarget(hero, map, st.x * 16 + 8, st.y * 16 + 12); a.useOnArrive = { o: gate, stand: st, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S }; }
           return;
         }
-        const door = doorAt(a.doors, w.x, w.y, CONFIG.COMBAT.DOOR_TAP_BELOW_OW); // [A7] a tap in a door's zone always means the door (a villager loitering by it must not steal the tap)
-        const n = !door && npcs.find((e) => Math.hypot(e.x - w.x, e.y - 12 - w.y) < 20);
+        const door = doorAt(a.doors, w.x, w.y, CONFIG.COMBAT.DOOR_TAP_BELOW_OW);
+        // [TAP FIX 2] a tap ON a villager (on their body, nearer to them than to the door centre) talks, even inside a door's
+        // zone; any other tap in the zone still means the door [A7] — a villager loitering by it (the 20 px reach used
+        // elsewhere would catch the front step) does not steal a tap on the door or its step
+        const nd = (e) => Math.hypot(e.x - w.x, e.y - 12 - w.y);
+        const n = npcs.filter((e) => nd(e) < (door ? 12 : 20)).sort((p, q) => nd(p) - nd(q)).find((e) => !door || nd(e) < Math.hypot(door.x - w.x, door.y - w.y));
         if (n && Math.hypot(n.x - hero.x, n.y - hero.y) < 64) { a.talkTo(n); return; }
         if (n) { hero.attackId = null; setTapTarget(hero, map, n.x, n.y + 14); a.talkWalk = { n, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, re: 0.5 }; return; } // [POST-W8 L] walk up to anyone, talk on arrival
         if (door) { a.doorArrow = { x: door.ref ? doorArtX(door.ref, (ow.townInfo.origin.tx + door.ref.b.x) * 16, ow.world.id, ow.world.town) : door.ax ?? door.x, y: door.y - 8, t: 2 }; // [DOOR-ARROWS] centred on the door in the picture
-          hero.attackId = null; setTapTarget(hero, map, door.x, door.y + 4); return; }
+          hero.attackId = null; setTapTarget(hero, map, door.x, door.y + 4); if (a.arrival) a.entryWalk = { door, t: CONFIG.PUZZLE_HELP.USE_TIMEOUT_S, re: 0.5 }; return; }
         // [W6] a tap on a foe / plate / switch / seed sends a free Sproutling buddy
         if (a.buddies && freeBuddies(a.buddies).length) { const t = buddyTargetAt({ ents, inter }, w.x, w.y); if (t && Math.hypot(w.x - hero.x, w.y - hero.y) < CONFIG.BUDDY.SEND_R && sendBuddy(a.buddies, hero, t)) return; }
         // ranged slot: tapping an enemy fires along the exact angle
@@ -13335,6 +13919,11 @@ function createArena(view, data, opts = {}) {
     if (hero.specialWalk && (kit.slot !== 3 || kit.special() !== hero.specialWalk.kind)) { hero.specialWalk = null; hero.path = null; } // [POST-W8 J] another move picked
     if (a.chestWalk && ((a.chestWalk.t -= dt) <= 0 || ['up', 'down', 'left', 'right'].some(held))) a.chestWalk = null; // [POST-W8 V]
     if (a.lookWalk) { const W = a.lookWalk; if ((W.t -= dt) <= 0 || ['up', 'down', 'left', 'right'].some(held)) a.lookWalk = null; else if (Math.hypot(hero.x - W.stand.x, hero.y - W.stand.y) < 10 || !(hero.path && hero.path.length)) startLookout(W.R); } // [POST-W8 AA] arrived: look
+    if (a.entryWalk) { // [TAP FIX 9] the pending doorway walk after a flight: re-issue it if it was dropped short of the door
+      const E = a.entryWalk;
+      if ((E.t -= dt) <= 0 || ['up', 'down', 'left', 'right'].some(held)) a.entryWalk = null;
+      else if (!(hero.path && hero.path.length) && (E.re -= dt) <= 0) { E.re = 0.5; setTapTarget(hero, map, E.door.x, E.door.y + 4); }
+    }
     if (a.talkWalk) { // [POST-W8 L] walking up to a tapped NPC (they may wander: re-aim twice a second); keys or the timeout cancel quietly
       const P = a.talkWalk;
       if ((P.t -= dt) <= 0 || ['up', 'down', 'left', 'right'].some(held) || !npcs.includes(P.n)) a.talkWalk = null;
@@ -13356,7 +13945,7 @@ function createArena(view, data, opts = {}) {
       else if (Math.hypot(hero.x - (U.stand.x * 16 + 8), hero.y - (U.stand.y * 16 + 12)) < 10 && !(hero.path && hero.path.length)) {
         const dx = o.tx - U.stand.x, dy = o.ty - U.stand.y;
         hero.facing = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : dy > 0 ? 'down' : 'up';
-        if (o.type === 'hookPoint') { if (!startHook(data, hero, inter, map)) say('No hook post ahead!'); } else if (useToolsAhead(data, inter)) sfx('door');
+        if (o.type === 'hookPoint') { if (!startHook(data, hero, inter, map)) say('No hook post ahead!'); } else useToolsAhead(data, inter); // [TOOL ANIMS] the use animation carries its own sounds
         a.useOnArrive = null;
       }
     }
@@ -13364,10 +13953,10 @@ function createArena(view, data, opts = {}) {
     if (keyPressed('equip')) { scenes.push(createEquipment(view, data, () => scenes.pop())); return; }
     if (keyPressed('cycle')) a.item = cycleItem(data, a.item);
     if (keyPressed('item') && a.item === 'potion') usePotion(data);
-    if (keyPressed('item') && ['shrinkCap', 'powerGlove'].includes(a.item)) { if (useToolsAhead(data, inter, a.item)) sfx('door'); else say('Nothing to use it on here.'); }
-    if (keyPressed('item') && a.item === 'gustJar') { const [dx, dy] = DIR[hero.facing]; fire(projs, hero, 'gust', dx, dy); }
-    if (keyPressed('item') && a.item === 'vineHook' && !startHook(data, hero, inter, map)) say('No hook post ahead!');
-    if (keyPressed('item') && a.item === 'bomb') { if (takeBomb(data)) { const [dx, dy] = DIR[hero.facing]; const c = coneAim(hero.x, hero.y - 10, dx, dy, ents, inter); fire(projs, hero, 'bomb', c ? c.dx : dx, c ? c.dy : dy); } else say(data.tools.includes('bombBag') ? 'No bombs left!' : 'Need the Bomb Bag!'); }
+    if (!toolBusy(hero) && keyPressed('item') && ['shrinkCap', 'powerGlove'].includes(a.item)) { if (!useToolsAhead(data, inter, a.item)) say('Nothing to use it on here.'); }
+    if (!toolBusy(hero) && keyPressed('item') && a.item === 'gustJar') { const [dx, dy] = DIR[hero.facing]; fire(projs, hero, 'gust', dx, dy); }
+    if (!toolBusy(hero) && keyPressed('item') && a.item === 'vineHook' && !startHook(data, hero, inter, map)) say('No hook post ahead!');
+    if (keyPressed('item') && a.item === 'bomb') a.throwBomb();
     kit.update();
     Object.assign(hud, { slot: kit.slot, ammo: kit.ammo(), special: kit.special(), ammoNext: kit.nextAmmo(), specialNext: kit.nextSpecial() });
     if (a.doorArrow && (a.doorArrow.t -= dt) <= 0) a.doorArrow = null;
@@ -13417,7 +14006,7 @@ function createArena(view, data, opts = {}) {
           hero.y += 16; hero.path = null;
         } else { a.enterEntrance(ent.dg, ent.e); return; }
       }
-      if (keyPressed('interact')) { const n = npcs.find((e) => Math.hypot(e.x - hero.x, e.y - hero.y) < 28); if (n) { a.talkTo(n); return; } if (useToolsAhead(data, inter)) sfx('door'); }
+      if (keyPressed('interact')) { const n = npcs.find((e) => Math.hypot(e.x - hero.x, e.y - hero.y) < 28); if (n) { a.talkTo(n); return; } if (!toolBusy(hero)) useToolsAhead(data, inter); }
       const lq = liquidAt(ow, tx, ty);
       if (lq && lq.slow) hero.slow = Math.max(hero.slow || 0, lq.slow);
       const reg = regionAt(ow, tx, ty);
@@ -13427,12 +14016,12 @@ function createArena(view, data, opts = {}) {
     if (bushes) updateBushes(bushes, hero, dt);
     if (ow) updateHelp(a.help, { data, hero, inter, room: {}, solved: true }, dt); // [R3-10/11] the missing-item bubble at secret gates (hollow tree, brambles, rocks)
     if (a.bushTap && ((a.bushTap.t -= dt) <= 0 || !(hero.path && hero.path.length))) { const bt = a.bushTap; a.bushTap = null; if (Math.hypot(bt.tx * 16 + 8 - hero.x, bt.ty * 16 + 8 - (hero.y - 8)) < CONFIG.BUSH.TAP_REACH) { swingAt(bt); } } // [BUSHES] walked up to the tapped bush → cut it
-    cam.follow(hero.x, hero.y - 12, map.pxW, map.pxH, shake);
+    cam.follow(hero.x, hero.y - 12 - relicLift(), map.pxW, map.pxH, shake);
   };
   a.render = (ctx) => {
     heroArt.v2 = !!ow && heroArt.worlds.includes(ow.world.id); // [P-C] v2 hero art in the true-pixel worlds
     layoutBegin();
-    if (a.lookout) lookCam(); else cam.follow(hero.x, hero.y - 12, map.pxW, map.pxH, shake); // [POST-W8 AA]
+    if (a.lookout) lookCam(); else cam.follow(hero.x, hero.y - 12 - relicLift(), map.pxW, map.pxH, shake); // [POST-W8 AA]
     ctx.fillStyle = '#000'; ctx.fillRect(0, 0, view.w, view.h);
     cam.begin(ctx); // [P-A] world layer at WORLD_ZOOM
     map.draw(ctx, cam);
@@ -13486,7 +14075,9 @@ function createArena(view, data, opts = {}) {
     if (ow && ow.rocket) drawRocket(ctx, ow.rocket.tx * 16 + 8 - cam.x, (ow.rocket.ty + 1) * 16 - cam.y);
     for (const n of npcs) drawNpc(ctx, n, n.x - cam.x, n.y - cam.y);
     if (ow && ow.ambient) drawAmbient(ctx, ow.ambient, cam, hero);
-    for (const o of inter.list) { if (o.role === 'lake') { drawLakeTile(ctx, o, o.tx * 16 - cam.x, o.ty * 16 - cam.y); continue; } if (o.type === 'hookPoint' && ow && drawHookPost(ctx, o, o.tx * 16 - cam.x, o.ty * 16 - cam.y, ow.world.id)) continue; const gx = o.role === 'relic' && o.type !== 'hookPoint' ? 8 : 0; if (!(ow && o.role && drawGateArt(ctx, o, o.tx * 16 + gx - cam.x, o.ty * 16 - cam.y, ow.world.id))) drawProp(ctx, o, o.tx * 16 - cam.x, o.ty * 16 - cam.y, inter); } // [R3-7] the relic cave's rock sits centred on its 2-tile mouth (like the cave art)
+    const drawObj = (o, x, y) => { if (o.role === 'lake') { drawLakeTile(ctx, o, x, y); return; } if (o.type === 'hookPoint' && ow && drawHookPost(ctx, o, x, y, ow.world.id)) return; const gx = o.role === 'relic' && o.type !== 'hookPoint' ? 8 : 0; if (!(ow && o.role && drawGateArt(ctx, o, x + gx, y, ow.world.id))) drawProp(ctx, o, x, y, inter); }; // [R3-7] the relic cave's rock sits centred on its 2-tile mouth (like the cave art)
+    for (const o of inter.list) { if (toolView(o)) drawObj(o, o.tx * 16 - cam.x, o.ty * 16 - cam.y); } // [TOOL ANIMS] an animating gate is drawn by the animation
+    drawToolAnim(ctx, inter, hero, cam, drawObj, 'back');
     for (let i = 0; i < inter.beam.length; i += 2) { ctx.fillStyle = 'rgba(255,250,160,0.7)'; ctx.fillRect(inter.beam[i] * 16 - cam.x + 6, inter.beam[i + 1] * 16 - cam.y + 6, 4, 4); }
     projs.forEach((p) => { // [D35] sprites rotate to the travel angle
       if (drawShot(ctx, p, p.x - cam.x, p.y - cam.y)) return; // [HERO-SHOTS] user art; the code shape below is the fallback
@@ -13499,6 +14090,7 @@ function createArena(view, data, opts = {}) {
     for (const n of a.nests) drawNest(ctx, Math.round(n.x - cam.x), Math.round(n.y - cam.y));
     if (a.buddies) { ctx.save(); ctx.translate(-Math.round(cam.x), -Math.round(cam.y)); drawBuddies(ctx, a.buddies); ctx.restore(); }
     drawHero(ctx, hero, cam);
+    drawToolInHand(ctx, hero, cam); drawToolAnim(ctx, inter, hero, cam, drawObj, 'front'); drawCompass(ctx, a.compass, hero, cam); // [TOOL ANIMS] the raised tool, the effect in flight, the lifted rock, the compass ping
     if (ow) drawTrees2x(ctx, ow, cam, hero.y, 'front'); // canopies in front of the hero
     if (a.pushPlan && (a.pushPlan.t -= 1 / 60) > 0) drawPushPlan(ctx, a.pushPlan, cam, performance.now() / 1000); else a.pushPlan = null; // [POST-W8 F]
     drawItemGet(ctx, hero, cam, 1 / 60); // [A8] the prize over the raised hands
@@ -13727,6 +14319,7 @@ async function boot() {
     MQ.debug = {
       throwInUpdate: null, attackPresses: 0, ATLAS, input, session, fitTextSize, rectsOverlap, ctx: view.ctx, resolveMusic, playMusic, setMute, sfx, weaponVisual, atkRef, TEST_BOSS, items: { canBuy, buy },
       newGame(opts = {}) { const data = save.store.newGame(opts.slot || 1, opts); save.slot = opts.slot || 1; save.data = data; scenes.replace(createPlay(view, data, playOpts())); return data; },
+      continueSlot(slot = 1) { const data = save.store.load(slot); save.slot = slot; save.data = data; scenes.replace(createWorld(view, data, playOpts())); return !!data; }, // [TOOL ANIMS] a save reload, as Continue does
       gainXp(n) { return scenes.stack.find((x) => x.name === 'play').gainXp(n); },
       setWorld(n) { save.data.location.world = n; save.data.worlds[n - 1].unlocked = true; },
       // [S58] ACC(layout): open scenes that are otherwise deep in play (shop counter, victory, rush results)
@@ -13798,12 +14391,16 @@ __req('main.js');
 <script type="text/plain" id="mq-atlas/dawnbreaker-weapons.json">eyJmdyI6NjQsImZoIjo2NCwiZnJhbWVzIjp7ImYwIjp7IngiOjAsInkiOjAsInciOjY0LCJoIjo2NH0sImYxIjp7IngiOjY0LCJ5IjowLCJ3Ijo2NCwiaCI6NjR9LCJmMiI6eyJ4IjoxMjgsInkiOjAsInciOjY0LCJoIjo2NH0sImYzIjp7IngiOjE5MiwieSI6MCwidyI6NjQsImgiOjY0fSwiZjQiOnsieCI6MjU2LCJ5IjowLCJ3Ijo2NCwiaCI6NjR9LCJmNSI6eyJ4IjozMjAsInkiOjAsInciOjY0LCJoIjo2NH0sImY2Ijp7IngiOjM4NCwieSI6MCwidyI6NjQsImgiOjY0fSwiZjciOnsieCI6NDQ4LCJ5IjowLCJ3Ijo2NCwiaCI6NjR9LCJmOCI6eyJ4Ijo1MTIsInkiOjAsInciOjY0LCJoIjo2NH0sImY5Ijp7IngiOjU3NiwieSI6MCwidyI6NjQsImgiOjY0fSwiZjEwIjp7IngiOjY0MCwieSI6MCwidyI6NjQsImgiOjY0fSwiZjExIjp7IngiOjcwNCwieSI6MCwidyI6NjQsImgiOjY0fSwiZjEyIjp7IngiOjc2OCwieSI6MCwidyI6NjQsImgiOjY0fSwiZjEzIjp7IngiOjgzMiwieSI6MCwidyI6NjQsImgiOjY0fSwiZjE0Ijp7IngiOjg5NiwieSI6MCwidyI6NjQsImgiOjY0fX0sImRzIjowLjV9</script>
 <script type="text/plain" id="mq-atlas/fx-hero-a.json">eyJmdyI6NjQsImZoIjo2NCwiZnJhbWVzIjp7ImFycm93Ijp7IngiOjAsInkiOjAsInciOjY0LCJoIjo2NH0sImZpcmUtYXJyb3ciOnsieCI6NjQsInkiOjAsInciOjY0LCJoIjo2NH0sImljZS1hcnJvdyI6eyJ4IjoxMjgsInkiOjAsInciOjY0LCJoIjo2NH0sImJvb21lcmFuZy1zcGlubmluZy1mcmFtZS0xIjp7IngiOjE5MiwieSI6MCwidyI6NjQsImgiOjY0fSwiYm9vbWVyYW5nLWZyYW1lLTIiOnsieCI6MjU2LCJ5IjowLCJ3Ijo2NCwiaCI6NjR9LCJmbG93ZXItc2hhcGVkLWZpcmUtc2hvdCI6eyJ4IjozMjAsInkiOjAsInciOjY0LCJoIjo2NH0sImZsb3dlci1zaGFwZWQtZnJvc3Qtc2hvdCI6eyJ4IjozODQsInkiOjAsInciOjY0LCJoIjo2NH0sInNwaW5uaW5nLXNoZWxsIjp7IngiOjQ0OCwieSI6MCwidyI6NjQsImgiOjY0fSwiYmx1ZS1wYWludC1ibG9iIjp7IngiOjUxMiwieSI6MCwidyI6NjQsImgiOjY0fSwib3JhbmdlLWVtYmVyLWluay1ibG9iIjp7IngiOjU3NiwieSI6MCwidyI6NjQsImgiOjY0fSwicGFsZS1mcm9zdC1pbmstYmxvYiI6eyJ4Ijo2NDAsInkiOjAsInciOjY0LCJoIjo2NH0sInJvdW5kLXBhaW50LWJvbWIiOnsieCI6NzA0LCJ5IjowLCJ3Ijo2NCwiaCI6NjR9LCJwYWludC1ib21iLXNwbGF0LWJ1cnN0Ijp7IngiOjc2OCwieSI6MCwidyI6NjQsImgiOjY0fSwic21hbGwtaW5rLWRyb3BsZXQiOnsieCI6ODMyLCJ5IjowLCJ3Ijo2NCwiaCI6NjR9LCJzd2lybGluZy13aW5kLWd1c3QiOnsieCI6ODk2LCJ5IjowLCJ3Ijo2NCwiaCI6NjR9LCJsZWFmLXNoYXBlZC12aW5lLWhvb2siOnsieCI6OTYwLCJ5IjowLCJ3Ijo2NCwiaCI6NjR9fSwiZHMiOjAuNX0=</script>
 <script type="text/plain" id="mq-atlas/fx-hero-b.json">eyJmdyI6NjQsImZoIjo2NCwiZnJhbWVzIjp7InJvdW5kLWJvbWItd2l0aC1saXQiOnsieCI6MCwieSI6MCwidyI6NjQsImgiOjY0fSwiZmFsbGluZy1tZXRlb3Itd2l0aC1zdGFyIjp7IngiOjY0LCJ5IjowLCJ3Ijo2NCwiaCI6NjR9LCJtZXRlb3ItaW1wYWN0LWJ1cnN0Ijp7IngiOjEyOCwieSI6MCwidyI6NjQsImgiOjY0fSwiaGl0LXNwYXJrIjp7IngiOjE5MiwieSI6MCwidyI6NjQsImgiOjY0fSwic3dvcmQtc3dpbmctYXJjIjp7IngiOjI1NiwieSI6MCwidyI6NjQsImgiOjY0fSwic3Bpbi1hdHRhY2stcmluZyI6eyJ4IjozMjAsInkiOjAsInciOjY0LCJoIjo2NH0sImhlYWwtc3BhcmtsZSI6eyJ4IjozODQsInkiOjAsInciOjY0LCJoIjo2NH0sImNvaW4tc3BhcmtsZSI6eyJ4Ijo0NDgsInkiOjAsInciOjY0LCJoIjo2NH0sImxldmVsLXVwLWJ1cnN0Ijp7IngiOjUxMiwieSI6MCwidyI6NjQsImgiOjY0fSwiY29uZmV0dGktcGllY2VzIjp7IngiOjU3NiwieSI6MCwidyI6NjQsImgiOjY0fSwicmVkLXdhcm5pbmctcmluZy1vbiI6eyJ4Ijo2NDAsInkiOjAsInciOjY0LCJoIjo2NH0sImxhbmRpbmctdGFyZ2V0LW1hcmtlciI6eyJ4Ijo3MDQsInkiOjAsInciOjY0LCJoIjo2NH0sInNvZnQtb3ZhbC1zaGFkb3ciOnsieCI6NzY4LCJ5IjowLCJ3Ijo2NCwiaCI6NjR9fSwiZHMiOjAuNX0=</script>
+<script type="text/plain" id="mq-atlas/fx-tools.json">eyJmdyI6NjQsImZoIjo2NCwiZnJhbWVzIjp7ImN1cmx5LXdpbmQtc3dpcmwiOnsieCI6MCwieSI6MCwidyI6NjQsImgiOjY0LCJiYiI6WzEsMzIsNjMsNjRdfSwiY3VybHktd2luZC1zd2lybC0yIjp7IngiOjY0LCJ5IjowLCJ3Ijo2NCwiaCI6NjQsImJiIjpbMSwxNCw2Myw2NF19LCIzLXRvbmd1ZS1vZi1maXJlIjp7IngiOjEyOCwieSI6MCwidyI6NjQsImgiOjY0LCJiYiI6WzEsMzMsNjMsNjRdfSwidGhlLXNhbWUtZmlyZS10b25ndWUiOnsieCI6MTkyLCJ5IjowLCJ3Ijo2NCwiaCI6NjQsImJiIjpbMSwxOSw2Myw2NF19LCJzbWFsbC1jYW1wZmlyZS1mbGFtZSI6eyJ4IjoyNTYsInkiOjAsInciOjY0LCJoIjo2NCwiYmIiOlsxMSwyLDUzLDY0XX0sInRoZS1zYW1lLWZsYW1lIjp7IngiOjMyMCwieSI6MCwidyI6NjQsImgiOjY0LCJiYiI6WzcsMiw1Nyw2NF19LCJncmV5LXNtb2tlLXB1ZmYiOnsieCI6Mzg0LCJ5IjowLCJ3Ijo2NCwiaCI6NjQsImJiIjpbMSwxMSw2Myw2NF19LCJsaXR0bGUtaGVhcC1vZi1ncmV5Ijp7IngiOjQ0OCwieSI6MCwidyI6NjQsImgiOjY0LCJiYiI6WzEsMTcsNjMsNjRdfSwiZnJvc3QtYnVyc3QiOnsieCI6NTEyLCJ5IjowLCJ3Ijo2NCwiaCI6NjQsImJiIjpbMSwyLDYzLDY0XX0sImljZS1zaGVlbiI6eyJ4Ijo1NzYsInkiOjAsInciOjY0LCJoIjo2NCwiYmIiOlsxLDUsNjMsNjRdfSwic3BhcmtsZS1zd2lybCI6eyJ4Ijo2NDAsInkiOjAsInciOjY0LCJoIjo2NCwiYmIiOlsyLDIsNjEsNjRdfSwidGhlLXNhbWUtc3BhcmtsZS1zd2lybCI6eyJ4Ijo3MDQsInkiOjAsInciOjY0LCJoIjo2NCwiYmIiOlsxLDgsNjMsNjRdfSwiYnJvd24tZHVzdC1idXJzdCI6eyJ4Ijo3NjgsInkiOjAsInciOjY0LCJoIjo2NCwiYmIiOlsxLDgsNjMsNjRdfSwidGhyZWUtc21hbGwtZ3JleS1yb2NrIjp7IngiOjgzMiwieSI6MCwidyI6NjQsImgiOjY0LCJiYiI6WzQsMiw2MCw2NF19LCJmb3VyLXNtYWxsZXItcm9jay1wZWJibGVzIjp7IngiOjg5NiwieSI6MCwidyI6NjQsImgiOjY0LCJiYiI6WzEsOSw2Myw2NF19LCJhLXNtYWxsLWdvbGQtc3RhciI6eyJ4Ijo5NjAsInkiOjAsInciOjY0LCJoIjo2NCwiYmIiOlsyLDIsNjIsNjRdfX0sImRzIjowLjV9</script>
 <script type="text/plain" id="mq-atlas/hero-milo-moves-b.json">eyJmdyI6MjgsImZoIjo0MywiZnJhbWVzIjp7ImRvd24wIjp7IngiOjAsInkiOjAsInciOjI4LCJoIjo0MywiYmIiOlswLDEsMjcsNDNdfSwiZG93bjEiOnsieCI6MjgsInkiOjAsInciOjI4LCJoIjo0MywiYmIiOlsxLDEsMjcsNDNdfSwiZG93bjIiOnsieCI6NTYsInkiOjAsInciOjI4LCJoIjo0MywiYmIiOlsxLDIsMjcsNDNdfSwiZG93bjMiOnsieCI6ODQsInkiOjAsInciOjI4LCJoIjo0MywiYmIiOlsxLDEsMjYsNDNdfSwidXAwIjp7IngiOjExMiwieSI6MCwidyI6MjgsImgiOjQzLCJiYiI6WzAsMSwyNyw0M119LCJ1cDEiOnsieCI6MTQwLCJ5IjowLCJ3IjoyOCwiaCI6NDMsImJiIjpbMSwxLDI3LDQzXX0sInVwMiI6eyJ4IjoxNjgsInkiOjAsInciOjI4LCJoIjo0MywiYmIiOlsxLDEsMjcsNDNdfSwidXAzIjp7IngiOjE5NiwieSI6MCwidyI6MjgsImgiOjQzLCJiYiI6WzEsMSwyNyw0M119LCJsZWZ0MCI6eyJ4IjoyMjQsInkiOjAsInciOjI4LCJoIjo0MywiYmIiOlsyLDEsMjYsNDNdfSwibGVmdDEiOnsieCI6MjUyLCJ5IjowLCJ3IjoyOCwiaCI6NDMsImJiIjpbMSwxLDI3LDQzXX0sImxlZnQyIjp7IngiOjI4MCwieSI6MCwidyI6MjgsImgiOjQzLCJiYiI6WzIsMSwyNiw0M119LCJsZWZ0MyI6eyJ4IjozMDgsInkiOjAsInciOjI4LCJoIjo0MywiYmIiOlsxLDEsMjcsNDNdfSwicmlnaHQwIjp7IngiOjMzNiwieSI6MCwidyI6MjgsImgiOjQzLCJiYiI6WzEsMSwyNyw0M119LCJyaWdodDEiOnsieCI6MzY0LCJ5IjowLCJ3IjoyOCwiaCI6NDN9LCJyaWdodDIiOnsieCI6MzkyLCJ5IjowLCJ3IjoyOCwiaCI6NDMsImJiIjpbMSwwLDI2LDQzXX0sInJpZ2h0MyI6eyJ4Ijo0MjAsInkiOjAsInciOjI4LCJoIjo0MywiYmIiOlswLDEsMjcsNDNdfX0sImRzIjowLjV9</script>
+<script type="text/plain" id="mq-atlas/hero-milo-tools.json">eyJmdyI6NzIsImZoIjo2NiwiZnJhbWVzIjp7ImRvd24wIjp7IngiOjAsInkiOjAsInciOjcyLCJoIjo2NiwiYmIiOlsxMywxNiw1OSw2Nl19LCJkb3duMSI6eyJ4Ijo3MiwieSI6MCwidyI6NzIsImgiOjY2LCJiYiI6WzEyLDIsNTksNjZdfSwiZG93bjIiOnsieCI6MTQ0LCJ5IjowLCJ3Ijo3MiwiaCI6NjYsImJiIjpbMTMsMTAsNTgsNjZdfSwiZG93bjMiOnsieCI6MjE2LCJ5IjowLCJ3Ijo3MiwiaCI6NjYsImJiIjpbMTUsMTEsNTcsNjZdfSwidXAwIjp7IngiOjI4OCwieSI6MCwidyI6NzIsImgiOjY2LCJiYiI6WzEzLDE0LDU5LDY2XX0sInVwMSI6eyJ4IjozNjAsInkiOjAsInciOjcyLCJoIjo2NiwiYmIiOlsxMiwxLDU5LDY2XX0sInVwMiI6eyJ4Ijo0MzIsInkiOjAsInciOjcyLCJoIjo2NiwiYmIiOlsxMSwwLDYxLDY2XX0sInVwMyI6eyJ4Ijo1MDQsInkiOjAsInciOjcyLCJoIjo2NiwiYmIiOlsxNSwxMCw1Nyw2Nl19LCJsZWZ0MCI6eyJ4Ijo1NzYsInkiOjAsInciOjcyLCJoIjo2NiwiYmIiOlsxMiwxNiw2MCw2Nl19LCJsZWZ0MSI6eyJ4Ijo2NDgsInkiOjAsInciOjcyLCJoIjo2NiwiYmIiOlsxNiwyLDU2LDY2XX0sImxlZnQyIjp7IngiOjcyMCwieSI6MCwidyI6NzIsImgiOjY2LCJiYiI6WzAsMTQsNzIsNjZdfSwibGVmdDMiOnsieCI6NzkyLCJ5IjowLCJ3Ijo3MiwiaCI6NjYsImJiIjpbMTUsMTEsNTYsNjZdfSwicmlnaHQwIjp7IngiOjg2NCwieSI6MCwidyI6NzIsImgiOjY2LCJiYiI6WzEyLDEyLDYwLDY2XX0sInJpZ2h0MSI6eyJ4Ijo5MzYsInkiOjAsInciOjcyLCJoIjo2NiwiYmIiOlsxNCwwLDU4LDY2XX0sInJpZ2h0MiI6eyJ4IjoxMDA4LCJ5IjowLCJ3Ijo3MiwiaCI6NjYsImJiIjpbMCwxMiw3MSw2Nl19LCJyaWdodDMiOnsieCI6MTA4MCwieSI6MCwidyI6NzIsImgiOjY2LCJiYiI6WzE0LDEwLDU3LDY2XX19LCJkcyI6MC41fQ==</script>
 <script type="text/plain" id="mq-atlas/hero-milo.json">eyJmdyI6MzMsImZoIjo0NSwiZnJhbWVzIjp7ImRvd24wIjp7IngiOjAsInkiOjAsInciOjMzLCJoIjo0NSwiYmIiOlsxLDIsMzIsNDVdfSwiZG93bjEiOnsieCI6MzMsInkiOjAsInciOjMzLCJoIjo0NSwiYmIiOlswLDIsMzIsNDVdfSwiZG93bjIiOnsieCI6NjYsInkiOjAsInciOjMzLCJoIjo0NSwiYmIiOlsxLDIsMzIsNDVdfSwidXAwIjp7IngiOjk5LCJ5IjowLCJ3IjozMywiaCI6NDUsImJiIjpbMCwyLDMyLDQ1XX0sInVwMSI6eyJ4IjoxMzIsInkiOjAsInciOjMzLCJoIjo0NSwiYmIiOlswLDMsMzMsNDVdfSwidXAyIjp7IngiOjE2NSwieSI6MCwidyI6MzMsImgiOjQ1LCJiYiI6WzAsMiwzMiw0NV19LCJsZWZ0MCI6eyJ4IjoxOTgsInkiOjAsInciOjMzLCJoIjo0NSwiYmIiOlswLDMsMzMsNDVdfSwibGVmdDEiOnsieCI6MjMxLCJ5IjowLCJ3IjozMywiaCI6NDUsImJiIjpbMCwzLDMzLDQ1XX0sImxlZnQyIjp7IngiOjI2NCwieSI6MCwidyI6MzMsImgiOjQ1LCJiYiI6WzAsMywzMyw0NV19LCJyaWdodDAiOnsieCI6Mjk3LCJ5IjowLCJ3IjozMywiaCI6NDUsImJiIjpbMCwxLDMzLDQ1XX0sInJpZ2h0MSI6eyJ4IjozMzAsInkiOjAsInciOjMzLCJoIjo0NSwiYmIiOlsyLDAsMzEsNDVdfSwicmlnaHQyIjp7IngiOjM2MywieSI6MCwidyI6MzMsImgiOjQ1LCJiYiI6WzAsMSwzMyw0NV19fSwiZHMiOjAuNX0=</script>
 <script type="text/plain" id="mq-atlas/hero-portraits.json">eyJmdyI6OTYsImZoIjo5NiwiZnJhbWVzIjp7ImYwIjp7IngiOjAsInkiOjAsInciOjk2LCJoIjo5Nn0sImYxIjp7IngiOjk2LCJ5IjowLCJ3Ijo5NiwiaCI6OTZ9LCJmMiI6eyJ4IjoxOTIsInkiOjAsInciOjk2LCJoIjo5Nn19LCJkcyI6MC41fQ==</script>
 <script type="text/plain" id="mq-atlas/hero-rowan-moves-b.json">eyJmdyI6MzMsImZoIjo0NCwiZnJhbWVzIjp7ImRvd24wIjp7IngiOjAsInkiOjAsInciOjMzLCJoIjo0NCwiYmIiOlsxLDEsMzEsNDRdfSwiZG93bjEiOnsieCI6MzMsInkiOjAsInciOjMzLCJoIjo0NCwiYmIiOlswLDEsMzMsNDRdfSwiZG93bjIiOnsieCI6NjYsInkiOjAsInciOjMzLCJoIjo0NCwiYmIiOls1LDIsMjgsNDRdfSwiZG93bjMiOnsieCI6OTksInkiOjAsInciOjMzLCJoIjo0NCwiYmIiOlsxLDEsMzIsNDRdfSwidXAwIjp7IngiOjEzMiwieSI6MCwidyI6MzMsImgiOjQ0LCJiYiI6WzEsMCwzMiw0NF19LCJ1cDEiOnsieCI6MTY1LCJ5IjowLCJ3IjozMywiaCI6NDR9LCJ1cDIiOnsieCI6MTk4LCJ5IjowLCJ3IjozMywiaCI6NDQsImJiIjpbNSwxLDI4LDQ0XX0sInVwMyI6eyJ4IjoyMzEsInkiOjAsInciOjMzLCJoIjo0NCwiYmIiOlsxLDAsMzIsNDRdfSwibGVmdDAiOnsieCI6MjY0LCJ5IjowLCJ3IjozMywiaCI6NDQsImJiIjpbMSwyLDMxLDQ0XX0sImxlZnQxIjp7IngiOjI5NywieSI6MCwidyI6MzMsImgiOjQ0LCJiYiI6WzAsMiwzMyw0NF19LCJsZWZ0MiI6eyJ4IjozMzAsInkiOjAsInciOjMzLCJoIjo0NCwiYmIiOls1LDIsMjgsNDRdfSwibGVmdDMiOnsieCI6MzYzLCJ5IjowLCJ3IjozMywiaCI6NDQsImJiIjpbMSwzLDMyLDQ0XX0sInJpZ2h0MCI6eyJ4IjozOTYsInkiOjAsInciOjMzLCJoIjo0NCwiYmIiOlsxLDIsMzIsNDRdfSwicmlnaHQxIjp7IngiOjQyOSwieSI6MCwidyI6MzMsImgiOjQ0LCJiYiI6WzEsMiwzMiw0NF19LCJyaWdodDIiOnsieCI6NDYyLCJ5IjowLCJ3IjozMywiaCI6NDQsImJiIjpbNSwxLDI4LDQ0XX0sInJpZ2h0MyI6eyJ4Ijo0OTUsInkiOjAsInciOjMzLCJoIjo0NCwiYmIiOlsxLDIsMzIsNDRdfX0sImRzIjowLjV9</script>
+<script type="text/plain" id="mq-atlas/hero-rowan-tools.json">eyJmdyI6NTgsImZoIjo1NywiZnJhbWVzIjp7ImRvd24wIjp7IngiOjAsInkiOjAsInciOjU4LCJoIjo1NywiYmIiOlsxMCwxNCw0OCw1N119LCJkb3duMSI6eyJ4Ijo1OCwieSI6MCwidyI6NTgsImgiOjU3LCJiYiI6WzEyLDEsNDUsNTddfSwiZG93bjIiOnsieCI6MTE2LCJ5IjowLCJ3Ijo1OCwiaCI6NTcsImJiIjpbNywxMSw1MCw1N119LCJkb3duMyI6eyJ4IjoxNzQsInkiOjAsInciOjU4LCJoIjo1NywiYmIiOlsxMiw1LDQ1LDU3XX0sInVwMCI6eyJ4IjoyMzIsInkiOjAsInciOjU4LCJoIjo1NywiYmIiOlsxMCwxMSw0OCw1N119LCJ1cDEiOnsieCI6MjkwLCJ5IjowLCJ3Ijo1OCwiaCI6NTcsImJiIjpbMTMsMCw0NSw1N119LCJ1cDIiOnsieCI6MzQ4LCJ5IjowLCJ3Ijo1OCwiaCI6NTcsImJiIjpbOCw4LDUwLDU3XX0sInVwMyI6eyJ4Ijo0MDYsInkiOjAsInciOjU4LCJoIjo1NywiYmIiOlsxMiw1LDQ1LDU3XX0sImxlZnQwIjp7IngiOjQ2NCwieSI6MCwidyI6NTgsImgiOjU3LCJiYiI6WzEwLDEwLDQ4LDU3XX0sImxlZnQxIjp7IngiOjUyMiwieSI6MCwidyI6NTgsImgiOjU3LCJiYiI6WzE0LDIsNDMsNTddfSwibGVmdDIiOnsieCI6NTgwLCJ5IjowLCJ3Ijo1OCwiaCI6NTcsImJiIjpbMiw4LDU2LDU3XX0sImxlZnQzIjp7IngiOjYzOCwieSI6MCwidyI6NTgsImgiOjU3LCJiYiI6WzE1LDMsNDIsNTddfSwicmlnaHQwIjp7IngiOjY5NiwieSI6MCwidyI6NTgsImgiOjU3LCJiYiI6WzEwLDgsNDgsNTddfSwicmlnaHQxIjp7IngiOjc1NCwieSI6MCwidyI6NTgsImgiOjU3LCJiYiI6WzE0LDEsNDQsNTddfSwicmlnaHQyIjp7IngiOjgxMiwieSI6MCwidyI6NTgsImgiOjU3LCJiYiI6WzAsNiw1OCw1N119LCJyaWdodDMiOnsieCI6ODcwLCJ5IjowLCJ3Ijo1OCwiaCI6NTcsImJiIjpbMTQsMyw0Myw1N119fSwiZHMiOjAuNX0=</script>
 <script type="text/plain" id="mq-atlas/hero-rowan.json">eyJmdyI6MzksImZoIjo1MiwiZnJhbWVzIjp7ImRvd24wIjp7IngiOjAsInkiOjAsInciOjM5LCJoIjo1MiwiYmIiOlsyLDMsMzcsNTJdfSwiZG93bjEiOnsieCI6MzksInkiOjAsInciOjM5LCJoIjo1MiwiYmIiOls2LDQsMzMsNTJdfSwiZG93bjIiOnsieCI6NzgsInkiOjAsInciOjM5LCJoIjo1MiwiYmIiOlsyLDMsMzcsNTJdfSwidXAwIjp7IngiOjExNywieSI6MCwidyI6MzksImgiOjUyLCJiYiI6WzAsMSwzOSw1Ml19LCJ1cDEiOnsieCI6MTU2LCJ5IjowLCJ3IjozOSwiaCI6NTIsImJiIjpbNiwyLDMzLDUyXX0sInVwMiI6eyJ4IjoxOTUsInkiOjAsInciOjM5LCJoIjo1MiwiYmIiOlswLDEsMzgsNTJdfSwibGVmdDAiOnsieCI6MjM0LCJ5IjowLCJ3IjozOSwiaCI6NTIsImJiIjpbMCwxLDM5LDUyXX0sImxlZnQxIjp7IngiOjI3MywieSI6MCwidyI6MzksImgiOjUyLCJiYiI6WzEsMSwzNyw1Ml19LCJsZWZ0MiI6eyJ4IjozMTIsInkiOjAsInciOjM5LCJoIjo1MiwiYmIiOlswLDEsMzksNTJdfSwicmlnaHQwIjp7IngiOjM1MSwieSI6MCwidyI6MzksImgiOjUyfSwicmlnaHQxIjp7IngiOjM5MCwieSI6MCwidyI6MzksImgiOjUyLCJiYiI6WzEsMSwzNyw1Ml19LCJyaWdodDIiOnsieCI6NDI5LCJ5IjowLCJ3IjozOSwiaCI6NTJ9fSwiZHMiOjAuNX0=</script>
 <script type="text/plain" id="mq-atlas/hero-wren-moves-b.json">eyJmdyI6NDQsImZoIjo2MCwiZnJhbWVzIjp7ImRvd24wIjp7IngiOjAsInkiOjAsInciOjQ0LCJoIjo2MCwiYmIiOlszLDQsNDEsNjBdfSwiZG93bjEiOnsieCI6NDQsInkiOjAsInciOjQ0LCJoIjo2MCwiYmIiOlszLDMsNDAsNjBdfSwiZG93bjIiOnsieCI6ODgsInkiOjAsInciOjQ0LCJoIjo2MCwiYmIiOls1LDQsMzksNjBdfSwiZG93bjMiOnsieCI6MTMyLCJ5IjowLCJ3Ijo0NCwiaCI6NjAsImJiIjpbMywzLDQxLDYwXX0sInVwMCI6eyJ4IjoxNzYsInkiOjAsInciOjQ0LCJoIjo2MCwiYmIiOlszLDIsNDEsNjBdfSwidXAxIjp7IngiOjIyMCwieSI6MCwidyI6NDQsImgiOjYwLCJiYiI6WzMsMSw0MCw2MF19LCJ1cDIiOnsieCI6MjY0LCJ5IjowLCJ3Ijo0NCwiaCI6NjAsImJiIjpbNCwyLDM5LDYwXX0sInVwMyI6eyJ4IjozMDgsInkiOjAsInciOjQ0LCJoIjo2MCwiYmIiOlsyLDEsNDEsNjBdfSwibGVmdDAiOnsieCI6MzUyLCJ5IjowLCJ3Ijo0NCwiaCI6NjAsImJiIjpbMSwxLDQyLDYwXX0sImxlZnQxIjp7IngiOjM5NiwieSI6MCwidyI6NDQsImgiOjYwLCJiYiI6WzEsMSw0Miw2MF19LCJsZWZ0MiI6eyJ4Ijo0NDAsInkiOjAsInciOjQ0LCJoIjo2MCwiYmIiOlszLDEsNDAsNjBdfSwibGVmdDMiOnsieCI6NDg0LCJ5IjowLCJ3Ijo0NCwiaCI6NjAsImJiIjpbMCwxLDQzLDYwXX0sInJpZ2h0MCI6eyJ4Ijo1MjgsInkiOjAsInciOjQ0LCJoIjo2MCwiYmIiOlswLDEsNDQsNjBdfSwicmlnaHQxIjp7IngiOjU3MiwieSI6MCwidyI6NDQsImgiOjYwLCJiYiI6WzAsMSw0Myw2MF19LCJyaWdodDIiOnsieCI6NjE2LCJ5IjowLCJ3Ijo0NCwiaCI6NjAsImJiIjpbMywxLDQxLDYwXX0sInJpZ2h0MyI6eyJ4Ijo2NjAsInkiOjAsInciOjQ0LCJoIjo2MCwiYmIiOlsxLDAsNDIsNjBdfX0sImRzIjowLjV9</script>
+<script type="text/plain" id="mq-atlas/hero-wren-tools.json">eyJmdyI6NjIsImZoIjo2MywiZnJhbWVzIjp7ImRvd24wIjp7IngiOjAsInkiOjAsInciOjYyLCJoIjo2MywiYmIiOlsxMSw1LDUwLDYzXX0sImRvd24xIjp7IngiOjYyLCJ5IjowLCJ3Ijo2MiwiaCI6NjMsImJiIjpbMTAsMiw1Miw2M119LCJkb3duMiI6eyJ4IjoxMjQsInkiOjAsInciOjYyLCJoIjo2MywiYmIiOls5LDQsNTIsNjNdfSwiZG93bjMiOnsieCI6MTg2LCJ5IjowLCJ3Ijo2MiwiaCI6NjMsImJiIjpbMTQsNCw0OCw2M119LCJ1cDAiOnsieCI6MjQ4LCJ5IjowLCJ3Ijo2MiwiaCI6NjMsImJiIjpbMTEsNCw1MCw2M119LCJ1cDEiOnsieCI6MzEwLCJ5IjowLCJ3Ijo2MiwiaCI6NjMsImJiIjpbOSwwLDUyLDYzXX0sInVwMiI6eyJ4IjozNzIsInkiOjAsInciOjYyLCJoIjo2MywiYmIiOls3LDEsNTUsNjNdfSwidXAzIjp7IngiOjQzNCwieSI6MCwidyI6NjIsImgiOjYzLCJiYiI6WzE0LDMsNDcsNjNdfSwibGVmdDAiOnsieCI6NDk2LCJ5IjowLCJ3Ijo2MiwiaCI6NjMsImJiIjpbMTMsNiw0OSw2M119LCJsZWZ0MSI6eyJ4Ijo1NTgsInkiOjAsInciOjYyLCJoIjo2MywiYmIiOlsxNCwxLDQ3LDYzXX0sImxlZnQyIjp7IngiOjYyMCwieSI6MCwidyI6NjIsImgiOjYzLCJiYiI6WzAsOCw2Miw2M119LCJsZWZ0MyI6eyJ4Ijo2ODIsInkiOjAsInciOjYyLCJoIjo2MywiYmIiOlsxNCw0LDQ3LDYzXX0sInJpZ2h0MCI6eyJ4Ijo3NDQsInkiOjAsInciOjYyLCJoIjo2MywiYmIiOlsxMyw2LDQ5LDYzXX0sInJpZ2h0MSI6eyJ4Ijo4MDYsInkiOjAsInciOjYyLCJoIjo2MywiYmIiOlsxNCwxLDQ3LDYzXX0sInJpZ2h0MiI6eyJ4Ijo4NjgsInkiOjAsInciOjYyLCJoIjo2MywiYmIiOlswLDcsNjEsNjNdfSwicmlnaHQzIjp7IngiOjkzMCwieSI6MCwidyI6NjIsImgiOjYzLCJiYiI6WzE0LDQsNDgsNjNdfX0sImRzIjowLjV9</script>
 <script type="text/plain" id="mq-atlas/hero-wren.json">eyJmdyI6NDgsImZoIjo1NSwiZnJhbWVzIjp7ImRvd24wIjp7IngiOjAsInkiOjAsInciOjQ4LCJoIjo1NSwiYmIiOlsxLDIsNDYsNTVdfSwiZG93bjEiOnsieCI6NDgsInkiOjAsInciOjQ4LCJoIjo1NSwiYmIiOls0LDIsNDQsNTVdfSwiZG93bjIiOnsieCI6OTYsInkiOjAsInciOjQ4LCJoIjo1NSwiYmIiOlsxLDMsNDcsNTVdfSwidXAwIjp7IngiOjE0NCwieSI6MCwidyI6NDgsImgiOjU1LCJiYiI6WzEsNCw0Niw1NV19LCJ1cDEiOnsieCI6MTkyLCJ5IjowLCJ3Ijo0OCwiaCI6NTUsImJiIjpbMyw0LDQ1LDU1XX0sInVwMiI6eyJ4IjoyNDAsInkiOjAsInciOjQ4LCJoIjo1NSwiYmIiOlsxLDQsNDYsNTVdfSwibGVmdDAiOnsieCI6Mjg4LCJ5IjowLCJ3Ijo0OCwiaCI6NTUsImJiIjpbMSwwLDQ2LDU1XX0sImxlZnQxIjp7IngiOjMzNiwieSI6MCwidyI6NDgsImgiOjU1LCJiYiI6WzYsMSw0MSw1NV19LCJsZWZ0MiI6eyJ4IjozODQsInkiOjAsInciOjQ4LCJoIjo1NSwiYmIiOlsyLDEsNDYsNTVdfSwicmlnaHQwIjp7IngiOjQzMiwieSI6MCwidyI6NDgsImgiOjU1LCJiYiI6WzEsMiw0Niw1NV19LCJyaWdodDEiOnsieCI6NDgwLCJ5IjowLCJ3Ijo0OCwiaCI6NTUsImJiIjpbNywxLDQxLDU1XX0sInJpZ2h0MiI6eyJ4Ijo1MjgsInkiOjAsInciOjQ4LCJoIjo1NSwiYmIiOlswLDIsNDgsNTVdfX0sImRzIjowLjV9</script>
 <script type="text/plain" id="mq-atlas/icons-armor-a.json">eyJmdyI6MzIsImZoIjozMiwiZnJhbWVzIjp7ImxlYWYtY2FwIjp7IngiOjAsInkiOjAsInciOjMyLCJoIjozMn0sImJhcmstdmVzdCI6eyJ4IjozMiwieSI6MCwidyI6MzIsImgiOjMyfSwibW9zcy1ib290cyI6eyJ4Ijo2NCwieSI6MCwidyI6MzIsImgiOjMyfSwicGxpcC1jYXAiOnsieCI6OTYsInkiOjAsInciOjMyLCJoIjozMn0sImJvcC12ZXN0Ijp7IngiOjEyOCwieSI6MCwidyI6MzIsImgiOjMyfSwic3ByaW5nLWJvb3RzIjp7IngiOjE2MCwieSI6MCwidyI6MzIsImgiOjMyfSwicmVlZi1oZWxtIjp7IngiOjE5MiwieSI6MCwidyI6MzIsImgiOjMyfSwidGlkZS12ZXN0Ijp7IngiOjIyNCwieSI6MCwidyI6MzIsImgiOjMyfSwic3BsYXNoLWJvb3RzIjp7IngiOjI1NiwieSI6MCwidyI6MzIsImgiOjMyfSwiY2hlcnJ5LWhlbG0iOnsieCI6Mjg4LCJ5IjowLCJ3IjozMiwiaCI6MzJ9LCJjcmVhbS12ZXN0Ijp7IngiOjMyMCwieSI6MCwidyI6MzIsImgiOjMyfSwiZ3VtZHJvcC1ib290cyI6eyJ4IjozNTIsInkiOjAsInciOjMyLCJoIjozMn19LCJkcyI6MC41fQ==</script>
 <script type="text/plain" id="mq-atlas/icons-armor-b.json">eyJmdyI6MzIsImZoIjozMiwiZnJhbWVzIjp7InRvdGVtLWhlbG0iOnsieCI6MCwieSI6MCwidyI6MzIsImgiOjMyfSwianVuZ2xlLXZlc3QiOnsieCI6MzIsInkiOjAsInciOjMyLCJoIjozMn0sInBvdW5jZS1ib290cyI6eyJ4Ijo2NCwieSI6MCwidyI6MzIsImgiOjMyfSwiYWNvcm4taGVsbSI6eyJ4Ijo5NiwieSI6MCwidyI6MzIsImgiOjMyfSwicGV0YWwtdmVzdCI6eyJ4IjoxMjgsInkiOjAsInciOjMyLCJoIjozMn0sInNwcm91dC1ib290cyI6eyJ4IjoxNjAsInkiOjAsInciOjMyLCJoIjozMn0sImdhbGUtaGVsbSI6eyJ4IjoxOTIsInkiOjAsInciOjMyLCJoIjozMn0sImFldGhlci12ZXN0Ijp7IngiOjIyNCwieSI6MCwidyI6MzIsImgiOjMyfSwiY2xvdWQtYm9vdHMiOnsieCI6MjU2LCJ5IjowLCJ3IjozMiwiaCI6MzJ9LCJub3ZhLWhlbG0iOnsieCI6Mjg4LCJ5IjowLCJ3IjozMiwiaCI6MzJ9LCJjb3Ntb3MtdmVzdCI6eyJ4IjozMjAsInkiOjAsInciOjMyLCJoIjozMn0sImNvbWV0LWJvb3RzIjp7IngiOjM1MiwieSI6MCwidyI6MzIsImgiOjMyfX0sImRzIjowLjV9</script>
