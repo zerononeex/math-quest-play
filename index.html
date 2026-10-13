@@ -49,7 +49,7 @@ const CONFIG = deepFreeze({
     ADAPT_DROP_WRONG: 3, ADAPT_CLIMB_RIGHT: 10,
     TIER_FLOOR: { little: 0, adventurer: 0, master: 2 },
     WORLD_BAND: [0, 1, 2, 3, 4, 5, 6, 7],
-    DISTRACTOR_OFFSETS: [3, 6, 10, 15], DISTRACTOR_OFFSETS_SMALL: [1, 2, 3], SMALL_ANSWER: 20,
+    DISTRACTOR_OFFSETS: [1, 3, 6, 10, 15], DISTRACTOR_OFFSETS_SMALL: [1, 2, 3, 4], SMALL_ANSWER: 20, CHOICES: 8, STRIKES: 3, NEW_Q_MSG_S: 1.2, NEW_Q_LOCK_S: 0.35, GRID: { COLS: 4, W: 132, H: 86, GAP: 10, TOP: 200, FONT: 40 }, // [MATH 8] 8 answers (7 wrong); 3 wrong picks discard the question for a fresh one
     POPUP_RIGHT_S: 0, POPUP_WRONG_S: 1.2, AP_FLOAT_DY: 34, AP_FLOAT_COLOR: '#80e0ff', // [R3d] '+N AP' over the hero on a first-try right answer
     // [R3-1] a right answer closes at once (0 = no hold)
     AUTO_REOPEN_GAP: 2.0, // [V3] one question per opening: result shown, then close; auto-open waits the gap
@@ -98,7 +98,7 @@ const CONFIG = deepFreeze({
     ELITE_MULT: 2,
     WORLD_DMG: [1, 2, 3, 4, 5, 6, 7, 8], BOSS_DMG_BONUS: 1,
   },
-  BOSS: { SUB_SCALE: 2, BIG_MIN_Y: 17, SUB_HITS: 12, MAIN_HITS: 20, FINAL_HITS: 28, PHASE2_AT: 0.5, TRIES: 3, BEAT_BPM: 150,
+  BOSS: { SUB_SCALE: 2, BIG_MIN_Y: 17, BIG_EDGE_RANGE: 12, BIG_TAP_PAD: 16, SUB_HITS: 12, MAIN_HITS: 20, FINAL_HITS: 28, PHASE2_AT: 0.5, TRIES: 3, BEAT_BPM: 150,
     // [D46] two-form final bosses: transformation length (skippable after the first time), form-2 bar = FORM2_HP_MULT × form 1,
     // Supernova Countdown (NOVA_S s clock, ×TIMING_LITTLE_MULT on Little Hero; NOVA_STAGGERS staggers of NOVA_HITS hits shatter it)
     TRANSFORM_S: 4, FORM2_HP_MULT: 2, BONUS_AP: 10, STAR_SHIELD: 2, NOVA_S: 30, NOVA_HITS: 3, NOVA_STAGGERS: 3, ECHOES_AT: [0.66, 0.33] }, // BEAT_BPM = the synth boss tempo (beat-synced patterns without audio)
@@ -296,7 +296,7 @@ __def("engine/input.js", function () {
 const { view } = __req("engine/render.js");
 const KEYMAP = {
   ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down', ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
-  Space: 'attack', KeyJ: 'attack', Digit1: 'k1', Digit2: 'k2', Digit3: 'k3', Digit4: 'k4',
+  Space: 'attack', KeyJ: 'attack', Digit1: 'k1', Digit2: 'k2', Digit3: 'k3', Digit4: 'k4', Digit5: 'k5', Digit6: 'k6', Digit7: 'k7', Digit8: 'k8', // [MATH 8] keys 1-8 pick answers
   KeyB: 'item', KeyV: 'cycle', KeyE: 'interact', KeyQ: 'question', KeyP: 'equip', KeyM: 'map', Escape: 'pause', Enter: 'confirm', F9: 'debugHero', KeyG: 'buddy',
 };
 
@@ -1444,7 +1444,7 @@ function createIntro(view, onDone) {
 return { createIntro };
 });
 __def("game/math.js", function () {
-// Math engine: band generators (SPEC 2.3), 4 choices with G15 distractors, adaptive bands (D06, D19), AP + streak.
+// Math engine: band generators (SPEC 2.3), CONFIG.MATH.CHOICES (8) choices with G15 distractors, adaptive bands (D06, D19), AP + streak.
 const { CONFIG } = __req("config.js");
 const M = CONFIG.MATH;
 
@@ -1459,68 +1459,69 @@ function fmt(a) {
   return String(a.v);
 }
 
-// Each generator returns { text, ans, classic? } (classic = the "classic mistake" value).
+// Each generator returns { text, ans, classic?, alts? } (classic = the "classic mistake" value; [MATH 8] alts = more modelled
+// mistakes: carry/borrow slips, the neighbouring times-table fact, the wrong operation, a remainder not regrouped).
 const GEN = [
   // 0 — + and − within 100
   (rng) => {
-    if (rng() < 0.5) { const a = ri(rng, 1, 90); const b = ri(rng, 1, 100 - a); return { text: `${a} + ${b}`, ans: int(a + b), classic: int(Math.abs(a - b)) }; }
-    const a = ri(rng, 5, 100); const b = ri(rng, 1, a); return { text: `${a} − ${b}`, ans: int(a - b), classic: a + b <= 100 ? int(a + b) : null };
+    if (rng() < 0.5) { const a = ri(rng, 1, 90); const b = ri(rng, 1, 100 - a); return { text: `${a} + ${b}`, ans: int(a + b), classic: int(Math.abs(a - b)), alts: [int(a + b + 10), int(a + b - 10)] }; }
+    const a = ri(rng, 5, 100); const b = ri(rng, 1, a); return { text: `${a} − ${b}`, ans: int(a - b), classic: a + b <= 100 ? int(a + b) : null, alts: [int(a - b + 10), int(a - b - 10)] };
   },
   // 1 — +/− within 200; ×2, ×5, ×10
   (rng) => {
     const r = rng();
-    if (r < 0.35) { const a = ri(rng, 10, 180); const b = ri(rng, 5, 200 - a); return { text: `${a} + ${b}`, ans: int(a + b), classic: int(a + b + 10) }; }
-    if (r < 0.7) { const a = ri(rng, 20, 200); const b = ri(rng, 5, a); return { text: `${a} − ${b}`, ans: int(a - b), classic: int(a - b + 10) }; }
-    const k = pick(rng, [2, 5, 10]); const a = ri(rng, 1, 12); return { text: `${a} × ${k}`, ans: int(a * k), classic: int(a + k) };
+    if (r < 0.35) { const a = ri(rng, 10, 180); const b = ri(rng, 5, 200 - a); return { text: `${a} + ${b}`, ans: int(a + b), classic: int(a + b + 10), alts: [int(a + b - 10), int(Math.abs(a - b))] }; }
+    if (r < 0.7) { const a = ri(rng, 20, 200); const b = ri(rng, 5, a); return { text: `${a} − ${b}`, ans: int(a - b), classic: int(a - b + 10), alts: [int(a - b - 10), a + b <= 200 ? int(a + b) : null] }; }
+    const k = pick(rng, [2, 5, 10]); const a = ri(rng, 1, 12); return { text: `${a} × ${k}`, ans: int(a * k), classic: int(a + k), alts: [int(a * k + k), int(a * k - k)] };
   },
   // 2 — × to 10×10; simple ÷
   (rng) => {
     const a = ri(rng, 1, 10); const b = ri(rng, 1, 10);
-    if (rng() < 0.6) return { text: `${a} × ${b}`, ans: int(a * b), classic: int(a + b) };
-    return { text: `${a * b} ÷ ${b}`, ans: int(a), classic: int(a * b - b) };
+    if (rng() < 0.6) return { text: `${a} × ${b}`, ans: int(a * b), classic: int(a + b), alts: [int(a * b + a), int(a * b - a), int(a * b + b), int(a * b - b)] };
+    return { text: `${a * b} ÷ ${b}`, ans: int(a), classic: int(a * b - b), alts: [int(a + 1), int(a - 1), int(b)] };
   },
   // 3 — × to 12×12; ÷; 3-digit +/−
   (rng) => {
     const r = rng();
-    if (r < 0.35) { const a = ri(rng, 2, 12); const b = ri(rng, 2, 12); return { text: `${a} × ${b}`, ans: int(a * b), classic: int(a * b + a) }; }
-    if (r < 0.6) { const a = ri(rng, 2, 12); const b = ri(rng, 2, 12); return { text: `${a * b} ÷ ${b}`, ans: int(a), classic: int(a + 1) }; }
-    if (r < 0.8) { const a = ri(rng, 100, 800); const b = ri(rng, 100, 999 - a); return { text: `${a} + ${b}`, ans: int(a + b), classic: int(a + b - 100) }; }
-    const a = ri(rng, 200, 999); const b = ri(rng, 100, a); return { text: `${a} − ${b}`, ans: int(a - b), classic: int(a - b + 100) };
+    if (r < 0.35) { const a = ri(rng, 2, 12); const b = ri(rng, 2, 12); return { text: `${a} × ${b}`, ans: int(a * b), classic: int(a * b + a), alts: [int(a * b - a), int(a * b + b), int(a * b - b)] }; }
+    if (r < 0.6) { const a = ri(rng, 2, 12); const b = ri(rng, 2, 12); return { text: `${a * b} ÷ ${b}`, ans: int(a), classic: int(a + 1), alts: [int(a - 1), int(b)] }; }
+    if (r < 0.8) { const a = ri(rng, 100, 800); const b = ri(rng, 100, 999 - a); return { text: `${a} + ${b}`, ans: int(a + b), classic: int(a + b - 100), alts: [int(a + b + 100), int(a + b - 10), int(a + b + 10)] }; }
+    const a = ri(rng, 200, 999); const b = ri(rng, 100, a); return { text: `${a} − ${b}`, ans: int(a - b), classic: int(a - b + 100), alts: [int(a - b - 100), int(a - b + 10), int(a - b - 10)] };
   },
   // 4 — multi-digit ×; ÷ with remainder; fraction intro
   (rng) => {
     const r = rng();
-    if (r < 0.4) { const a = ri(rng, 12, 99); const b = ri(rng, 2, 9); return { text: `${a} × ${b}`, ans: int(a * b), classic: int(a * b + 10) }; }
+    if (r < 0.4) { const a = ri(rng, 12, 99); const b = ri(rng, 2, 9); return { text: `${a} × ${b}`, ans: int(a * b), classic: int(a * b + 10), alts: [int(a * b - 10), int(a * b + b), int(a * b - b)] }; }
     if (r < 0.75) {
       const b = ri(rng, 2, 9); const q = ri(rng, 2, 12); const rr = ri(rng, 1, b - 1 || 1) % b;
-      return { text: `${q * b + rr} ÷ ${b}`, ans: { k: 'rem', q, r: rr }, classic: { k: 'rem', q, r: 0 } };
+      return { text: `${q * b + rr} ÷ ${b}`, ans: { k: 'rem', q, r: rr, b }, classic: { k: 'rem', q, r: 0 }, alts: [{ k: 'rem', q: q + 1, r: 0 }, { k: 'rem', q: q + 1, r: rr }, { k: 'rem', q: q - 1, r: rr }, { k: 'rem', q, r: rr + 1 }, { k: 'rem', q, r: rr - 1 }] }; // b: the divisor (distractor remainders stay below it)
     }
-    const d = pick(rng, [2, 3, 4, 5, 10]); const k = ri(rng, 1, 10); return { text: `1/${d} of ${d * k}`, ans: int(k), classic: int(d * k - d) };
+    const d = pick(rng, [2, 3, 4, 5, 10]); const k = ri(rng, 1, 10); return { text: `1/${d} of ${d * k}`, ans: int(k), classic: int(d * k - d), alts: [int(d * k), int(k + 1), int(k - 1), int(d + k)] };
   },
   // 5 — fractions; multi-step +/−/×
   (rng) => {
     if (rng() < 0.5) {
       const d = ri(rng, 3, 12); const a = ri(rng, 1, d - 2); const b = ri(rng, 1, d - 1 - a);
-      return { text: `${a}/${d} + ${b}/${d}`, ans: { k: 'frac', n: a + b, d }, classic: { k: 'frac', n: a + b, d: d * 2 } };
+      return { text: `${a}/${d} + ${b}/${d}`, ans: { k: 'frac', n: a + b, d }, classic: { k: 'frac', n: a + b, d: d * 2 }, alts: [{ k: 'frac', n: Math.abs(a - b), d }, { k: 'frac', n: a * b, d }, { k: 'frac', n: a + b, d: d + 1 }, { k: 'frac', n: a + b, d: d - 1 }] };
     }
     const a = ri(rng, 10, 60); const b = ri(rng, 5, 40); const c = ri(rng, 1, a + b - 1);
-    if (rng() < 0.5) return { text: `${a} + ${b} − ${c}`, ans: int(a + b - c), classic: int(a - b + c > 0 ? a - b + c : a + b + c) };
+    if (rng() < 0.5) return { text: `${a} + ${b} − ${c}`, ans: int(a + b - c), classic: int(a - b + c > 0 ? a - b + c : a + b + c), alts: [int(a + b + c), int(a + b - c + 10), int(a + b - c - 10)] };
     const x = ri(rng, 2, 9); const y = ri(rng, 2, 9); const z = ri(rng, 1, x * y);
-    return { text: `${x} × ${y} − ${z}`, ans: int(x * y - z), classic: int(x * (y - z) > 0 ? x * (y - z) : x * y + z) };
+    return { text: `${x} × ${y} − ${z}`, ans: int(x * y - z), classic: int(x * (y - z) > 0 ? x * (y - z) : x * y + z), alts: [int(x * y + z), int(x * y - z + x), int(x * y - z - x)] };
   },
   // 6 — a × b + c; mixed multi-step
   (rng) => {
     const a = ri(rng, 3, 12); const b = ri(rng, 3, 12); const c = ri(rng, 2, 50);
     const r = rng();
-    if (r < 0.5) return { text: `${a} × ${b} + ${c}`, ans: int(a * b + c), classic: int(a * (b + c)) };
-    if (r < 0.75) { const k = pick(rng, [2, 3, 4, 5]); return { text: `(${a} + ${b}) × ${k}`, ans: int((a + b) * k), classic: int(a + b * k) }; }
-    const cc = ri(rng, 1, a * b - 1); return { text: `${a} × ${b} − ${cc}`, ans: int(a * b - cc), classic: int(a * b + cc) };
+    if (r < 0.5) return { text: `${a} × ${b} + ${c}`, ans: int(a * b + c), classic: int(a * (b + c)), alts: [int(a * b - c), int(a + b + c), int(a * b + c + a), int(a * b + c - a)] };
+    if (r < 0.75) { const k = pick(rng, [2, 3, 4, 5]); return { text: `(${a} + ${b}) × ${k}`, ans: int((a + b) * k), classic: int(a + b * k), alts: [int(a * k + b), int(a + b + k), int((a + b) * k + k), int((a + b) * k - k)] }; }
+    const cc = ri(rng, 1, a * b - 1); return { text: `${a} × ${b} − ${cc}`, ans: int(a * b - cc), classic: int(a * b + cc), alts: [int(a * b), int(a * b - cc + a), int(a * b - cc - a)] };
   },
 ];
 
 const same = (x, y) => fmt(x) === fmt(y);
 const valid = (x) => (x.k === 'int' ? x.v >= 0 && Number.isInteger(x.v)
-  : x.k === 'frac' ? x.n >= 0 && x.d > 0 : x.q >= 0 && x.r >= 0);
+  : x.k === 'frac' ? x.n >= 1 && x.n < x.d : x.q >= 0 && x.r >= 0); // [MATH 8] proper fractions only
 
 function offsetOf(a, off) {
   if (a.k === 'frac') return { k: 'frac', n: a.n + off, d: a.d };
@@ -1528,20 +1529,37 @@ function offsetOf(a, off) {
   return int(a.v + off);
 }
 
-// G15: 3 distractors from ±{3,6,10,15} (answers < 20: ±{1,2,3}), scaled to size, plus one classic mistake.
-function distractors(ans, classic, rng) {
+// [MATH 8] the digit-swap mistake: 47 → 74, 352 → 325 (whole-number answers ≥ 10 only)
+function digitSwap(a) {
+  if (a.k !== 'int' || a.v < 10) return null;
+  const s = String(a.v), t = s.length === 2 ? s[1] + s[0] : s.slice(0, -2) + s.slice(-1) + s.slice(-2, -1);
+  return t[0] === '0' ? null : int(Number(t));
+}
+
+// G15 [MATH 8]: CHOICES − 1 (7) unique wrong answers: the classic mistake, the generator's other modelled mistakes (alts, in a
+// shuffled order), the digit swap, then ±{1,3,6,10,15} (answers < 20 and fractions/remainders: ±{1,2,3,4}) scaled to size,
+// then the next nearest neighbours (fractions: also the next denominators). Never the answer, never a duplicate, never invalid
+// for the band (no negatives, proper fractions only, a remainder below the divisor); every one formatted by fmt like the answer.
+function distractors(ans, classic, rng, alts = []) {
+  const need = M.CHOICES - 1;
   const size = ans.k === 'int' ? ans.v : ans.k === 'frac' ? ans.n : ans.q;
   const small = size < M.SMALL_ANSWER || ans.k !== 'int';
   const scale = ans.k === 'int' && size >= 1000 ? 10 : 1;
   const base = small ? M.DISTRACTOR_OFFSETS_SMALL : M.DISTRACTOR_OFFSETS;
   const out = [];
-  const add = (x) => { if (x && valid(x) && !same(x, ans) && !out.some((o) => same(o, x)) && out.length < 3) out.push(x); };
+  const add = (x) => { if (x && valid(x) && !(x.k === 'rem' && ans.b && x.r >= ans.b) && !same(x, ans) && !out.some((o) => same(o, x)) && out.length < need) out.push(x); };
+  const shuffle = (arr) => { for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]]; } return arr; };
   if (classic) add(classic);
+  for (const x of shuffle([...alts])) add(x);
+  add(digitSwap(ans));
   const offs = [];
   for (const o of base) offs.push(o * scale, -o * scale);
-  for (let i = offs.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [offs[i], offs[j]] = [offs[j], offs[i]]; }
-  for (const o of offs) add(offsetOf(ans, o));
-  for (let o = 1; out.length < 3; o++) { add(offsetOf(ans, o)); add(offsetOf(ans, -o)); if (ans.k === 'rem') add({ k: 'rem', q: ans.q + o, r: ans.r }); }
+  for (const o of shuffle(offs)) add(offsetOf(ans, o));
+  for (let o = 1; out.length < need && o < 500; o++) {
+    add(offsetOf(ans, o)); add(offsetOf(ans, -o));
+    if (ans.k === 'rem') { add({ k: 'rem', q: ans.q + o, r: ans.r }); add({ k: 'rem', q: ans.q - o, r: ans.r }); add({ k: 'rem', q: ans.q + o, r: 0 }); }
+    if (ans.k === 'frac') { add({ k: 'frac', n: ans.n, d: ans.d + o }); add({ k: 'frac', n: ans.n + 1, d: ans.d + o }); }
+  }
   return out;
 }
 
@@ -1549,7 +1567,7 @@ function makeQuestion(band, rng = Math.random, reviewMax = 6) {
   let b = band;
   if (b >= 7) b = ri(rng, 0, Math.min(6, reviewMax));
   const q = GEN[b](rng);
-  const wrong = distractors(q.ans, q.classic, rng);
+  const wrong = distractors(q.ans, q.classic, rng, q.alts || []);
   const choices = [q.ans, ...wrong].map(fmt);
   for (let i = choices.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1)); [choices[i], choices[j]] = [choices[j], choices[i]]; }
   const answer = fmt(q.ans);
@@ -1815,8 +1833,9 @@ function drawFx(ctx, camX = 0, camY = 0) {
 return { fx, shake, hitSpark, confetti, floatText, updateFx, drawFx };
 });
 __def("game/math-popup.js", function () {
-// Math popup modal [D01]: big question, 4 answer buttons (2×2), keys 1–4 or tap; no timer, no penalty. [R3-9] A wrong answer
-// greys out and the same question stays until the right one is picked.
+// Math popup modal [D01]: big question, [MATH 8] 8 answer buttons (4×2), keys 1–8 or tap; no timer, no penalty. [R3-9] A wrong
+// answer greys out and the same question stays — [MATH 8] for CONFIG.MATH.STRIKES (3) picks: a third wrong pick discards it and
+// deals a brand-new question (fresh answers, fresh strikes, "New question!"), so nobody can eliminate their way to the answer.
 const { CONFIG } = __req("config.js");
 const { Button, layoutBegin, drawCell, uiFont } = __req("engine/ui.js");
 const { font, drawOutlined, fitTextSize } = __req("engine/text.js");
@@ -1835,11 +1854,11 @@ function apFloat(r) {
 
 // once: a single bonus question (D47) — right → onCorrect, wrong → onWrong; never a penalty.
 function createMathPopup(view, { onClose, onCorrect, onWrong, title, once = false } = {}) {
-  const p = { name: 'math', modal: true, closing: 0, picked: -1, wrong: new Set(), tried: false, revive: !!onCorrect && !once, once, question: null, buttons: [], msg: '', msgT: 0, floaty: null, closeBtn: null };
+  const p = { name: 'math', modal: true, closing: 0, picked: -1, wrong: new Set(), tried: false, lockT: 0, discards: 0, revive: !!onCorrect && !once, once, question: null, buttons: [], msg: '', msgT: 0, floaty: null, closeBtn: null };
   function deal() {
     p.question = makeQuestion(currentBand(), Math.random, reviewMax()); p.wrong = new Set(); p.tried = false;
-    const ox = (view.w - 560) / 2;
-    p.buttons = p.question.choices.map((c, i) => new Button({ id: 'ans' + (i + 1), x: ox + (i % 2) * 290, y: 200 + ((i / 2) | 0) * 100, w: 270, h: 86, label: c, color: '#2a4a8a', fontSize: 44, onClick: () => pick(i) }));
+    const L = CONFIG.MATH.GRID, ox = (view.w - (L.COLS * L.W + (L.COLS - 1) * L.GAP)) / 2; // [MATH 8] 4×2 in the old 2×2 grid's space
+    p.buttons = p.question.choices.map((c, i) => new Button({ id: 'ans' + (i + 1), x: ox + (i % L.COLS) * (L.W + L.GAP), y: L.TOP + ((i / L.COLS) | 0) * (L.H + L.GAP), w: L.W, h: L.H, label: c, color: '#2a4a8a', fontSize: L.FONT, onClick: () => pick(i) }));
     p.closeBtn = new Button({ id: 'math-close', x: view.w - 64, y: 60, w: 40, h: 40, label: 'X', color: '#6a2a2a', onClick: close });
   }
   function close() {
@@ -1848,12 +1867,16 @@ function createMathPopup(view, { onClose, onCorrect, onWrong, title, once = fals
     if (onClose) onClose();
   }
   function pick(i) {
-    if (p.wrong.has(i) || p.closing > 0) return; // a greyed-out answer can't be picked again
+    if (p.wrong.has(i) || p.closing > 0 || p.lockT > 0) return; // a greyed-out answer can't be picked again
     const correct = i === p.question.correctIndex;
     if (!correct && !once) { // [R3-9] same question: grey out the wrong answer and try again (counted wrong once, for the band)
       if (!p.tried) answerQuestion(false);
       p.tried = true; p.wrong.add(i); p.buttons[i].disabled = true; p.buttons[i].color = '#3a3a4a';
-      p.msg = GOOD_TRY[Math.floor(Math.random() * GOOD_TRY.length)] + ' Try again!'; p.msgT = 1.4;
+      if (p.wrong.size >= CONFIG.MATH.STRIKES) { // [MATH 8] third wrong pick: discard (already counted once above) → a fresh question
+        p.discards++; deal(); p.msg = 'New question!'; p.msgT = CONFIG.MATH.NEW_Q_MSG_S; p.lockT = CONFIG.MATH.NEW_Q_LOCK_S;
+        return;
+      }
+      p.msg = GOOD_TRY[Math.floor(Math.random() * GOOD_TRY.length)] + (p.wrong.size === CONFIG.MATH.STRIKES - 1 ? ' One more try!' : ' Try again!'); p.msgT = 1.4;
       return;
     }
     if (correct && p.tried) { if (onCorrect) onCorrect(); else close(); return; } // right after a miss: on with the game (AP only for a first try)
@@ -1877,10 +1900,11 @@ function createMathPopup(view, { onClose, onCorrect, onWrong, title, once = fals
   deal();
   p.update = (dt) => {
     if (p.msgT > 0) p.msgT -= dt;
+    if (p.lockT > 0) p.lockT -= dt;
     if (p.floaty) { p.floaty.t -= dt; if (p.floaty.t <= 0) p.floaty = null; }
     if (p.closing > 0) { p.closing -= dt; if (p.closing <= 0 || pressed('pause') || pressed('question')) { p.closing = 0; close(); } return; }
     if (!p.revive && (pressed('pause') || pressed('question'))) { close(); return; }
-    for (let k = 1; k <= 4; k++) if (pressed('k' + k)) { pick(k - 1); return; }
+    for (let k = 1; k <= p.buttons.length; k++) if (pressed('k' + k)) { pick(k - 1); return; }
     if (input.pointer.tapped) {
       const b = [...p.buttons, ...(p.revive ? [] : [p.closeBtn])].find((x) => x.hit(input.pointer.x, input.pointer.y));
       if (b) b.onClick(b);
@@ -1898,7 +1922,7 @@ function createMathPopup(view, { onClose, onCorrect, onWrong, title, once = fals
       if (p.closing > 0) b.color = i === p.question.correctIndex ? '#2a8a3a' : i === p.picked ? '#6a3a3a' : '#2a3a5a';
       b.draw(ctx);
     });
-    p.buttons.forEach((b, i) => { ctx.font = uiFont(14); ctx.fillStyle = '#c8dcff'; ctx.textAlign = 'left'; ctx.fillText(String(i + 1), b.x + 10, b.y + 14); ctx.textAlign = 'center'; });
+    p.buttons.forEach((b, i) => { ctx.font = uiFont(14); ctx.fillStyle = '#c8dcff'; ctx.textAlign = 'left'; ctx.fillText(String(i + 1), b.x + 9, b.y + 12); ctx.textAlign = 'center'; });
     if (!p.revive) p.closeBtn.draw(ctx);
     if (title) { ctx.font = font(18); drawOutlined(ctx, title, view.w / 2, 78, '#ffb0b0'); }
     ctx.font = uiFont(17);
@@ -4524,6 +4548,16 @@ const { spawn, overlap, remove } = __req("game/entities.js");
 const { beatIn } = __req("engine/audio.js");
 // [A5] big bosses (artScale > 1): body-anchored attacks start at the body's edge, so their reach grows with the body
 const reach = (e) => (e.artScale > 1 ? e.w / 2 : 0);
+// [BOSS 3x] a big body never lands on the hero or in a wall after a dive / burrow / pop-up: the marked circle is the attack,
+// so the body settles on the nearest clear spot to (x, y) (spiral search; head kept below the HUD). Small bodies land as before.
+function landAt(e, cx, x, y) {
+  if (!(e.artScale > 1)) return [x, y];
+  const H = cx.hero, minY = ((e.minY || CONFIG.BOSS.BIG_MIN_Y) - 2) * 16, hw = (H.w || 12) / 2 + 4;
+  const clear = (px, py) => py >= minY && (!cx.map || cx.map.boxFree(px - e.w / 2, py - e.h, px + e.w / 2, py)) &&
+    !(Math.abs(H.x - px) < e.w / 2 + hw && H.y > py - e.h - 4 && H.y - (H.h || 14) < py + 4);
+  for (let d = 0; d <= 320; d += 8) for (let i = 0; i < (d ? 16 : 1); i++) { const a = (i / 16) * TAU, px = x + Math.cos(a) * d, py = y + Math.sin(a) * d; if (clear(px, py)) return [px, py]; }
+  return [e.x, e.y];
+}
 
 const TAU = Math.PI * 2;
 const dirTo = (e, x, y) => { const dx = x - e.x, dy = y - e.y, d = Math.hypot(dx, dy) || 1; return [dx / d, dy / d, d]; };
@@ -4573,9 +4607,9 @@ const PRIMS = {
   } },
   spin: { start: () => ({ t: 0.6 }), update: (e, cx, p, dt, s) => { if (!s.h) s.h = hazard(cx, e, { shape: 'circle', x: e.x, y: e.y, r: 24, delay: 0, life: 0.6, follow: true }); return (s.t -= dt) <= 0; } },
   burrow: { start: (e, cx) => { e.hidden = true; e.invuln = true; e.contact = false; const x = cx.hero.x, y = cx.hero.y; hazard(cx, e, { shape: 'circle', x, y, r: 16, delay: 0.6, life: 0.15 }); return { t: 0.6, x, y }; },
-    update: (e, cx, p, dt, s) => { if ((s.t -= dt) > 0) return false; e.x = s.x; e.y = s.y; e.hidden = false; e.invuln = false; e.contact = true; return true; } },
-  dive: { start: (e, cx) => { const x = cx.hero.x, y = cx.hero.y; e.z = 40; hazard(cx, e, { shape: 'circle', x, y, r: 14, delay: 0.6, life: 0.15 }); return { t: 0.6, x, y, x0: e.x, y0: e.y }; },
-    update: (e, cx, p, dt, s) => { s.t -= dt; const k = 1 - Math.max(0, s.t) / 0.6; e.x = s.x0 + (s.x - s.x0) * k; e.y = s.y0 + (s.y - s.y0) * k; e.z = 40 * (1 - k); return s.t <= 0 && ((e.z = 0), true); } },
+    update: (e, cx, p, dt, s) => { if ((s.t -= dt) > 0) return false; [e.x, e.y] = landAt(e, cx, s.x, s.y); e.hidden = false; e.invuln = false; e.contact = true; return true; } },
+  dive: { start: (e, cx) => { const x = cx.hero.x, y = cx.hero.y; e.z = 40; hazard(cx, e, { shape: 'circle', x, y, r: 14, delay: 0.6, life: 0.15 }); const [dx, dy, dd] = dirTo({ x, y }, e.x, e.y), k = e.artScale > 1 ? Math.min(dd, e.w / 2 + 12) : 0; return { t: 0.6, x: x + dx * k, y: y + dy * k, x0: e.x, y0: e.y }; },
+    update: (e, cx, p, dt, s) => { s.t -= dt; const k = 1 - Math.max(0, s.t) / 0.6; e.x = s.x0 + (s.x - s.x0) * k; e.y = s.y0 + (s.y - s.y0) * k; e.z = 40 * (1 - k); return s.t <= 0 && ((e.z = 0), ([e.x, e.y] = landAt(e, cx, e.x, e.y)), true); } },
   // W2 Shellback: tuck into the shell (invulnerable) for p.t seconds.
   shellHide: { start: (e, cx, p) => { e.invuln = true; e.shelled = true; return { t: p.t || 0.8 }; }, update: (e, cx, p, dt, s) => ((s.t -= dt) <= 0 && ((e.invuln = false), (e.shelled = false), true)) },
   // W2 Spikeball: roll straight at the hero; every wall bounce reflects and speeds up (×p.gain, capped at p.max).
@@ -4595,7 +4629,7 @@ const PRIMS = {
   // W3 Inkblot: sink, slide under the floor, pop up behind the hero (telegraphed ring where it will surface).
   popBehind: { start: (e, cx) => { e.hidden = true; e.invuln = true; e.contact = false; const back = { up: [0, 1], down: [0, -1], left: [1, 0], right: [-1, 0] }[cx.hero.facing] || [0, 1];
       const x = cx.hero.x + back[0] * 28, y = cx.hero.y + back[1] * 28; hazard(cx, e, { shape: 'circle', x, y, r: 14, delay: 0.6, life: 0.15 }); return { t: 0.6, x, y }; },
-    update: (e, cx, p, dt, s) => { if ((s.t -= dt) > 0) return false; if (!cx.map || cx.map.boxFree(s.x - e.w / 2, s.y - e.h, s.x + e.w / 2, s.y)) { e.x = s.x; e.y = s.y; } e.hidden = false; e.invuln = false; e.contact = true; return true; } },
+    update: (e, cx, p, dt, s) => { if ((s.t -= dt) > 0) return false; if (e.artScale > 1) [e.x, e.y] = landAt(e, cx, s.x, s.y); else if (!cx.map || cx.map.boxFree(s.x - e.w / 2, s.y - e.h, s.x + e.w / 2, s.y)) { e.x = s.x; e.y = s.y; } e.hidden = false; e.invuln = false; e.contact = true; return true; } },
   // W3 Vex: ink rain — p.n marked splash zones scattered around the hero.
   inkRain: { start: (e, cx, p) => { for (let i = 0; i < (p.n || 5); i++) hazard(cx, e, { shape: 'circle', x: cx.hero.x + (Math.random() - 0.5) * 140, y: cx.hero.y + (Math.random() - 0.5) * 100, r: p.r || 16, delay: 0.8, life: 0.2 }); return {}; }, update: () => true },
   // W3 Vex: hypno-lights — lit pools appear; when the daze wave fires, only a hero standing in a pool is safe.
@@ -4801,7 +4835,7 @@ function spawnBoss(ents, def, world, tier, x, y) {
   const [w, h] = (def.size || [32, 32]).map((v) => v * k);
   return spawn(ents, {
     kind: 'enemy', boss: true, bossDef: def, name: def.name, x, y, w, h, hp, maxHp: hp, targetHits: hits, tier, xp: (def.kind === 'sub' ? CONFIG.XP.BOSS_SUB : CONFIG.XP.BOSS_MAIN)[world - 1] || 0,
-    dmg: rawDamage(world, tier, true), look: def.look, pose: 'idle', phase: 1, log: [], artScale: def.artScale || k, // [A5] whole-number art scale (big bosses)
+    dmg: rawDamage(world, tier, true), look: def.look, pose: 'idle', phase: 1, log: [], artScale: def.artScale || k, minY: def.minY, // [BOSS 3x] minY: tiles; a tall big boss's own head-below-HUD line (else BIG_MIN_Y) // [A5] whole-number art scale (big bosses)
     ai: { state: 'idle', t: 1.0, step: 0, prim: 0 },
   });
 }
@@ -4835,7 +4869,7 @@ function becomeForm(e) {
   if (!e.form1MaxHp) e.form1MaxHp = e.maxHp;
   if (!e.form1Hits) e.form1Hits = e.targetHits || 20;
   e.bossDef = { ...base, name: f.name || base.name, patterns: f.patterns, phase2: f.finale ? f.finale.patterns : null, phase2At: f.finale ? f.finale.at : null, echoes: null, music2: f.music || base.music2 };
-  e.name = e.bossDef.name; e.look = f.look || e.look; if (f.size) { e.w = f.size[0]; e.h = f.size[1]; }
+  e.name = e.bossDef.name; e.look = f.look || e.look; if (f.size) { e.w = f.size[0]; e.h = f.size[1]; } if (f.minY) e.minY = f.minY;
   e.maxHp = Math.round(e.form1MaxHp * mult); e.hp = e.maxHp; e.targetHits = e.form1Hits * mult;
   e.phase = 1; e.invuln = false; e.pose = 'phase2'; e.flying = f.flying !== false; e.nextForm = null;
   e.ai = { state: 'rest', t: 1.0, step: 0, prim: 0 };
@@ -4914,6 +4948,14 @@ const C = CONFIG.COMBAT;
 const SWING_T = 0.15;
 
 function heroBox(h) { return { x: h.x - h.w / 2, y: h.y - h.h, w: h.w, h: h.h }; }
+// [BOSS 3x] move the hero out of a big body to its nearest edge that is free floor (after the contact check, so a charge still hits)
+function pushOut(h, e, map) {
+  const hw = h.w / 2, L = e.x - e.w / 2 - hw - 1, R = e.x + e.w / 2 + hw + 1, U = e.y - e.h - 1, D = e.y + h.h + 1;
+  const spots = [[L, h.y], [R, h.y], [h.x, U], [h.x, D]].sort((a, b) => Math.hypot(a[0] - h.x, a[1] - h.y) - Math.hypot(b[0] - h.x, b[1] - h.y));
+  for (const [x, y] of spots) if (!map || map.boxFree(x - hw, y - h.h, x + hw, y)) { h.x = x; h.y = y; return; }
+}
+// [BOSS 3x] where a hero aims at a target: a big body's (artScale > 1) nearest edge point to (x, y), anyone else's feet
+const aimPoint = (e, x, y) => (e.artScale > 1 ? [Math.max(e.x - e.w / 2, Math.min(x, e.x + e.w / 2)), Math.max(e.y - e.h, Math.min(y, e.y))] : [e.x, e.y]);
 
 // Melee arc in front of the hero (feet-anchored), sized per hero.
 function swingBox(h) {
@@ -5016,10 +5058,11 @@ function createCombat(cx) {
       let best = null, bd = C.TAP_ATTACK_RADIUS;
       for (const e of cx.ents.list) {
         if (!e.alive || e.kind !== 'enemy') continue;
-        const d = Math.hypot(e.x - wx, e.y - e.h / 2 - wy);
-        if (d <= bd) { best = e; bd = d; }
+        // [BOSS 3x] a big body is picked by a tap on it (+ BIG_TAP_PAD), so a tap beside it still walks the hero there
+        const big = e.artScale > 1, [px, py] = aimPoint(e, wx, wy), d = big ? Math.hypot(px - wx, py - wy) : Math.hypot(e.x - wx, e.y - e.h / 2 - wy);
+        if (d <= (big ? Math.min(bd, CONFIG.BOSS.BIG_TAP_PAD) : bd)) { best = e; bd = d; }
       }
-      if (best && Math.hypot(best.x - hero.x, best.y - hero.y) <= C.AUTOWALK_MAX) { hero.attackId = best.id; hero.path = null; return true; }
+      if (best && Math.hypot(...aimPoint(best, hero.x, hero.y).map((v, i) => v - (i ? hero.y : hero.x))) <= C.AUTOWALK_MAX) { hero.attackId = best.id; hero.path = null; return true; }
       return false;
     },
     update(dt) {
@@ -5052,8 +5095,10 @@ function createCombat(cx) {
       const tgt = hero.attackId != null ? get(ents, hero.attackId) : null;
       if (hero.attackId != null && !tgt) hero.attackId = null;
       if (tgt) {
-        const d = Math.hypot(tgt.x - hero.x, tgt.y - hero.y);
-        if (d <= C.MELEE_RANGE + tgt.w / 2) { hero.path = null; faceTo(tgt.x, tgt.y); if (startSwing()) hero.attackId = null; } else chaseTarget(hero, map, tgt.x, tgt.y, dt, tgt.id);
+        // [BOSS 3x] a big body (artScale > 1): range from, and walk to, the body's nearest edge - never through the body to its feet
+        const big = tgt.artScale > 1, [ax, ay] = aimPoint(tgt, hero.x, hero.y);
+        const d = Math.hypot(ax - hero.x, ay - hero.y);
+        if (d <= (big ? CONFIG.BOSS.BIG_EDGE_RANGE : C.MELEE_RANGE + tgt.w / 2)) { hero.path = null; faceTo(ax, ay); if (startSwing()) hero.attackId = null; } else chaseTarget(hero, map, ax, ay, dt, tgt.id);
       }
       if (hero.swing) {
         const sb = swingBox(hero);
@@ -5081,6 +5126,7 @@ function createCombat(cx) {
         if (e.boss) { updateBoss(e, pcx, dt); if (e.killNow) { e.killNow = false; e.hp = 0; remove(ents, e); if (cx.onKill) cx.onKill(e); continue; } } else if (e.ai && e.ai.state && e.pattern) updateEnemy(e, pcx, dt);
         if (Math.hypot(e.x - hero.x, e.y - hero.y) < C.COMBAT_RADIUS) near = true;
         if (e.contact && hero.iframes <= 0 && data.hearts > 0 && overlap(hb, box(e))) api.hurt(e.dmg || rawDamage(cx.world, data.tier, !!e.boss), e.x, e.y);
+        if (e.boss && e.artScale > 1 && !e.hidden && overlap(heroBox(hero), box(e))) pushOut(hero, e, map); // [BOSS 3x] a big body is solid: never stand (or get knocked) inside it
       }
       updateHazards(pcx, hb, dt);
       collectPickups(ents, hb, data, dt);
@@ -5382,7 +5428,7 @@ const W2 = {
   // Sub-bosses (SPEC 2.7 W2): patterns are compositions of pattern primitives (bosses.js).
   bosses: {
     // Main boss (SPEC 2.7 W2, D13: 4 patterns — phase 2 counts as one).
-    gormash: { id: 'gormash', name: 'King Gormash, the Shell Tyrant', kind: 'main', sting: 'gormash', size: [40, 40], look: { body: '#3a8a3a', accent: '#e0602a', crown: true }, summons: 'shellback',
+    gormash: { id: 'gormash', name: 'King Gormash, the Shell Tyrant', kind: 'main', sting: 'gormash', size: [120, 120], artScale: 3, /* [BOSS 3x] was 40x40 */ look: { body: '#3a8a3a', accent: '#e0602a', crown: true }, summons: 'shellback',
       patterns: [
         { name: 'shell-spin charge', prims: [{ type: 'rollBounce', speed: 170, gain: 1.15, max: 230, t: 2.2 }] },
         { name: 'fire-breath sweep', prims: [{ type: 'sweep', len: 90 }] },
@@ -5545,7 +5591,7 @@ const W3 = {
   // Sub-bosses (SPEC 2.7 W3): patterns are compositions of pattern primitives (bosses.js).
   bosses: {
     // Main boss (SPEC 2.7 W3, D13: 4 patterns — phase 2 counts as one).
-    vex: { id: 'vex', name: 'Inkmaster Vex', kind: 'main', sting: 'vex', size: [44, 40], look: { body: '#5a2a8a', accent: '#40e0f0', crown: true },
+    vex: { id: 'vex', name: 'Inkmaster Vex', kind: 'main', sting: 'vex', size: [132, 120], artScale: 3, /* [BOSS 3x] was 44x40 */ look: { body: '#5a2a8a', accent: '#40e0f0', crown: true },
       patterns: [
         { name: 'ink rain', prims: [{ type: 'inkRain', n: 5, r: 16 }] },
         { name: 'triple tentacle slam', prims: [{ type: 'lob', r: 22 }, { type: 'lob', r: 22 }, { type: 'lob', r: 22 }] },
@@ -5737,7 +5783,7 @@ const W4 = {
   // Sub-bosses (SPEC 2.7 W4): patterns are compositions of pattern primitives (bosses.js).
   bosses: {
     // Main boss (SPEC 2.7 W4, D13: 4 patterns — phase 2 counts as one). weakCrown: the Sour Star takes ×2 while he is stunned.
-    dundor: { id: 'dundor', name: 'King Dundor, the Glutton King', kind: 'main', sting: 'dundor', size: [46, 42], look: { body: '#8a6a5a', accent: '#f0e040', crown: true }, weakCrown: true,
+    dundor: { id: 'dundor', name: 'King Dundor, the Glutton King', kind: 'main', sting: 'dundor', size: [138, 126], artScale: 3, /* [BOSS 3x] was 46x42 */ look: { body: '#8a6a5a', accent: '#f0e040', crown: true }, weakCrown: true,
       patterns: [
         { name: 'mallet slam', prims: [{ type: 'slamRing', r: 120 }] },
         { name: 'royal inhale', prims: [{ type: 'pull' }, { type: 'fanShot', n: 3, spread: 0.8 }] },
@@ -5921,7 +5967,7 @@ const W5 = {
   ],
   bosses: {
     // Main boss (SPEC 2.7 W5, D13: 4 patterns — phase 2 counts as one). Phase 2 drums on the music's beat clock.
-    rukus: { id: 'rukus', name: 'Baron Rukus, the Drum Tyrant', kind: 'main', sting: 'rukus', size: [44, 40], look: { body: '#6a4a2a', accent: '#f0c020', crown: true },
+    rukus: { id: 'rukus', name: 'Baron Rukus, the Drum Tyrant', kind: 'main', sting: 'rukus', size: [132, 120], artScale: 3, /* [BOSS 3x] was 44x40 */ look: { body: '#6a4a2a', accent: '#f0c020', crown: true },
       patterns: [
         { name: 'ground-pound rings', prims: [{ type: 'slamRing', r: 80 }, { type: 'slamRing', r: 130 }] },
         { name: 'barrel barrage', prims: [{ type: 'lob', r: 16 }, { type: 'rollBounce', t: 1.6, speed: 120 }, { type: 'lob', r: 22 }] },
@@ -6111,7 +6157,7 @@ const W6 = {
   ],
   bosses: {
     // Main boss (SPEC 2.7 W6, D13: 4 patterns — phase 2 counts as one).
-    gorg: { id: 'gorg', name: 'Gorg, the All-Maw', kind: 'main', sting: 'gorg', size: [48, 40], look: { body: '#6a4a8a', accent: '#f06080', crown: false },
+    gorg: { id: 'gorg', name: 'Gorg, the All-Maw', kind: 'main', sting: 'gorg', size: [144, 120], artScale: 3, /* [BOSS 3x] was 48x40 */ look: { body: '#6a4a8a', accent: '#f06080', crown: false },
       patterns: [
         { name: 'chomp lunge', prims: [{ type: 'lob', r: 24 }, { type: 'charge', speed: 210 }] },
         { name: 'tongue lash', prims: [{ type: 'beam' }, { type: 'pull' }] },
@@ -6301,7 +6347,7 @@ const W7 = {
   bosses: {
     // Final boss of the seven worlds (D46): form 1 (human, 4 patterns, Lamentation echoes at 66 %/33 %) → kneel + transformation →
     // form 2 (flying, one black wing, NEW bar = 2× HP, 4 patterns ending in the Supernova Countdown at 30 %). Audit counts 4 + 4.
-    seraphel: { id: 'seraphel', name: 'Seraphel, the Fallen Star', kind: 'final', sting: 'seraphel', size: [30, 40], look: { body: '#c8c8e0', accent: '#20202a' },
+    seraphel: { id: 'seraphel', name: 'Seraphel, the Fallen Star', kind: 'final', sting: 'seraphel', size: [90, 120], artScale: 3, /* [BOSS 3x] was 30x40 */ look: { body: '#c8c8e0', accent: '#20202a' },
       summons: 'aetherwisp', echoes: 1, music2: 'w7_boss_final',
       patterns: [
         { name: 'starfall blades', prims: [{ type: 'inkRain', n: 6 }] },
@@ -6309,7 +6355,7 @@ const W7 = {
         { name: 'moonlight slash', prims: [{ type: 'beam' }] },
         { name: 'lamentation echoes', prims: [{ type: 'summon', n: 1 }, { type: 'slamRing', r: 60 }] },
       ],
-      form2: { name: 'Seraphel, Wings of the Fallen Star', rise: 'The Fallen Star rises…', size: [36, 40], look: { body: '#d8d8f0', accent: '#10101a', wing: true },
+      form2: { name: 'Seraphel, Wings of the Fallen Star', rise: 'The Fallen Star rises…', size: [108, 120], minY: 22, /* [BOSS 3x] was 36x40; tall winged art + flight: stands lower so the head stays below the HUD */ look: { body: '#d8d8f0', accent: '#10101a', wing: true },
         patterns: [
           { name: 'aerial dive slash', prims: [{ type: 'dive' }, { type: 'charge', speed: 220 }] },
           { name: 'black-feather storm', prims: [{ type: 'inkRain', n: 8 }] },
@@ -6528,21 +6574,21 @@ const W8 = {
   ],
   bosses: {
     // [D47] Astronova, the wise Warden of the Star: three phases (each its own full bar) and a false fourth — he tests, never hates.
-    astronova: { id: 'astronova', name: 'Astronova, Warden of the Star', kind: 'final', sting: 'astronova', size: [32, 40], look: { body: '#e8e0ff', accent: '#ffe070', crown: true },
+    astronova: { id: 'astronova', name: 'Astronova, Warden of the Star', kind: 'final', sting: 'astronova', size: [96, 120], artScale: 3, /* [BOSS 3x] was 32x40 */ look: { body: '#e8e0ff', accent: '#ffe070', crown: true },
       patterns: [
         { name: 'star shower', prims: [{ type: 'inkRain', n: 5 }] },
         { name: 'constellation charge', prims: [{ type: 'charge', speed: 180 }, { type: 'charge', speed: 180 }, { type: 'charge', speed: 180 }] },
         { name: 'gravity wells', prims: [{ type: 'pull' }, { type: 'zone', r: 26 }] },
       ],
       forms: [
-        { name: 'Astronova, Constellation Armor', rise: 'The stars gather into armor…', hpMult: 1.5, size: [36, 42], look: { body: '#b0c0ff', accent: '#ffffff', crown: true },
+        { name: 'Astronova, Constellation Armor', rise: 'The stars gather into armor…', hpMult: 1.5, size: [108, 126], /* [BOSS 3x] was 36x42 */ look: { body: '#b0c0ff', accent: '#ffffff', crown: true },
           lines: ['Your arm is strong, little star.', 'Show me your mind.'], question: 'Show me your mind!',
           patterns: [
             { name: 'comet-tail sweep', prims: [{ type: 'sweep' }] },
             { name: 'meteor dance', prims: [{ type: 'beatWait' }, { type: 'slamRing', r: 70 }, { type: 'beatWait' }, { type: 'slamRing', r: 90 }] },
             { name: 'star clones', prims: [{ type: 'popBehind' }, { type: 'lunge' }] },
           ] },
-        { name: 'Astronova, Nova Titan', rise: 'Astronova grows into the Nova Titan…', hpMult: 2.0, size: [48, 52], look: { body: '#ffd0a0', accent: '#ff6030', crown: true }, music: 'w8_boss_final',
+        { name: 'Astronova, Nova Titan', rise: 'Astronova grows into the Nova Titan…', hpMult: 2.0, size: [144, 156], minY: 22, /* [BOSS 3x] was 48x52; tallest art + flight: stands lower so the head stays below the HUD */ look: { body: '#ffd0a0', accent: '#ff6030', crown: true }, music: 'w8_boss_final',
           lines: ['Mind and heart, both bright.', 'Now — stand against the whole sky.'],
           patterns: [
             { name: 'black-hole pull', prims: [{ type: 'pull' }, { type: 'slamRing', r: 60 }] },
@@ -11866,7 +11912,9 @@ function createDungeon(view, data, dg, opts = {}) {
   const say = (t) => { d.msg = t; d.msgT = 2; };
   // [TAP AUDIT] tap-walks route round tiles that carry the hero off (bounce pads, pit holes, stairs) unless one is the goal:
   // before, a walk across Giggle Caverns' south bank stepped on the pad and flung the hero back over the lava
-  const moverAt = (x, y) => { const g = d.map.inside(x, y) ? d.map.ground[d.map.idx(x, y)] : -1; return g === DT.PIT || g === DT.STAIRS || !!(d.inter && d.inter.allAt(x, y).some((o) => o.type === 'bouncePad')); };
+  // [BOSS 3x] a tap-walk also routes round a big boss's body (tiles where the hero would stand inside it), never through it
+  const bodyAt = (x, y) => { const b = d.boss, T = d.map.tile; if (!b || !b.alive || !(b.artScale > 1) || b.hidden) return false; const hx = x * T + T / 2, hy = y * T + T / 2 + 4; return Math.abs(hx - b.x) < b.w / 2 + 8 && hy > b.y - b.h - 2 && hy - 8 < b.y + 2; };
+  const moverAt = (x, y) => { const g = d.map.inside(x, y) ? d.map.ground[d.map.idx(x, y)] : -1; return g === DT.PIT || g === DT.STAIRS || bodyAt(x, y) || !!(d.inter && d.inter.allAt(x, y).some((o) => o.type === 'bouncePad')); };
   const walkTo = (wx, wy) => setTapTarget(hero, d.map, wx, wy, moverAt);
   d.throwBomb = () => { if (toolBusy(hero)) return; if (takeBomb(data)) { const [dx, dy] = DIRV[hero.facing]; const c = coneAim(hero.x, hero.y - 10, dx, dy, ents, d.inter); fireProj(projs, hero, 'bomb', c ? c.dx : dx, c ? c.dy : dy); } else say('No bombs left!'); };
   // [TAP FIX 3] a tap-walk with no route in a bounce-pad room (the goal is across the gap): "Hop across first!" + the door
@@ -12062,7 +12110,7 @@ function createDungeon(view, data, dg, opts = {}) {
     }
     if (d.sealed && d.room.type === 'sub') {
       const bw = d.room.bossWorld || dg.world; // a rush room fights another world's boss at that world's strength
-      const bdef = (WORLDS[bw] || W).bosses[d.room.boss]; d.boss = spawnBoss(ents, bdef, bw, data.tier, 20 * 16, (bdef.artScale > 1 ? CONFIG.BOSS.BIG_MIN_Y : 12) * 16); say(d.boss.name + '!');
+      const bdef = (WORLDS[bw] || W).bosses[d.room.boss]; d.boss = spawnBoss(ents, bdef, bw, data.tier, 20 * 16, (bdef.artScale > 1 ? bdef.minY || CONFIG.BOSS.BIG_MIN_Y : 12) * 16); say(d.boss.name + '!');
       if (d.run) { const cap = Math.round(bossHits(d.boss.bossDef.kind, 'adventurer') * CONFIG.RUSH.HITS_CAP); if (d.boss.targetHits > cap) { const k = cap / d.boss.targetHits; d.boss.targetHits = cap; d.boss.maxHp = d.boss.hp = Math.round(d.boss.hp * k); } } // [S62] rush fights stay brisk on Legend
       if (d.run) d.run.started = true;
       const cp = st.formCheckpoint || (st.phase2Checkpoint ? 2 : 0);
@@ -12325,7 +12373,7 @@ function createDungeon(view, data, dg, opts = {}) {
     }
     // a lit portal takes the hero back outside, in front of this dungeon's entrance (autosave on the way out)
     if (onT === DT.PORTAL && opts.onExit && !d.left) { d.left = true; sfx('portal'); save.auto('area'); opts.onExit(); return; }
-    if (d.boss && d.boss.alive && d.boss.artScale > 1) d.boss.y = Math.max(d.boss.y, (CONFIG.BOSS.BIG_MIN_Y - 2) * 16); // [A5] a big boss keeps his head below the HUD
+    if (d.boss && d.boss.alive && d.boss.artScale > 1) d.boss.y = Math.max(d.boss.y, ((d.boss.minY || CONFIG.BOSS.BIG_MIN_Y) - 2) * 16); // [A5] a big boss keeps his head below the HUD
     cam.zoom = (d.boss && d.boss.alive) || (d.room && d.room.puzzle && !d.room.compact) ? 'fight' : 'world'; // [P-A][A2] boss fights + big puzzle rooms show the whole room; compact rooms are one screen
     cam.follow(hero.x, hero.y - 12, d.map.pxW, d.map.pxH, shake);
   };
